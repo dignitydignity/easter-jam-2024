@@ -1,0 +1,24 @@
+[gd_scene load_steps=7 format=3 uid="uid://cqvo8riipj0ue"]
+
+[ext_resource type="PackedScene" uid="uid://dn1fv61dpndg6" path="res://rabbit/rabbit.blend" id="1_q6f4l"]
+[ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="2_atgt6"]
+[ext_resource type="Script" path="res://rabbit/rabbit.gd" id="2_n7hx8"]
+[ext_resource type="Texture2D" uid="uid://bvhgvas070gab" path="res://rabbit/textures/rabbit_tail_albedo.png" id="3_j63k3"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_wur3g"]
+albedo_texture = ExtResource("2_atgt6")
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_muwbo"]
+transparency = 1
+cull_mode = 1
+albedo_texture = ExtResource("3_j63k3")
+
+[node name="Rabbit" instance=ExtResource("1_q6f4l")]
+script = ExtResource("2_n7hx8")
+
+[node name="rabbit_body" parent="." index="0"]
+surface_material_override/0 = SubResource("ORMMaterial3D_wur3g")
+
+[node name="rabbit_tail" parent="." index="1"]
+unique_name_in_owner = true
+surface_material_override/0 = SubResource("ORMMaterial3D_muwbo")
