@@ -8,6 +8,8 @@ static var instance : Player
 var _grav : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_relative : Vector2
 var _dive_queued : bool
+var _is_diving : bool
+var _dive_land_time : float
 
 @onready var cam : Camera3D = %Camera
 
@@ -27,10 +29,10 @@ func _input(event : InputEvent) -> void:
 
 func _process(delta : float) -> void:
 	# FPS camera controls.
-	const cam_rot_scale = 0.2
-	const look_max = 75.0
+	const cam_rot_scale = 0.2 # TODO: Change this in settings menu.
+	const pitch_max = 75.0
 	cam.rotate_x(cam_rot_scale * _mouse_relative.y * delta)
-	cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, -look_max, look_max)
+	cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, -pitch_max, pitch_max)
 	rotate_y(cam_rot_scale * _mouse_relative.x * delta)
 	
 	# Right before the next frame begins, reset mouse relative. So that camera
@@ -47,7 +49,17 @@ func _physics_process(delta : float) -> void:
 		var jump_vel := sqrt(2 * _grav * jump_height)
 		velocity.y = jump_vel
 
+	# If the player is airborne, have them maintain their momentum. Otherwise,
+	# move them in accordance to user inputs.
 	if is_on_floor():
+		if _is_diving:
+			_dive_land_time = Time.get_ticks_msec() / 1000.0
+			_is_diving = false
+			
+		const dive_hitstun = 1.0
+		
+		if (Time.get_ticks_msec() / 1000.0) < _dive_land_time + dive_hitstun: return
+		
 		# Set horizontal velocity.
 		const time_to_max_speed = 0.05
 		const max_speed = 5.0
@@ -69,9 +81,10 @@ func _physics_process(delta : float) -> void:
 			const dive_dist = 10.0
 			var t_up := dive_y_vel / _grav
 			var t_total := 2.0 * (t_up)
-			var dive_z_vel := dive_dist / t_total
+			var dive_forward_vel := dive_dist / t_total
 			velocity.y = dive_y_vel
-			velocity -= dive_z_vel * transform.basis.z
+			velocity -= dive_forward_vel * transform.basis.z
+			_is_diving = true
 			
 		_dive_queued = false
 	
