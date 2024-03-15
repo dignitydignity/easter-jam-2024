@@ -17,6 +17,7 @@ albedo_texture = ExtResource("3_j63k3")
 script = ExtResource("2_n7hx8")
 
 [node name="rabbit_body" parent="." index="0"]
+unique_name_in_owner = true
 surface_material_override/0 = SubResource("ORMMaterial3D_wur3g")
 
 [node name="rabbit_tail" parent="." index="1"]
