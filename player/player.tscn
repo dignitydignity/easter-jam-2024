@@ -5,7 +5,6 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r833c"]
 
 [node name="Player" type="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.39977, 6.57952)
 script = ExtResource("1_fun63")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

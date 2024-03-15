@@ -13,6 +13,8 @@ var _gravity : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_relative : Vector2
 
 func _input(event : InputEvent) -> void:
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
+	
 	# If mouse position changed between polling, cache it's relative motion to
 	# rotate the camera pivot and player body (for FPS camera controls).
 	if event is InputEventMouseMotion:

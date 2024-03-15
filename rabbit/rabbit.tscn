@@ -16,6 +16,7 @@ cull_mode = 1
 albedo_texture = ExtResource("3_j63k3")
 
 [node name="Rabbit" instance=ExtResource("1_q6f4l")]
+transform = Transform3D(0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, 0, 0, 0)
 script = ExtResource("2_n7hx8")
 
 [node name="rabbit_body" parent="." index="0"]
