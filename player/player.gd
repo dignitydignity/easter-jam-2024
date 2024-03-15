@@ -7,9 +7,10 @@ static var instance : Player
 # Sync gravity with value used by RigidBodies.
 var _grav : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_relative : Vector2
+var _dive_start_time : float
+var _dive_land_time : float
 var _dive_queued : bool
 var _is_diving : bool
-var _dive_land_time : float
 
 @onready var cam : Camera3D = %Camera
 
@@ -20,7 +21,7 @@ func _input(event : InputEvent) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
 	# If mouse position changed between polling, cache it's relative motion to
-	# rotate the camera pivot and player body (for FPS camera controls).
+	# rotate the camera and player body (for FPS camera controls in `_process`).
 	if event is InputEventMouseMotion:
 		_mouse_relative = -event.relative
 	
@@ -28,16 +29,28 @@ func _input(event : InputEvent) -> void:
 		_dive_queued = true
 
 func _process(delta : float) -> void:
+	const pitch_max = 75.0
+	
+	# Since `_mouse_relative` is only updated when mouse position changes, we
+	# manually reset it right before the next frame using `call_deferred`.
+	var reset_mouse_relative = func() -> void: _mouse_relative = Vector2.ZERO
+	
+	# Set cam.rotation so that it look like a "dive".
+	if _is_diving:
+		const _dive_rot_start_time_offset = 0.25
+		const dive_pitch_min = -50
+		if (Time.get_ticks_msec() / 1000.0) > _dive_start_time + _dive_rot_start_time_offset:
+			cam.rotate_x(-PI/2 * delta)
+		cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, dive_pitch_min, pitch_max)
+		reset_mouse_relative.call_deferred()
+		return
+	
 	# FPS camera controls.
 	const cam_rot_scale = 0.2 # TODO: Change this in settings menu.
-	const pitch_max = 75.0
 	cam.rotate_x(cam_rot_scale * _mouse_relative.y * delta)
 	cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, -pitch_max, pitch_max)
 	rotate_y(cam_rot_scale * _mouse_relative.x * delta)
 	
-	# Right before the next frame begins, reset mouse relative. So that camera
-	# doesn't keep moving.
-	var reset_mouse_relative = func() -> void: _mouse_relative = Vector2.ZERO
 	reset_mouse_relative.call_deferred()
 
 func _physics_process(delta : float) -> void:
@@ -52,12 +65,16 @@ func _physics_process(delta : float) -> void:
 	# If the player is airborne, have them maintain their momentum. Otherwise,
 	# move them in accordance to user inputs.
 	if is_on_floor():
+		const dive_hitstun = 0.5
 		if _is_diving:
 			_dive_land_time = Time.get_ticks_msec() / 1000.0
+
+			var hitstun_anim = create_tween().set_parallel()
+			hitstun_anim.tween_property(self, "rotation", rotation, dive_hitstun)
+			hitstun_anim.tween_property(cam, "rotation", Vector3.ZERO, dive_hitstun)
 			_is_diving = false
-			
-		const dive_hitstun = 1.0
 		
+		# If the player is in hitstun, prevent all movement.
 		if (Time.get_ticks_msec() / 1000.0) < _dive_land_time + dive_hitstun: return
 		
 		# Set horizontal velocity.
@@ -75,16 +92,18 @@ func _physics_process(delta : float) -> void:
 			velocity.z = move_toward(velocity.z, 0, accel * delta)
 		
 		if _dive_queued:
+			_is_diving = true
+			_dive_start_time = Time.get_ticks_msec() / 1000.0
+			
 			const dive_height = 1.0
 			var dive_y_vel := sqrt(2 * _grav * dive_height)
 			
-			const dive_dist = 10.0
+			const dive_dist = 5.0
 			var t_up := dive_y_vel / _grav
 			var t_total := 2.0 * (t_up)
 			var dive_forward_vel := dive_dist / t_total
 			velocity.y = dive_y_vel
 			velocity -= dive_forward_vel * transform.basis.z
-			_is_diving = true
 			
 		_dive_queued = false
 	
