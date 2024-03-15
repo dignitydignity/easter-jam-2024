@@ -7,4 +7,5 @@ static var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	player = %Player
-	cam = %Player/Camera
+	cam = player.cam
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
