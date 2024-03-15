@@ -6,6 +6,15 @@
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_fun63")
+_cam_pitch_max = 75.0
+_grav = 9.8
+_jump_height = 1.5
+_max_speed = 5.0
+_dive_height = 1.0
+_dive_dist = 7.5
+_dive_rot_start_time_offset = 0.25
+_dive_cam_pitch_min = -50.0
+_dive_hitstun = 0.25
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_r833c")
