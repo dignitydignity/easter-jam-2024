@@ -5,6 +5,6 @@ static var cam : Camera3D
 static var player : Player
 static var rng := RandomNumberGenerator.new()
 
-func _ready():
+func _ready() -> void:
 	player = %Player
 	cam = %Player/Camera

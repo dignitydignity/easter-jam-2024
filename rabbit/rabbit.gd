@@ -21,4 +21,3 @@ func _ready() -> void:
 func _process(_delta) -> void:
 	# "Billboard" the 2D tail sprite.
 	_rabbit_tail.look_at(Main.cam.global_position)
-	
