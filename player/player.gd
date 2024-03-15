@@ -1,13 +1,11 @@
 extends CharacterBody3D
 class_name Player
 
+# Globally accessible instance; there is only one player.
 static var instance : Player
 
-const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
-
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var _gravity : float = ProjectSettings.get_setting("physics/3d/default_gravity")
+# Sync w/ value used by RigidBodies.
+var _grav : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_relative : Vector2
 
 @onready var cam : Camera3D = %Camera
@@ -36,20 +34,27 @@ func _process(delta : float) -> void:
 	reset_mouse_relative.call_deferred()
 
 func _physics_process(delta : float) -> void:
+	const jump_height = 2.0
+	var jump_vel := sqrt(2 * _grav * jump_height)
+
 	# Set vertical velocity.
 	if not is_on_floor():
-		velocity.y -= _gravity * delta
+		velocity.y -= _grav * delta
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+		velocity.y = jump_vel
+	
+	const time_to_max_speed = 0.05
+	const max_speed = 5.0
+	const accel = max_speed / time_to_max_speed
 	
 	# Set horizontal velocity.
 	var input_dir := Input.get_vector("move_leftwards", "move_rightwards", "move_forwards", "move_backwards")
 	var move_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if move_dir:
-		velocity.x = move_dir.x * SPEED
-		velocity.z = move_dir.z * SPEED
+	if move_dir: # nonzero
+		velocity.x = move_toward(velocity.x, move_dir.x * max_speed, accel * delta)
+		velocity.z = move_toward(velocity.z, move_dir.z * max_speed, accel * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
-
+		velocity.x = move_toward(velocity.x, 0, accel * delta)
+		velocity.z = move_toward(velocity.z, 0, accel * delta)
+	
 	move_and_slide()
