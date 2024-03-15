@@ -10,9 +10,6 @@ script = ExtResource("1_fun63")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_r833c")
 
-[node name="CamPivot" type="Node3D" parent="."]
-unique_name_in_owner = true
-
-[node name="Camera" type="Camera3D" parent="CamPivot"]
+[node name="Camera" type="Camera3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375191, -0.362252)

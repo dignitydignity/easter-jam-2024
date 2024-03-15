@@ -10,7 +10,6 @@ const JUMP_VELOCITY = 4.5
 var _gravity : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_relative : Vector2
 
-@onready var _cam_pivot : Node3D = %CamPivot
 @onready var cam : Camera3D = %Camera
 
 func _ready() -> void:
@@ -26,10 +25,10 @@ func _input(event : InputEvent) -> void:
 
 func _process(delta : float) -> void:
 	# FPS camera controls.
-	const camera_rot_scale = 0.2
-	_cam_pivot.rotate_x(_mouse_relative.y * delta * camera_rot_scale)
-	_cam_pivot.rotation_degrees.x = clampf(_cam_pivot.rotation_degrees.x, -75, 75)
-	rotate_y(_mouse_relative.x * delta * camera_rot_scale)
+	const cam_rot_scale = 0.2
+	cam.rotate_x(cam_rot_scale * _mouse_relative.y * delta)
+	cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, -75, 75)
+	rotate_y(cam_rot_scale * _mouse_relative.x * delta)
 	
 	# Right before the next frame begins, reset mouse relative. So that camera
 	# doesn't keep moving.
