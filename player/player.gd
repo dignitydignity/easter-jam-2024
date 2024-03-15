@@ -1,6 +1,8 @@
 extends CharacterBody3D
 class_name Player
 
+static var instance : Player
+
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 
@@ -10,6 +12,9 @@ var _mouse_relative : Vector2
 
 @onready var _cam_pivot : Node3D = %CamPivot
 @onready var cam : Camera3D = %Camera
+
+func _ready() -> void:
+	instance = self
 
 func _input(event : InputEvent) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
