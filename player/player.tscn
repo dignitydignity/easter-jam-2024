@@ -36,10 +36,12 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375191, -0.362252)
 cull_mask = 1048573
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Body" type="MeshInstance3D" parent="."]
+cast_shadow = 0
 mesh = SubResource("CapsuleMesh_o67n7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+[node name="Face" type="MeshInstance3D" parent="Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, -0.527)
 layers = 2
+cast_shadow = 0
 mesh = SubResource("BoxMesh_qvb2d")
