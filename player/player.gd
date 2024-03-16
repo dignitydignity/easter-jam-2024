@@ -1,11 +1,16 @@
 extends CharacterBody3D
 class_name Player
 
+# TODO: Sprinting.
+# TODO: Diving -> leftclick while sprinting.
+
 # Globally accessible instance; there is only one player.
 static var instance : Player
 
 # Design params (constants).
-@export_group("Camera")
+@export_group("General")
+@export_range(0.1, 3) var _grab_range : float
+@export_range(0, 5) var _grab_cooldown : float
 @export_range(0, 90) var _cam_pitch_max : float
 @export_group("Jump")
 @export_range(0, 50) var _grav : float
@@ -20,16 +25,22 @@ static var instance : Player
 @export_range(-90, 0) var _dive_cam_pitch_min : float
 @export_range(0, 5) var _dive_hitstun : float
 
-# Internal state
+# Internal state.
 @onready var cam : Camera3D = %Camera
+var _mouse_relative : Vector2
+
+@onready var _grab_raycaster : RayCast3D = %GrabRaycaster
+@onready var _interact_raycaster : RayCast3D = %InteractRaycaster
+var _last_grab_attempt_time : float
+
 enum Movestate { WALK, JUMP_AIR, DIVE, DIVE_HITSTUN }
 var _movestate : Movestate
-var _mouse_relative : Vector2
 var _last_dive_start_time : float # Time units = seconds.
 var _last_dive_land_time : float
 
 func _ready() -> void:
 	instance = self
+	assert(_interact_raycaster.target_position == _grab_range * Vector3.FORWARD)
 
 func _input(event : InputEvent) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
@@ -49,6 +60,20 @@ func _process(delta : float) -> void:
 			cam.rotate_x(cam_sens * _mouse_relative.y * delta)
 			cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, -_cam_pitch_max, _cam_pitch_max)
 			rotate_y(cam_sens * _mouse_relative.x * delta)
+			if Input.is_action_just_pressed("interact"):
+				print("attempted interact / grab!")
+				# Bool is so player can't both grab and interact at same time.
+				var was_grab := false 
+				var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
+					>= _last_grab_attempt_time + _grab_cooldown)
+				if _is_grab_off_cooldown:
+					_grab_raycaster.force_raycast_update()
+					if _grab_raycaster.is_colliding():
+						was_grab = true
+						print("grabbed!")
+					_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
+				if _interact_raycaster.is_colliding() and !was_grab:
+					print("interacted!")
 		Movestate.DIVE:
 			# Cam pitch begins downwards rotation after brief time period.
 			var is_cam_rot_start_time_in_past := ((Time.get_ticks_msec() / 1000.0) 
@@ -60,7 +85,7 @@ func _process(delta : float) -> void:
 		Movestate.DIVE_HITSTUN:
 			# Camera doesn't move while in hitstun.
 			pass
-
+	
 	# Since `_mouse_relative` is only updated when mouse position changes, we
 	# manually reset it right before the next frame using `call_deferred`.
 	(func() -> void: _mouse_relative = Vector2.ZERO).call_deferred()
@@ -70,7 +95,7 @@ func _physics_process(delta : float) -> void:
 	
 	match _movestate:
 		Movestate.WALK:
-			var accel = _max_speed / _time_to_max_speed
+			var accel := _max_speed / _time_to_max_speed
 			var input_dir := Input.get_vector("move_leftwards", "move_rightwards", 
 				"move_forwards", "move_backwards")
 			var move_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -112,7 +137,7 @@ func _physics_process(delta : float) -> void:
 		Movestate.DIVE:
 			if is_on_floor():
 				_last_dive_land_time = Time.get_ticks_msec() / 1000.0
-				var dive_hitstun_anim = create_tween().set_parallel()
+				var dive_hitstun_anim := create_tween().set_parallel()
 				dive_hitstun_anim.tween_property(self, "rotation", rotation, _dive_hitstun)
 				dive_hitstun_anim.tween_property(cam, "rotation", Vector3.ZERO, _dive_hitstun)
 			else:
@@ -122,7 +147,7 @@ func _physics_process(delta : float) -> void:
 				Movestate.DIVE
 			)
 		Movestate.DIVE_HITSTUN:
-			var _is_hitstun_over = ((Time.get_ticks_msec() / 1000.0) 
+			var _is_hitstun_over := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_dive_land_time + _dive_hitstun)
 			_movestate = (
 				Movestate.WALK if _is_hitstun_over else
