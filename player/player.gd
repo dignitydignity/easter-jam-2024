@@ -65,7 +65,6 @@ func _process(delta : float) -> void:
 	# manually reset it right before the next frame using `call_deferred`.
 	(func() -> void: _mouse_relative = Vector2.ZERO).call_deferred()
 
-
 func _physics_process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	

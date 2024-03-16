@@ -1,8 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://d1iv44sh4ql74"]
+[gd_scene load_steps=7 format=3 uid="uid://d1iv44sh4ql74"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_fun63"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r833c"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_rwryp"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_o67n7"]
+material = SubResource("ORMMaterial3D_rwryp")
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_atbv3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_qvb2d"]
+material = SubResource("ORMMaterial3D_atbv3")
+size = Vector3(0.5, 0.25, 0.08)
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_fun63")
@@ -22,3 +34,12 @@ shape = SubResource("CapsuleShape3D_r833c")
 [node name="Camera" type="Camera3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375191, -0.362252)
+cull_mask = 1048573
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_o67n7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, -0.527)
+layers = 2
+mesh = SubResource("BoxMesh_qvb2d")
