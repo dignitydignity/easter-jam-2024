@@ -12,7 +12,7 @@ _jump_height = 1.5
 _max_speed = 5.0
 _dive_height = 1.0
 _dive_dist = 7.5
-_dive_rot_start_time_offset = 0.25
+_dive_cam_rot_delay = 0.25
 _dive_cam_pitch_min = -50.0
 _dive_hitstun = 0.25
 
