@@ -22,19 +22,19 @@ height = 1.0
 [node name="Rabbit" type="CharacterBody3D" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
 collision_layer = 3
 script = ExtResource("2_xo52y")
-_rabbit_body = NodePath("rabbit/rabbit_body")
-_rabbit_tail = NodePath("rabbit/rabbit_tail")
+_rabbit_body = NodePath("Model/rabbit_body")
+_rabbit_tail = NodePath("Model/rabbit_tail")
 
-[node name="rabbit" parent="." instance=ExtResource("1_q6f4l")]
+[node name="Model" parent="." instance=ExtResource("1_q6f4l")]
 
-[node name="rabbit_body" parent="rabbit" index="0"]
+[node name="rabbit_body" parent="Model" index="0"]
 surface_material_override/0 = SubResource("ORMMaterial3D_tmlmv")
 
-[node name="rabbit_tail" parent="rabbit" index="1"]
+[node name="rabbit_tail" parent="Model" index="1"]
 surface_material_override/0 = SubResource("ORMMaterial3D_1cg2c")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CapsuleShape3D_yfoac")
 
-[editable path="rabbit"]
+[editable path="Model"]

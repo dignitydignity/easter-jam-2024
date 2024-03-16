@@ -15,9 +15,11 @@ static var instance : Player
 @export_group("Jump")
 @export_range(0, 50) var _grav : float
 @export_range(0, 10) var _jump_height : float
+@export_range(0, 1) var _midair_accel_multiplier : float
 @export_group("Walk")
-@export_range(0.1, 100) var _max_speed : float
-@export_range(0.02, 3) var _time_to_max_speed : float
+@export_range(-0.1, 100) var _sprint_speed : float
+@export_range(0.1, 100) var _max_walk_speed : float
+@export_range(0.02, 3) var _time_to_max_walk_speed : float
 @export_group("Dive")
 @export_range(0.5, 10) var _dive_height : float
 @export_range(0, 20) var _dive_dist : float
@@ -33,7 +35,7 @@ var _mouse_relative : Vector2
 @onready var _interact_raycaster : RayCast3D = %InteractRaycaster
 var _last_grab_attempt_time : float
 
-enum Movestate { WALK, JUMP_AIR, DIVE, DIVE_HITSTUN }
+enum Movestate { WALK, SPRINT, JUMP_AIR, DIVE, DIVE_HITSTUN }
 var _movestate : Movestate
 var _last_dive_start_time : float # Time units = seconds.
 var _last_dive_land_time : float
@@ -41,6 +43,7 @@ var _last_dive_land_time : float
 func _ready() -> void:
 	instance = self
 	assert(_interact_raycaster.target_position == _grab_range * Vector3.FORWARD)
+	# TODO: Compute initial `_movestate`, so that I can use `assert()` later.
 
 func _input(event : InputEvent) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
@@ -50,6 +53,7 @@ func _input(event : InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_mouse_relative = -event.relative
 
+# `_process` only contains camera related stuff.
 func _process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
@@ -60,28 +64,13 @@ func _process(delta : float) -> void:
 			cam.rotate_x(cam_sens * _mouse_relative.y * delta)
 			cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, -_cam_pitch_max, _cam_pitch_max)
 			rotate_y(cam_sens * _mouse_relative.x * delta)
-			if Input.is_action_just_pressed("interact"):
-				print("attempted interact / grab!")
-				# `was_grab` is so player can't both grab and interact at same time.
-				var was_grab := false 
-				var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
-					>= _last_grab_attempt_time + _grab_cooldown)
-				if _is_grab_off_cooldown:
-					_grab_raycaster.force_raycast_update()
-					_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
-					if _grab_raycaster.is_colliding():
-						was_grab = true
-						var rabbit := _grab_raycaster.get_collider()
-						rabbit.queue_free()
-						print("grabbed!")
-				if _interact_raycaster.is_colliding() and !was_grab:
-					print("interacted!")
 		Movestate.DIVE:
 			# Cam pitch begins downwards rotation after brief time period.
-			var is_cam_rot_start_time_in_past := ((Time.get_ticks_msec() / 1000.0) 
+			var is_cam_rot_start_time_passed := ((Time.get_ticks_msec() / 1000.0) 
 				> _last_dive_start_time + _dive_cam_rot_delay)
-			if is_cam_rot_start_time_in_past:
-				cam.rotate_x(-PI/2 * delta)
+			if is_cam_rot_start_time_passed:
+				const rot_speed = PI/2 # radians/second
+				cam.rotate_x(-rot_speed * delta)
 			cam.rotation_degrees.x = clampf(cam.rotation_degrees.x, 
 				_dive_cam_pitch_min, _cam_pitch_max)
 		Movestate.DIVE_HITSTUN:
@@ -94,19 +83,44 @@ func _process(delta : float) -> void:
 
 func _physics_process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
+	assert(_time_to_max_walk_speed >= delta) # no division by zero
+	
+	# TODO: Make `func`s non-local for performance reasons if needed.
+	var accelerate_velocity_in_move_dir := func(max_speed : float,
+		accel : float) -> void:
+		var input_dir := Input.get_vector("move_leftwards", "move_rightwards", 
+			"move_forwards", "move_backwards")
+		var move_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		if move_dir: # nonzero
+			velocity.x = move_toward(velocity.x, move_dir.x * max_speed, accel * delta)
+			velocity.z = move_toward(velocity.z, move_dir.z * max_speed, accel * delta)
+		else:
+			velocity.x = move_toward(velocity.x, 0, accel * delta)
+			velocity.z = move_toward(velocity.z, 0, accel * delta)
+	
+	var handle_interact_and_grab_input := func() -> void:
+		if Input.is_action_just_pressed("interact"):
+			print("attempted interact / grab!")
+			# `was_grab` is so player can't both grab and interact at same time.
+			var was_grab := false 
+			var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
+				>= _last_grab_attempt_time + _grab_cooldown)
+			if _is_grab_off_cooldown:
+				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
+				if _grab_raycaster.is_colliding():
+					was_grab = true
+					var rabbit := _grab_raycaster.get_collider()
+					rabbit.queue_free()
+					print("grabbed!")
+			if _interact_raycaster.is_colliding() and !was_grab:
+				print("interacted!")
 	
 	match _movestate:
 		Movestate.WALK:
-			var accel := _max_speed / _time_to_max_speed
-			var input_dir := Input.get_vector("move_leftwards", "move_rightwards", 
-				"move_forwards", "move_backwards")
-			var move_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-			if move_dir: # nonzero
-				velocity.x = move_toward(velocity.x, move_dir.x * _max_speed, accel * delta)
-				velocity.z = move_toward(velocity.z, move_dir.z * _max_speed, accel * delta)
-			else:
-				velocity.x = move_toward(velocity.x, 0, accel * delta)
-				velocity.z = move_toward(velocity.z, 0, accel * delta)
+			handle_interact_and_grab_input.call()
+			
+			var accel := _max_walk_speed / _time_to_max_walk_speed
+			accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
 			
 			if Input.is_action_just_pressed("jump"):
 				assert(is_on_floor())
@@ -115,6 +129,7 @@ func _physics_process(delta : float) -> void:
 			
 			var _is_dive_just_started := false
 			if Input.is_action_just_released("dive"):
+				assert(is_on_floor())
 				_is_dive_just_started = true
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
 				var dive_y_vel := sqrt(2 * _grav * _dive_height)
@@ -129,9 +144,16 @@ func _physics_process(delta : float) -> void:
 				Movestate.JUMP_AIR if !is_on_floor() else 
 				Movestate.WALK
 			)
-		Movestate.JUMP_AIR: # TODO: airborne jump control
+		Movestate.JUMP_AIR:
+			handle_interact_and_grab_input.call()
+			
 			if !is_on_floor():
 				velocity.y -= _grav * delta
+			
+			var accel := _midair_accel_multiplier * (_max_walk_speed 
+				/ _time_to_max_walk_speed)
+			accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
+			
 			_movestate = (
 				Movestate.WALK if is_on_floor() else 
 				Movestate.JUMP_AIR
@@ -149,6 +171,8 @@ func _physics_process(delta : float) -> void:
 				Movestate.DIVE
 			)
 		Movestate.DIVE_HITSTUN:
+			assert(is_on_floor()) # TODO: This gets hit when colliding into rabbit.
+								  # So make that impossible while diving.
 			var _is_hitstun_over := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_dive_land_time + _dive_hitstun)
 			_movestate = (
