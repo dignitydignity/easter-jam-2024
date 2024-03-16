@@ -4,7 +4,6 @@ class_name Rabbit
 # TODO: Ear physics?
 # TODO: Color patterns / "rabbit types"?
 # TODO: Player detection.
-# TODO: Rabbit collisions.
 # TODO: Rabbit movement (two jump types, two states: wander, flee).
 
 @export_group("References")
