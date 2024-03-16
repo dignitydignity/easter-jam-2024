@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://bvrkwhbglkglt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_ft7y6"]
-[ext_resource type="PackedScene" uid="uid://cqvo8riipj0ue" path="res://rabbit/rabbit.tscn" id="2_5lxca"]
 [ext_resource type="PackedScene" uid="uid://d1iv44sh4ql74" path="res://player/player.tscn" id="3_n6th7"]
 [ext_resource type="PackedScene" uid="uid://bcmdx3ah1hk0y" path="res://level/level.tscn" id="4_egaeo"]
+[ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="4_kp1fs"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lryk4"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -25,18 +25,24 @@ script = ExtResource("1_ft7y6")
 environment = SubResource("Environment_kyhph")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.866025, -0.433013, 0.25, -0.0604325, 0.586982, 0.807341, -0.496335, 0.68407, -0.53451, 0, 0, 0)
 shadow_enabled = true
-
-[node name="Rabbit" parent="." instance=ExtResource("2_5lxca")]
-transform = Transform3D(-0.33, 0, -4.98286e-08, 0, 0.33, 0, 4.98286e-08, 0, -0.33, 3.35854, -20.9243, -12.3298)
-
-[node name="Rabbit2" parent="." instance=ExtResource("2_5lxca")]
-transform = Transform3D(0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, 1.34781, -21.7198, -15.0757)
-
-[node name="Player" parent="." instance=ExtResource("3_n6th7")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.20976, -19.2576, -3.18269)
 
 [node name="Level" parent="." instance=ExtResource("4_egaeo")]
 transform = Transform3D(26.8, 0, 0, 0, 26.8, 0, 0, 0, 26.8, 8.485, -36.041, -150.41)
+
+[node name="Player" parent="." instance=ExtResource("3_n6th7")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.32036, -22.641, -1.24702)
+
+[node name="Rabbit" parent="." instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.054, -22.641, -10.5659)
+
+[node name="Rabbit2" parent="." instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.83463, -22.641, -8.90912)
+
+[node name="Rabbit3" parent="." instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.67612, -22.641, -7.55733)
+
+[node name="Rabbit4" parent="." instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.16449, -22.641, -11.5512)

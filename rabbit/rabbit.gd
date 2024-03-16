@@ -1,8 +1,15 @@
-extends Node3D
+extends CharacterBody3D
 class_name Rabbit
 
-@onready var _rabbit_body : MeshInstance3D = %rabbit_body
-@onready var _rabbit_tail : MeshInstance3D = %rabbit_tail
+# TODO: Ear physics?
+# TODO: Color patterns / "rabbit types"?
+# TODO: Player detection.
+# TODO: Rabbit collisions.
+# TODO: Rabbit movement (two jump types, two states: wander, flee).
+
+@export_group("References")
+@export var _rabbit_body : MeshInstance3D
+@export var _rabbit_tail : MeshInstance3D
 
 func _ready() -> void:
 	# Randomize the rabbit's color.
@@ -21,3 +28,4 @@ func _ready() -> void:
 func _process(_delta) -> void:
 	# "Billboard" the 2D tail sprite.
 	_rabbit_tail.look_at(Player.instance.cam.global_position)
+

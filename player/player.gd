@@ -5,15 +5,15 @@ class_name Player
 static var instance : Player
 
 # Design params (constants).
-@export_group("camera")
+@export_group("Camera")
 @export_range(0, 90) var _cam_pitch_max : float
-@export_group("jumping")
+@export_group("Jump")
 @export_range(0, 50) var _grav : float
 @export_range(0, 10) var _jump_height : float
-@export_group("walking")
+@export_group("Walk")
 @export_range(0.1, 100) var _max_speed : float
 @export_range(0.02, 3) var _time_to_max_speed : float
-@export_group("diving")
+@export_group("Dive")
 @export_range(0.5, 10) var _dive_height : float
 @export_range(0, 20) var _dive_dist : float
 @export_range(0, 5) var _dive_cam_rot_delay : float

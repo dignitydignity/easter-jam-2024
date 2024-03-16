@@ -1,28 +1,39 @@
-[gd_scene load_steps=7 format=3 uid="uid://cqvo8riipj0ue"]
+[gd_scene load_steps=8 format=3 uid="uid://qrod1vm4th82"]
 
 [ext_resource type="PackedScene" uid="uid://dn1fv61dpndg6" path="res://rabbit/rabbit.blend" id="1_q6f4l"]
-[ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="2_atgt6"]
-[ext_resource type="Script" path="res://rabbit/rabbit.gd" id="2_n7hx8"]
-[ext_resource type="Texture2D" uid="uid://bvhgvas070gab" path="res://rabbit/textures/rabbit_tail_albedo.png" id="3_j63k3"]
+[ext_resource type="Script" path="res://rabbit/rabbit.gd" id="2_xo52y"]
+[ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="3_ckcaq"]
+[ext_resource type="Texture2D" uid="uid://bvhgvas070gab" path="res://rabbit/textures/rabbit_tail_albedo.png" id="4_5lwgl"]
 
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_wur3g"]
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_tmlmv"]
 resource_local_to_scene = true
-albedo_texture = ExtResource("2_atgt6")
+albedo_texture = ExtResource("3_ckcaq")
 
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_muwbo"]
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_1cg2c"]
 resource_local_to_scene = true
 transparency = 1
-cull_mode = 1
-albedo_texture = ExtResource("3_j63k3")
+cull_mode = 2
+albedo_texture = ExtResource("4_5lwgl")
 
-[node name="Rabbit" instance=ExtResource("1_q6f4l")]
-transform = Transform3D(0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, 0, 0, 0)
-script = ExtResource("2_n7hx8")
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yfoac"]
+radius = 0.4
+height = 1.0
 
-[node name="rabbit_body" parent="." index="0"]
-unique_name_in_owner = true
-surface_material_override/0 = SubResource("ORMMaterial3D_wur3g")
+[node name="Rabbit" type="CharacterBody3D" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
+script = ExtResource("2_xo52y")
+_rabbit_body = NodePath("rabbit/rabbit_body")
+_rabbit_tail = NodePath("rabbit/rabbit_tail")
 
-[node name="rabbit_tail" parent="." index="1"]
-unique_name_in_owner = true
-surface_material_override/0 = SubResource("ORMMaterial3D_muwbo")
+[node name="rabbit" parent="." instance=ExtResource("1_q6f4l")]
+
+[node name="rabbit_body" parent="rabbit" index="0"]
+surface_material_override/0 = SubResource("ORMMaterial3D_tmlmv")
+
+[node name="rabbit_tail" parent="rabbit" index="1"]
+surface_material_override/0 = SubResource("ORMMaterial3D_1cg2c")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CapsuleShape3D_yfoac")
+
+[editable path="rabbit"]
