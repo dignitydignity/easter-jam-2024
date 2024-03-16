@@ -62,16 +62,18 @@ func _process(delta : float) -> void:
 			rotate_y(cam_sens * _mouse_relative.x * delta)
 			if Input.is_action_just_pressed("interact"):
 				print("attempted interact / grab!")
-				# Bool is so player can't both grab and interact at same time.
+				# `was_grab` is so player can't both grab and interact at same time.
 				var was_grab := false 
 				var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
 					>= _last_grab_attempt_time + _grab_cooldown)
 				if _is_grab_off_cooldown:
 					_grab_raycaster.force_raycast_update()
+					_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 					if _grab_raycaster.is_colliding():
 						was_grab = true
+						var rabbit := _grab_raycaster.get_collider()
+						rabbit.queue_free()
 						print("grabbed!")
-					_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 				if _interact_raycaster.is_colliding() and !was_grab:
 					print("interacted!")
 		Movestate.DIVE:
