@@ -198,6 +198,7 @@ func _physics_process(delta : float) -> void:
 			
 			_movestate = (
 				Movestate.DIVE if _is_dive_just_started else
+				Movestate.JUMP_AIR if !is_on_floor() else
 				Movestate.WALK if !_is_sprint_toggled else
 				Movestate.SPRINT
 			)
@@ -212,6 +213,7 @@ func _physics_process(delta : float) -> void:
 			accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
 			
 			_movestate = (
+				Movestate.SPRINT if is_on_floor() and _is_sprint_toggled else
 				Movestate.WALK if is_on_floor() else 
 				Movestate.JUMP_AIR
 			)
