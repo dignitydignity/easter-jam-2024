@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bvrkwhbglkglt"]
+[gd_scene load_steps=9 format=3 uid="uid://bvrkwhbglkglt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_ft7y6"]
+[ext_resource type="PackedScene" uid="uid://c2lijmalpvaff" path="res://pause/pause.tscn" id="2_3ruti"]
 [ext_resource type="PackedScene" uid="uid://d1iv44sh4ql74" path="res://player/player.tscn" id="3_n6th7"]
 [ext_resource type="PackedScene" uid="uid://bcmdx3ah1hk0y" path="res://level/level.tscn" id="4_egaeo"]
 [ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="4_kp1fs"]
@@ -20,6 +21,9 @@ glow_enabled = true
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ft7y6")
+
+[node name="Pause" parent="." instance=ExtResource("2_3ruti")]
+visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_kyhph")
