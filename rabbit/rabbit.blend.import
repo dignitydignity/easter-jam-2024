@@ -14,7 +14,7 @@ dest_files=["res://.godot/imported/rabbit.blend-50414039475dac5fc23fddc7a00851c2
 [params]
 
 nodes/root_type=""
-nodes/root_name=""
+nodes/root_name="RabbitModel"
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true

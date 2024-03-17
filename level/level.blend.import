@@ -14,7 +14,7 @@ dest_files=["res://.godot/imported/level.blend-dd000ad012d8914474071c2f0d2d6725.
 [params]
 
 nodes/root_type=""
-nodes/root_name=""
+nodes/root_name="Level"
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true
