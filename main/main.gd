@@ -3,7 +3,7 @@ class_name Main
 
 static var rng := RandomNumberGenerator.new()
 
-@onready var pause_menu : Pause = $Pause
+@onready var pause_menu : PauseMenu = $Pause
 @onready var options_menu : Control = $OptionsMenu
 
 enum GameState { DEFAULT, PAUSE, OPTIONS }

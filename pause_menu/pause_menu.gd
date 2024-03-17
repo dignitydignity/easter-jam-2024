@@ -1,5 +1,5 @@
 extends Control
-class_name Pause
+class_name PauseMenu
 
 @onready var resume : Button = $Resume
 @onready var exit : Button = $Exit
