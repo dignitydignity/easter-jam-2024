@@ -10,5 +10,6 @@ obj/
 .vs/
 .DS_Store
 
+*.tmp
 *.translation
 *.blend1
