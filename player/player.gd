@@ -14,7 +14,8 @@ static var instance : Player
 @export_range(0, 5) var _grab_cooldown : float
 @export_range(0, 90) var _cam_pitch_max : float
 @export_group("Jump")
-@export_range(0, 50) var _grav : float
+@export_range(0, 50) var _upwards_grav : float
+@export_range(0, 50) var _downwards_grav : float
 @export_range(0, 10) var _jump_height : float
 @export_range(0, 1) var _midair_accel_multiplier : float
 @export_group("Walk")
@@ -151,7 +152,7 @@ func _physics_process(delta : float) -> void:
 	var handle_jump_input := func() -> void:
 		if Input.is_action_just_pressed("jump"):
 			assert(is_on_floor())
-			var jump_vel := sqrt(2 * _grav * _jump_height)
+			var jump_vel := sqrt(2 * _upwards_grav * _jump_height)
 			velocity.y = jump_vel
 			_ground_takeoff_horz_velocity = Vector2(velocity.x, velocity.z)
 	
@@ -225,7 +226,10 @@ func _physics_process(delta : float) -> void:
 			handle_interact_and_grab_input.call()
 			
 			if !is_on_floor():
-				velocity.y -= _grav * delta
+				velocity.y -= (
+					_downwards_grav if velocity.y < 0 else 
+					_upwards_grav
+				) * delta
 			
 			var accel := _midair_accel_multiplier * (_max_walk_speed 
 				/ _time_to_max_walk_speed)
