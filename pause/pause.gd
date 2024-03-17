@@ -3,20 +3,18 @@ class_name Pause
 
 @onready var resume : Button = $Resume
 @onready var exit : Button = $Exit
+@onready var options : Button = $Options
 
-func resume_game():
-	visible = false
-	
-func exit_game():
-	get_tree().quit()
-	
-func toggle_mouse_visible():
-	if visible:
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+signal resume_clicked
+signal options_clicked
 	
 func _ready():
-	resume.pressed.connect(resume_game)
-	exit.pressed.connect(exit_game)
-	visibility_changed.connect(toggle_mouse_visible)
+	resume.pressed.connect(
+		func(): resume_clicked.emit()
+	)
+	options.pressed.connect(
+		func(): options_clicked.emit()
+	)
+	exit.pressed.connect(
+		func(): get_tree().quit()
+	)

@@ -36,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Resume"
 
-[node name="Exit" type="Button" parent="."]
+[node name="Options" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -47,6 +47,21 @@ offset_left = -70.0
 offset_top = -34.0
 offset_right = 70.0
 offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Options"
+
+[node name="Exit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = 56.0
+offset_right = 70.0
+offset_bottom = 118.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Exit"
