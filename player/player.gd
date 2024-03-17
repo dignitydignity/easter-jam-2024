@@ -31,6 +31,7 @@ static var instance : Player
 @export_range(-90, 0) var _dive_cam_pitch_min : float
 @export_range(0, 5) var _dive_hitstun : float
 @export_range(.02, 0.5) var _dive_body_yaw_rot_time_length : float
+@export_range(0, 50) var _dive_grav : float
 
 # Internal state.
 @onready var cam : Camera3D = %Camera
@@ -116,13 +117,16 @@ func _physics_process(delta : float) -> void:
 		and move_input.angle_to(Vector2.UP) < PI/2 - err_tol
 		and move_input.angle_to(Vector2.UP) > -PI/2 + err_tol
 	)
-	var move_input_dir := (transform.basis * Vector3(move_input.x, 0, move_input.y)).normalized()
+	var move_input_dir := (transform.basis 
+		* Vector3(move_input.x, 0, move_input.y)).normalized()
 	
 	var accelerate_velocity_in_move_dir := func(max_speed : float,
 		accel : float) -> void:
 		if move_input_dir: # nonzero
-			velocity.x = move_toward(velocity.x, move_input_dir.x * max_speed, accel * delta)
-			velocity.z = move_toward(velocity.z, move_input_dir.z * max_speed, accel * delta)
+			velocity.x = move_toward(velocity.x, move_input_dir.x * max_speed,
+				accel * delta)
+			velocity.z = move_toward(velocity.z, move_input_dir.z * max_speed,
+				accel * delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0, accel * delta)
 			velocity.z = move_toward(velocity.z, 0, accel * delta)
@@ -185,8 +189,8 @@ func _physics_process(delta : float) -> void:
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
 				
 				# Perform dive.
-				var dive_y_vel := sqrt(2 * _grav * _dive_height)
-				var t_up := dive_y_vel / _grav
+				var dive_y_vel := sqrt(2 * _dive_grav * _dive_height)
+				var t_up := dive_y_vel / _dive_grav
 				var t_total := 2.0 * (t_up)
 				var dive_forward_vel := _dive_dist / t_total
 				velocity = dive_forward_vel * move_input_dir
@@ -246,10 +250,12 @@ func _physics_process(delta : float) -> void:
 			if is_on_floor():
 				_last_dive_land_time = Time.get_ticks_msec() / 1000.0
 				var dive_hitstun_anim := create_tween().set_parallel()
-				dive_hitstun_anim.tween_property(self, "rotation", rotation, _dive_hitstun)
-				dive_hitstun_anim.tween_property(cam, "rotation", Vector3.ZERO, _dive_hitstun)
+				dive_hitstun_anim.tween_property(self, "rotation", rotation,
+					_dive_hitstun)
+				dive_hitstun_anim.tween_property(cam, "rotation", Vector3.ZERO,
+					_dive_hitstun)
 			else:
-				velocity.y -= _grav * delta
+				velocity.y -= _dive_grav * delta
 			_movestate = (
 				Movestate.DIVE_HITSTUN if is_on_floor() else 
 				Movestate.DIVE
@@ -259,6 +265,7 @@ func _physics_process(delta : float) -> void:
 			
 			assert(is_on_floor()) # TODO: This gets hit when colliding into rabbit.
 								  # So make that impossible while diving.
+			velocity = Vector3.ZERO
 			var _is_hitstun_over := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_dive_land_time + _dive_hitstun)
 			_movestate = (

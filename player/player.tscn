@@ -30,11 +30,12 @@ _sprint_speed = 8.0
 _time_to_sprint = 0.5
 _sprint_fov = 80.0
 _dive_height = 1.0
-_dive_dist = 7.5
+_dive_dist = 10.0
 _dive_cam_pitch_rot_delay = 0.25
 _dive_cam_pitch_min = -50.0
-_dive_hitstun = 0.25
+_dive_hitstun = 0.35
 _dive_body_yaw_rot_time_length = 0.1
+_dive_grav = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
