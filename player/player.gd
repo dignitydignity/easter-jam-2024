@@ -182,13 +182,11 @@ func _physics_process(delta : float) -> void:
 				
 				# Turn player body in dive direction.
 				var turn_anim := create_tween()
-				var current_transform := transform
-				look_at(global_position + move_dir)
-				var target_transform := transform
-				transform = current_transform
-				var target_eulers := target_transform.basis.get_euler()
+				var target_rot := transform.looking_at(
+					global_position + move_dir
+				).basis.get_euler()
 				turn_anim.tween_property(self, "rotation", 
-					target_eulers, _dive_body_yaw_rot_time_length)
+					target_rot, _dive_body_yaw_rot_time_length)
 			
 			handle_jump_input.call()
 			
