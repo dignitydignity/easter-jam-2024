@@ -24,14 +24,16 @@ _cam_pitch_max = 75.0
 _grav = 9.8
 _jump_height = 1.5
 _midair_accel_multiplier = 0.05
-_sprint_speed = 7.5
 _max_walk_speed = 5.0
 _time_to_max_walk_speed = 0.02
+_sprint_speed = 7.5
+_time_to_sprint = 0.5
 _dive_height = 1.0
 _dive_dist = 7.5
-_dive_cam_rot_delay = 0.25
+_dive_cam_pitch_rot_delay = 0.25
 _dive_cam_pitch_min = -50.0
 _dive_hitstun = 0.25
+_dive_body_yaw_rot_time_length = 0.1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

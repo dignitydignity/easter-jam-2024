@@ -34,6 +34,7 @@ transform = Transform3D(26.8, 0, 0, 0, 26.8, 0, 0, 0, 26.8, 8.485, -36.041, -150
 [node name="Player" parent="." instance=ExtResource("3_n6th7")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.32036, -22.641, -1.24702)
+_dive_height = 1.5
 
 [node name="Rabbit" parent="." instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.054, -22.641, -10.5659)

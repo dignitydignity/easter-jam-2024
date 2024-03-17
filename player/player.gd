@@ -1,7 +1,6 @@
 extends CharacterBody3D
 class_name Player
 
-# TODO: Sprinting.
 # TODO: Diving -> leftclick while sprinting.
 
 # Globally accessible instance; there is only one player.
@@ -17,15 +16,18 @@ static var instance : Player
 @export_range(0, 10) var _jump_height : float
 @export_range(0, 1) var _midair_accel_multiplier : float
 @export_group("Walk")
-@export_range(-0.1, 100) var _sprint_speed : float
 @export_range(0.1, 100) var _max_walk_speed : float
 @export_range(0.02, 3) var _time_to_max_walk_speed : float
+@export_group("Sprint")
+@export_range(0.1, 100) var _sprint_speed : float
+@export_range(0.02, 5) var _time_to_sprint: float
 @export_group("Dive")
 @export_range(0.5, 10) var _dive_height : float
 @export_range(0, 20) var _dive_dist : float
-@export_range(0, 5) var _dive_cam_rot_delay : float
+@export_range(0, 5) var _dive_cam_pitch_rot_delay : float
 @export_range(-90, 0) var _dive_cam_pitch_min : float
 @export_range(0, 5) var _dive_hitstun : float
+@export_range(.02, 0.5) var _dive_body_yaw_rot_time_length : float
 
 # Internal state.
 @onready var cam : Camera3D = %Camera
@@ -39,6 +41,7 @@ enum Movestate { WALK, SPRINT, JUMP_AIR, DIVE, DIVE_HITSTUN }
 var _movestate : Movestate
 var _last_dive_start_time : float # Time units = seconds.
 var _last_dive_land_time : float
+var _is_sprint_toggled : bool
 
 func _ready() -> void:
 	instance = self
@@ -58,7 +61,7 @@ func _process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
 	match _movestate:
-		Movestate.WALK, Movestate.JUMP_AIR:
+		Movestate.WALK, Movestate.JUMP_AIR, Movestate.SPRINT:
 			# Standard FPS cam controls.
 			const cam_sens = 0.2 # TODO: Make `cam_sens` changeable in settings menu.
 			cam.rotate_x(cam_sens * _mouse_relative.y * delta)
@@ -67,7 +70,7 @@ func _process(delta : float) -> void:
 		Movestate.DIVE:
 			# Cam pitch begins downwards rotation after brief time period.
 			var is_cam_rot_start_time_passed := ((Time.get_ticks_msec() / 1000.0) 
-				> _last_dive_start_time + _dive_cam_rot_delay)
+				> _last_dive_start_time + _dive_cam_pitch_rot_delay)
 			if is_cam_rot_start_time_passed:
 				const rot_speed = PI/2 # radians/second
 				cam.rotate_x(-rot_speed * delta)
@@ -84,13 +87,32 @@ func _process(delta : float) -> void:
 func _physics_process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
+	#print(Vector2(velocity.x, velocity.z).length())
 	
-	# TODO: Make `func`s non-local for performance reasons if needed.
+	print(
+		"WALK" if _movestate == Movestate.WALK else 
+		"SPRINT" if _movestate == Movestate.SPRINT else  
+		"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
+		"DIVE" if _movestate == Movestate.DIVE else 
+		"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
+		""
+	)
+
+	const err_tol = 0.0001
+
+	var input_dir := Input.get_vector("move_leftwards", "move_rightwards", 
+		"move_forwards", "move_backwards")
+	var is_moving_forwards := (
+		input_dir != Vector2.ZERO 
+		and input_dir.angle_to(Vector2.UP) < PI/2 - err_tol
+		and input_dir.angle_to(Vector2.UP) > -PI/2 + err_tol
+	)
+	var move_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	
+	# TODO: Make `func`s non-local for performance if needed.
 	var accelerate_velocity_in_move_dir := func(max_speed : float,
 		accel : float) -> void:
-		var input_dir := Input.get_vector("move_leftwards", "move_rightwards", 
-			"move_forwards", "move_backwards")
-		var move_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		if move_dir: # nonzero
 			velocity.x = move_toward(velocity.x, move_dir.x * max_speed, accel * delta)
 			velocity.z = move_toward(velocity.z, move_dir.z * max_speed, accel * delta)
@@ -101,19 +123,24 @@ func _physics_process(delta : float) -> void:
 	var handle_interact_and_grab_input := func() -> void:
 		if Input.is_action_just_pressed("interact"):
 			print("attempted interact / grab!")
-			# `was_grab` is so player can't both grab and interact at same time.
-			var was_grab := false 
+			var is_grab_successful := false 
 			var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_grab_attempt_time + _grab_cooldown)
 			if _is_grab_off_cooldown:
 				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 				if _grab_raycaster.is_colliding():
-					was_grab = true
+					is_grab_successful = true
 					var rabbit := _grab_raycaster.get_collider()
 					rabbit.queue_free()
 					print("grabbed!")
-			if _interact_raycaster.is_colliding() and !was_grab:
+			if _interact_raycaster.is_colliding() and !is_grab_successful:
 				print("interacted!")
+	
+	var handle_jump_input := func() -> void:
+		if Input.is_action_just_pressed("jump"):
+			assert(is_on_floor())
+			var jump_vel := sqrt(2 * _grav * _jump_height)
+			velocity.y = jump_vel
 	
 	match _movestate:
 		Movestate.WALK:
@@ -122,27 +149,59 @@ func _physics_process(delta : float) -> void:
 			var accel := _max_walk_speed / _time_to_max_walk_speed
 			accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
 			
-			if Input.is_action_just_pressed("jump"):
-				assert(is_on_floor())
-				var jump_vel := sqrt(2 * _grav * _jump_height)
-				velocity.y = jump_vel
+			handle_jump_input.call()
+			
+			if Input.is_action_just_pressed("sprint") and is_moving_forwards:
+				_is_sprint_toggled = true
+			
+			_movestate = (
+				Movestate.JUMP_AIR if !is_on_floor() else 
+				Movestate.SPRINT if _is_sprint_toggled else
+				Movestate.WALK
+			)
+		Movestate.SPRINT:
+			var accel := _sprint_speed / _time_to_sprint
+			accelerate_velocity_in_move_dir.call(_sprint_speed, accel)
+			
+			var is_at_max_sprint_speed := (sqrt(velocity.z ** 2
+				 + velocity.x ** 2) >= _sprint_speed - err_tol)
 			
 			var _is_dive_just_started := false
-			if Input.is_action_just_released("dive"):
+			if Input.is_action_just_pressed("dive") and is_at_max_sprint_speed:
 				assert(is_on_floor())
 				_is_dive_just_started = true
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
+				
+				# Perform dive.
 				var dive_y_vel := sqrt(2 * _grav * _dive_height)
 				var t_up := dive_y_vel / _grav
 				var t_total := 2.0 * (t_up)
 				var dive_forward_vel := _dive_dist / t_total
-				velocity = -dive_forward_vel * transform.basis.z
+				velocity = dive_forward_vel * move_dir
 				velocity.y = dive_y_vel
+				
+				# Turn player body in dive direction.
+				var turn_anim := create_tween()
+				var current_transform := transform
+				look_at(global_position + move_dir)
+				var target_transform := transform
+				transform = current_transform
+				var target_eulers := target_transform.basis.get_euler()
+				turn_anim.tween_property(self, "rotation", 
+					target_eulers, _dive_body_yaw_rot_time_length)
+			
+			handle_jump_input.call()
+			
+			var should_sprint_break := (Input.is_action_just_pressed("sprint") 
+				or !is_moving_forwards or _is_dive_just_started)
+			
+			if should_sprint_break:
+				_is_sprint_toggled = false
 			
 			_movestate = (
 				Movestate.DIVE if _is_dive_just_started else
-				Movestate.JUMP_AIR if !is_on_floor() else 
-				Movestate.WALK
+				Movestate.WALK if !_is_sprint_toggled else
+				Movestate.SPRINT
 			)
 		Movestate.JUMP_AIR:
 			handle_interact_and_grab_input.call()
