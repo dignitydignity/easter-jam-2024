@@ -28,7 +28,7 @@ func _input(input: InputEvent) -> void:
 			GameState.OPTIONS:
 				game_state = GameState.PAUSE
 
-func _process(delta):
+func _process(_delta : float) -> void:
 	match game_state:
 		GameState.DEFAULT:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

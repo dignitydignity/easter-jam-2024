@@ -8,7 +8,7 @@ class_name PauseMenu
 signal resume_clicked
 signal options_clicked
 	
-func _ready():
+func _ready() -> void:
 	resume.pressed.connect(
 		func(): resume_clicked.emit()
 	)
