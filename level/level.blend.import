@@ -36,7 +36,6 @@ _subresources={
 "physics/shape_type": 2
 },
 "PATH:Bushes": {
-"generate/physics": true,
 "physics/shape_type": 2
 },
 "PATH:Cliffs": {

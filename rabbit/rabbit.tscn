@@ -5,11 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="3_ckcaq"]
 [ext_resource type="Texture2D" uid="uid://bvhgvas070gab" path="res://rabbit/textures/rabbit_tail_albedo.png" id="4_5lwgl"]
 
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_tmlmv"]
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_lmpcg"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("3_ckcaq")
 
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_1cg2c"]
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_fgyje"]
 resource_local_to_scene = true
 transparency = 1
 cull_mode = 2
@@ -22,16 +22,16 @@ height = 1.0
 [node name="Rabbit" type="CharacterBody3D" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
 collision_layer = 3
 script = ExtResource("2_xo52y")
-_rabbit_body = NodePath("Model/rabbit_body")
-_rabbit_tail = NodePath("Model/rabbit_tail")
+_rabbit_body = NodePath("Model/RabbitBody")
+_rabbit_tail = NodePath("Model/RabbitTail")
 
 [node name="Model" parent="." instance=ExtResource("1_q6f4l")]
 
-[node name="rabbit_body" parent="Model" index="0"]
-surface_material_override/0 = SubResource("ORMMaterial3D_tmlmv")
+[node name="RabbitBody" parent="Model" index="0"]
+surface_material_override/0 = SubResource("ORMMaterial3D_lmpcg")
 
-[node name="rabbit_tail" parent="Model" index="1"]
-surface_material_override/0 = SubResource("ORMMaterial3D_1cg2c")
+[node name="RabbitTail" parent="Model" index="1"]
+surface_material_override/0 = SubResource("ORMMaterial3D_fgyje")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

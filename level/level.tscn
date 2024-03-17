@@ -2,4 +2,4 @@
 
 [ext_resource type="PackedScene" uid="uid://bseyia0c08bdx" path="res://level/level.blend" id="1_tosb7"]
 
-[node name="level" instance=ExtResource("1_tosb7")]
+[node name="Level" instance=ExtResource("1_tosb7")]
