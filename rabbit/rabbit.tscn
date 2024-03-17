@@ -22,8 +22,8 @@ height = 1.0
 [node name="Rabbit" type="CharacterBody3D" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
 collision_layer = 3
 script = ExtResource("2_xo52y")
-_rabbit_body = NodePath("")
-_rabbit_tail = NodePath("../../../../../../../../../../../../../../../../../../@SceneImportSettings@2669/@VBoxContainer@2255/@HSplitContainer@2265/@HSplitContainer@2269/@VBoxContainer@2327/@SubViewportContainer@2328/@SubViewport@2329/level/Bushes")
+_rabbit_body = NodePath("RabbitModel/RabbitBody")
+_rabbit_tail = NodePath("RabbitModel/RabbitTail")
 
 [node name="RabbitModel" parent="." instance=ExtResource("1_q6f4l")]
 

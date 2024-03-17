@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bkotm0gerp8r6"]
+
+[ext_resource type="PackedScene" uid="uid://cxaicxa0q8hqc" path="res://tree/tree.blend" id="1_shl6d"]
+[ext_resource type="Script" path="res://tree/tree.gd" id="2_7lqa0"]
+
+[node name="Tree" node_paths=PackedStringArray("_tree_trunk") instance=ExtResource("1_shl6d")]
+script = ExtResource("2_7lqa0")
+_tree_trunk = NodePath("TreeTrunk")

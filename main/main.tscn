@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bvrkwhbglkglt"]
+[gd_scene load_steps=12 format=3 uid="uid://bvrkwhbglkglt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_ft7y6"]
 [ext_resource type="PackedScene" uid="uid://c2lijmalpvaff" path="res://pause_menu/pause_menu.tscn" id="2_3ruti"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://d1iv44sh4ql74" path="res://player/player.tscn" id="3_n6th7"]
 [ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="4_kp1fs"]
 [ext_resource type="PackedScene" uid="uid://cyvq6a7ytrwe4" path="res://level/level.tscn" id="5_sidln"]
+[ext_resource type="PackedScene" uid="uid://bkotm0gerp8r6" path="res://tree/tree.tscn" id="8_omp7a"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_35myi"]
 panorama = ExtResource("2_aehxd")
@@ -58,3 +59,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.21676, 1.16016, -0.827442)
 
 [node name="Rabbit3" parent="." instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7888, 1.16016, -1.3488)
+
+[node name="Tree" parent="." instance=ExtResource("8_omp7a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.2042, 1.16016, -5.6329)
