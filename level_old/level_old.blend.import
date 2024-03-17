@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bseyia0c08bdx"
-path="res://.godot/imported/level.blend-dd000ad012d8914474071c2f0d2d6725.scn"
+uid="uid://c34srvtl3pqi"
+path="res://.godot/imported/level_old.blend-b3304b9e9a87b8672a1e569af446221b.scn"
 
 [deps]
 
-source_file="res://level/level.blend"
-dest_files=["res://.godot/imported/level.blend-dd000ad012d8914474071c2f0d2d6725.scn"]
+source_file="res://level_old/level_old.blend"
+dest_files=["res://.godot/imported/level_old.blend-b3304b9e9a87b8672a1e569af446221b.scn"]
 
 [params]
 
@@ -31,25 +31,11 @@ animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={
 "nodes": {
-"PATH:Boulders": {
-"generate/physics": true,
-"physics/shape_type": 2
+"PATH:island_2": {
+"import/skip_import": true
 },
-"PATH:Bushes": {
-"generate/physics": true,
-"physics/shape_type": 2
-},
-"PATH:Cliffs": {
-"generate/physics": true,
-"physics/shape_type": 2
-},
-"PATH:Island": {
-"generate/physics": true,
-"physics/shape_type": 2
-},
-"PATH:Water": {
-"generate/physics": true,
-"physics/shape_type": 2
+"PATH:water": {
+"import/skip_import": true
 }
 }
 }
