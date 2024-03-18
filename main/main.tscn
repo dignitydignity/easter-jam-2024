@@ -40,7 +40,7 @@ process_mode = 3
 script = ExtResource("1_ft7y6")
 
 [node name="Player" parent="." instance=ExtResource("3_n6th7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6535, 0.896969, 2.47498)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6323, 1.16016, 15.7432)
 
 [node name="Level" parent="." instance=ExtResource("9_8klu4")]
 
@@ -86,28 +86,7 @@ anchor_bottom = 0.5
 [node name="Rabbits" type="Node" parent="."]
 
 [node name="Rabbit" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52302, 0.760723, 3.66553)
-
-[node name="Rabbit2" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.01194, -2.47379, -27.2362)
-
-[node name="Rabbit3" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82381, 0.930248, 8.53385)
-
-[node name="Rabbit4" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.68247, 1.16016, 9.434)
-
-[node name="Rabbit5" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90497, 1.11653, 16.658)
-
-[node name="Rabbit6" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1432, 1.16016, 1.53565)
-
-[node name="Rabbit7" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.9653, 1.16016, 4.42988)
-
-[node name="Rabbit8" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.56356, 1.14715, 17.0382)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8097, 1.16016, 7.05289)
 
 [node name="Trees" type="Node" parent="."]
 

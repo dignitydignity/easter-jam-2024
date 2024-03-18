@@ -4,7 +4,7 @@ class_name Main
 # Error tolerance for floating point comparisons.
 const ERR_TOL = 0.0001
 
-static var rng := RandomNumberGenerator.new()
+#static var rng := RandomNumberGenerator.new()
 
 @onready var _pause_menu : PauseMenu = %PauseMenu
 @onready var _options_menu : Control = %OptionsMenu
@@ -33,6 +33,9 @@ var _gamestate := Gamestate.DEFAULT:
 				_options_menu.visible = true
 
 func _ready() -> void:
+	seed(12345) # Fixed seed for debugging.
+	#randomize() # Randomize initial seed for global RNG.
+	
 	assert(process_mode == PROCESS_MODE_ALWAYS)
 	assert(_options_menu.process_mode == PROCESS_MODE_ALWAYS)
 	assert(_options_menu.mouse_filter == Control.MOUSE_FILTER_IGNORE)
