@@ -1,7 +1,6 @@
 extends CharacterBody3D
 class_name Player
 
-# TODO: Diving -> leftclick while sprinting.
 # TODO: Make `func`s non-local for performance if needed.
 # TODO: Compute initial `_movestate`, so that I can use `assert()` later.
 
@@ -267,8 +266,6 @@ func _physics_process(delta : float) -> void:
 			
 		Movestate.DIVE_HITSTUN:
 			
-			assert(is_on_floor()) # TODO: This gets hit when colliding into rabbit.
-								  # So make that impossible while diving.
 			velocity = Vector3.ZERO
 			var _is_hitstun_over := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_dive_land_time + _dive_hitstun)

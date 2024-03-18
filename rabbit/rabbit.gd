@@ -23,8 +23,3 @@ func _ready() -> void:
 	# Materials shouldn't be shared so that rabbit colors are unique.
 	assert(mat_body.is_local_to_scene())
 	assert(mat_tail.is_local_to_scene())
-
-func _process(_delta : float) -> void:
-	# "Billboard" the 2D tail sprite.
-	_rabbit_tail.look_at(Player.instance.cam.global_position)
-

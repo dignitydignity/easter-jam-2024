@@ -21,6 +21,8 @@ diffuse_mode = 1
 albedo_texture = ExtResource("4_5lwgl")
 emission_enabled = true
 emission = Color(0.211765, 0.239216, 0.278431, 1)
+billboard_mode = 1
+billboard_keep_scale = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yfoac"]
 radius = 0.4
