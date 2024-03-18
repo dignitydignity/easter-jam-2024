@@ -6,7 +6,7 @@ const ERR_TOL = 0.0001
 
 static var rng := RandomNumberGenerator.new()
 
-@onready var _pause_menu : PauseMenu = %Pause
+@onready var _pause_menu : PauseMenu = %PauseMenu
 @onready var _options_menu : Control = %OptionsMenu
 
 # When `_gamestate` mutates, important side effects occur.

@@ -38,10 +38,6 @@ _subresources={
 "PATH:Bushes": {
 "physics/shape_type": 2
 },
-"PATH:Cliffs": {
-"generate/physics": true,
-"physics/shape_type": 2
-},
 "PATH:Island": {
 "generate/physics": true,
 "physics/shape_type": 2

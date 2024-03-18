@@ -37,5 +37,5 @@ func _ready() -> void:
 	assert(mat_body.is_local_to_scene())
 	assert(mat_tail.is_local_to_scene())
 
-func physics_process(delta : float) -> void:
+func physics_process(_delta : float) -> void:
 	pass
