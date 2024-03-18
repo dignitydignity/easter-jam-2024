@@ -11,16 +11,24 @@ class_name Rabbit
 @export var _rabbit_tail : MeshInstance3D
 
 func _ready() -> void:
-	# Randomize the rabbit's color. Color must be bright for details to be visible.
+	# Randomize the rabbit's color.
 	var mat_body := _rabbit_body.get_surface_override_material(0) as ORMMaterial3D
 	var mat_tail := _rabbit_tail.get_surface_override_material(0) as ORMMaterial3D
-	var rand_color := Color(Main.rng.randf(), Main.rng.randf(), Main.rng.randf())
-	while rand_color.get_luminance() < .9:
-		rand_color = rand_color.lightened(.01)
+	var rand_f := Main.rng.randf()
+	const n_rand_colors = 6.0
+	const rand_percent_change = 1.0/n_rand_colors
+	var rand_color := (
+		Color.RED if rand_f < rand_percent_change else
+		Color.SKY_BLUE if rand_f < 2 * rand_percent_change else
+		Color.LIGHT_GREEN if rand_f < 3 * rand_percent_change else 
+		Color.YELLOW if rand_f < 4 * rand_percent_change else 
+		Color.HOT_PINK if rand_f < 5 * rand_percent_change else
+		Color.PURPLE 
+	)
 	mat_body.albedo_color = rand_color
 	mat_tail.albedo_color = rand_color
 	mat_body.emission = rand_color
 	mat_tail.emission = rand_color
-	# Materials shouldn't be shared so that rabbit colors are unique.
+	# Don't share materials. Each rabbit get's it's own color.
 	assert(mat_body.is_local_to_scene())
 	assert(mat_tail.is_local_to_scene())

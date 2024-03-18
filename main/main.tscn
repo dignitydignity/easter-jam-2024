@@ -174,9 +174,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.3111, -2.10945, -53.5479)
 [node name="Tree" parent="Trees" instance=ExtResource("8_omp7a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.191, 1.62272, 0.481673)
 
-[node name="Tree2" parent="Trees" node_paths=PackedStringArray("_tree_trunk") instance=ExtResource("8_omp7a")]
+[node name="Tree2" parent="Trees" instance=ExtResource("8_omp7a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.3955, 1.40238, 18.4862)
-_tree_trunk = NodePath("../Tree/TreeTrunk")
 
 [node name="Tree3" parent="Trees" instance=ExtResource("8_omp7a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.6927, 1.89107, 35.1111)
@@ -244,5 +243,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.5602, -1.30095, -85.689)
 [node name="Tree55" parent="Trees" instance=ExtResource("8_omp7a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.492, -2.29753, -87.3946)
 
-[node name="Rabbit" parent="." instance=ExtResource("4_kp1fs")]
+[node name="Rabbits" type="Node" parent="."]
+
+[node name="Rabbit" parent="Rabbits" instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52302, 0.760723, 3.66553)
+
+[node name="Rabbit2" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.01194, -2.47379, -27.2362)
+
+[node name="Rabbit3" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82381, 0.930248, 8.53385)
+
+[node name="Rabbit4" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.68247, 1.16016, 9.434)
+
+[node name="Rabbit5" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90497, 1.11653, 16.658)
+
+[node name="Rabbit6" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1432, 1.16016, 1.53565)
+
+[node name="Rabbit7" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.9653, 1.16016, 4.42988)
+
+[node name="Rabbit" parent="." instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.56356, 1.14715, 17.0382)
