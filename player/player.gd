@@ -165,6 +165,7 @@ func _physics_process(delta : float) -> void:
 			var accel := _max_walk_speed / _time_to_max_walk_speed
 			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 			if horz_speed > _max_walk_speed + err_tol:
+				# If the player stopped sprinting, they decelerate slower.
 				var decel := absf(_sprint_speed - _max_walk_speed) / _time_to_stop_sprint
 				accelerate_velocity_in_move_dir.call(_max_walk_speed, decel)
 			else:
