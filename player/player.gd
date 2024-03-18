@@ -133,8 +133,8 @@ func _physics_process(delta : float) -> void:
 			velocity.z = move_toward(velocity.z, 0, accel * delta)
 	
 	var handle_interact_and_grab_input := func() -> void:
-		if Input.is_action_just_pressed("interact"):
-			print("attempted interact / grab!")
+		if Input.is_action_just_pressed("action"):
+			print("attempted action!")
 			var is_grab_successful := false 
 			var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_grab_attempt_time + _grab_cooldown)
@@ -146,7 +146,7 @@ func _physics_process(delta : float) -> void:
 					rabbit.queue_free()
 					print("grabbed!")
 			if _interact_raycaster.is_colliding() and !is_grab_successful:
-				print("interacted!")
+				print("non-grab action!")
 	
 	# Only call this after horizontal velocity is updated.
 	var handle_jump_input := func() -> void:
@@ -184,7 +184,7 @@ func _physics_process(delta : float) -> void:
 				 + velocity.x ** 2) >= _sprint_speed - err_tol)
 			
 			var _is_dive_just_started := false
-			if Input.is_action_just_pressed("dive") and is_at_max_sprint_speed:
+			if Input.is_action_just_pressed("action") and is_at_max_sprint_speed:
 				assert(is_on_floor())
 				_is_dive_just_started = true
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
