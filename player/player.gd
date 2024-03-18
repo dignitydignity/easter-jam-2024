@@ -57,8 +57,6 @@ func _ready() -> void:
 	assert(_interact_raycaster.target_position == _grab_range * Vector3.FORWARD)
 
 func _input(event : InputEvent) -> void:
-	#if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
-	
 	# If mouse position changed between polling, cache it's relative motion to
 	# rotate the camera and player body (for FPS camera controls in `_process`).
 	if event is InputEventMouseMotion:
@@ -76,8 +74,6 @@ func _process(delta : float) -> void:
 		"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
 		""
 	)
-	
-	#if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
 	match _movestate:
 		Movestate.WALK, Movestate.JUMP_AIR, Movestate.SPRINT:
@@ -111,18 +107,7 @@ func _process(delta : float) -> void:
 	(func() -> void: _mouse_relative = Vector2.ZERO).call_deferred()
 
 func _physics_process(delta : float) -> void:
-	#if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
-	
-	#print(sqrt(velocity.x ** 2 + velocity.z ** 2))
-	#print(
-		#"WALK" if _movestate == Movestate.WALK else 
-		#"SPRINT" if _movestate == Movestate.SPRINT else  
-		#"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
-		#"DIVE" if _movestate == Movestate.DIVE else 
-		#"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
-		#""
-	#)
 
 	const err_tol = 0.0001
 
