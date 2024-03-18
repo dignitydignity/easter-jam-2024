@@ -69,61 +69,69 @@ debug_enabled = true
 
 [node name="AiStateLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.74758, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.03411, 0)
 billboard = 1
 text = "STATE"
 
 [node name="HorzSpeedLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.57798, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.86451, 0)
 billboard = 1
 text = "m/s"
 
 [node name="TargetPosLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.40372, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.69025, 0)
 billboard = 1
 text = "TargetPos: "
 
 [node name="CurrentPosLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.23745, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52398, 0)
 billboard = 1
 text = "CurrentPos: "
 
 [node name="DistToTargLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.09315, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.37968, 0)
 billboard = 1
 text = "DistToTarg: "
 
 [node name="NavFinLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.91096, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.19749, 0)
 billboard = 1
 text = "NavFin?: "
 
 [node name="TargReachedLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.76399, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05052, 0)
 billboard = 1
 text = "TargReached?: "
 
 [node name="ReachableLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5543, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.84083, 0)
 billboard = 1
 text = "Reachable?:"
 
 [node name="IdlingLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36181, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.64834, 0)
 billboard = 1
 text = "Idling?:"
 
+[node name="FleeTargLabel" type="Label3D" parent="Label3Ds"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47403, 0)
+billboard = 1
+text = "FleeTarg:"
+
 [node name="VisionCone" type="Area3D" parent="."]
+unique_name_in_owner = true
 collision_layer = 0
 collision_mask = 8
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="VisionCone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -5)

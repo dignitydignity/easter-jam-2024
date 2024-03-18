@@ -2,6 +2,10 @@ extends CharacterBody3D
 class_name Rabbit
 
 # TODO: Better vision cone (multiple area 3Ds).
+# Rabbits only run away when player looks at them? Otherwise, they stop and
+# stare?
+# Game is about chasing rabbits, not stealth. So, make a good
+# initial impression/spectable by watching rabbits bounce around?
 
 @export_group("Wander")
 @export_range(0.1, 10) var _walk_speed : float
@@ -20,6 +24,9 @@ enum AiState { WANDER, FLEE }
 var _ai_state := AiState.WANDER
 var _last_nav_finish_time : float
 var _idle_time : float
+var _flee_target : Node3D
+
+@onready var _vision_cone : Area3D = %VisionCone
 
 @onready var _ai_state_label : Label3D = %AiStateLabel
 @onready var _horz_speed_label : Label3D = %HorzSpeedLabel
@@ -30,6 +37,7 @@ var _idle_time : float
 @onready var _targ_reached_label : Label3D = %TargReachedLabel
 @onready var _reachable_label : Label3D = %ReachableLabel
 @onready var _idling_label : Label3D = %IdlingLabel
+@onready var _flee_targ_label : Label3D = %FleeTargLabel
 
 func _acquire_random_wander_target() -> void:
 	var rand_angle := randf() * 2 * PI
@@ -40,6 +48,7 @@ func _acquire_random_wander_target() -> void:
 
 func _ready() -> void:
 	seed(12345) # Fix seed for testing.
+	# TODO: REMOVE FIXED SEED
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	assert(_wander_dist_max > _wander_dist_min)
 	assert(_idle_time_max > _idle_time_min)
@@ -66,7 +75,37 @@ func _ready() -> void:
 	assert(mat_body.is_local_to_scene())
 	assert(mat_tail.is_local_to_scene())
 	
-	# Rest of `_ready` is dedicated to setting up Ai.
+	# Ai detection.
+	assert(_vision_cone.collision_mask == 8)
+	assert(!_vision_cone.monitorable)
+	# TODO: `for` loop over vision cones array.
+	_vision_cone.body_entered.connect(
+		func(body: Node3D):
+			var other_rabbit := body as Rabbit
+			var saw_fleeing_rabbit := (other_rabbit != null 
+				and other_rabbit != self)
+			
+			if saw_fleeing_rabbit:
+				print("%s: saw fleeing rabbit!" % name)
+				if _ai_state != AiState.FLEE:
+					_ai_state = AiState.FLEE
+					var spook_breadcrumb := Node3D.new()
+					# When return to Wander, delete spook breadcrumb.
+					get_tree().current_scene.add_child(spook_breadcrumb)
+					spook_breadcrumb.global_position = other_rabbit.global_position
+					_flee_target = spook_breadcrumb
+			elif other_rabbit == self:
+				pass
+			else:
+				var player := body as Player
+				assert(player != null)
+				print("%s: saw player!" % name)
+				_flee_target = player # TODO: Forget the reference eventually.
+				if _ai_state != AiState.FLEE:
+					_ai_state = AiState.FLEE
+	)
+	
+	# Rest of `_ready` is dedicated to setting up ai navigation.
 	_ai_state = AiState.WANDER
 	_acquire_random_wander_target()
 	_idling_label.text = "Idling?: false"
@@ -90,9 +129,8 @@ func _ready() -> void:
 			move_and_slide()
 	)
 
+# Labels.
 func _process(_delta : float) -> void:
-	
-	# Labels.
 	_ai_state_label.text = (
 		"WANDER" if _ai_state == AiState.WANDER else
 		"FLEE" if _ai_state == AiState.FLEE else 
@@ -131,6 +169,13 @@ func _process(_delta : float) -> void:
 		var remaining_idle_time = maxf(_last_nav_finish_time 
 			+ _idle_time - Time.get_ticks_msec() / 1000.0, 0)
 		_idling_label.text = "Idling?: True (%.2f s)" % remaining_idle_time
+	
+	if _flee_target != null:
+		_flee_targ_label.text = "FleeTarg: %s" % _flee_target.name
+		_flee_targ_label.modulate = Color.GREEN
+	else:
+		_flee_targ_label.text = "FleeTarg: NONE"
+		_flee_targ_label.modulate = Color.RED
 
 func _physics_process(_delta : float) -> void:
 	# Anims can be driven by AiState + velocity.
@@ -150,12 +195,6 @@ func _physics_process(_delta : float) -> void:
 					_idling_label.text = "Idling?: False"
 					_idling_label.modulate = Color.RED
 					_acquire_random_wander_target()
-			
-			# - If rabbit detects player, grab hold of player ref 
-			#    into "_flee_from" and enter flee state. Also, set 
-			#	 "_wary_of_player = true` and increase size of detection hitboxes.
-			# - If detects a fleeing other rabbit, set `_flee_from` to be
-			#    an empty Node3D at the detection position. 
 
 		AiState.FLEE:
 			# - If has target, jump towards it.
