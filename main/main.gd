@@ -9,6 +9,7 @@ static var rng := RandomNumberGenerator.new()
 @onready var _pause_menu : PauseMenu = %Pause
 @onready var _options_menu : Control = %OptionsMenu
 
+# When `_gamestate` mutates, important side effects occur.
 enum Gamestate { DEFAULT, PAUSE, OPTIONS }
 var _gamestate := Gamestate.DEFAULT:
 	get: return _gamestate
@@ -35,12 +36,14 @@ func _ready() -> void:
 	assert(process_mode == PROCESS_MODE_ALWAYS)
 	assert(_options_menu.process_mode == PROCESS_MODE_ALWAYS)
 	assert(_options_menu.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
 	_pause_menu.resume_pressed.connect(func(): _gamestate = Gamestate.DEFAULT)
 	_pause_menu.options_pressed.connect(func(): _gamestate = Gamestate.OPTIONS)
 	
-func _input(input: InputEvent) -> void:
-	if input.is_action_pressed("pause"):
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
 		match _gamestate:
 			Gamestate.DEFAULT: _gamestate = Gamestate.PAUSE
 			Gamestate.PAUSE: _gamestate = Gamestate.DEFAULT

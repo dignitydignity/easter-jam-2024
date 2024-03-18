@@ -10,6 +10,9 @@ class_name Rabbit
 @export var _rabbit_body : MeshInstance3D
 @export var _rabbit_tail : MeshInstance3D
 
+enum AiState { WANDER, FLEE }
+var ai_state := AiState.WANDER
+
 func _ready() -> void:
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	# Randomize the rabbit's color.
@@ -33,3 +36,6 @@ func _ready() -> void:
 	# Don't share materials. Each rabbit get's it's own color.
 	assert(mat_body.is_local_to_scene())
 	assert(mat_tail.is_local_to_scene())
+
+func physics_process(delta : float) -> void:
+	pass

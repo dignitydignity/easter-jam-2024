@@ -5,8 +5,10 @@ class_name Player
 static var instance : Player
 
 # Design params (constants).
+# 	Distance units = meters.
+# 	Time units = seconds.
 @export_group("General")
-# To set grab range, modify GrabRaycaster's `TargetPosition`.
+# To set grab range, modify reference's `TargetPosition`.
 @export var _grab_raycaster : RayCast3D
 @export var _interact_raycaster : RayCast3D
 @export_range(0, 5) var _grab_cooldown : float
@@ -26,6 +28,7 @@ static var instance : Player
 @export_range(0.02, 5) var _time_to_stop_sprint : float
 @export_range(75.1, 179.0) var _sprint_fov : float
 @export_group("Dive")
+# To adjust hitboxes, modify reference and it's children directly.
 @export var _dive_grab_hitboxes : Array[Area3D]
 @export_range(0.1, 100) var _min_speed_for_dive : float
 @export_range(0.5, 10) var _dive_height : float
@@ -41,12 +44,14 @@ static var instance : Player
 var _mouse_relative : Vector2
 
 var _last_grab_attempt_time : float
+
 enum Movestate { WALK, SPRINT, JUMP_AIR, DIVE, DIVE_HITSTUN }
-var _ground_takeoff_horz_speed : float
 var _movestate : Movestate
-var _last_dive_start_time : float # Time units = seconds.
-var _last_dive_land_time : float
 var _is_sprint_toggled : bool
+var _ground_takeoff_horz_speed : float
+var _last_dive_start_time : float 
+var _last_dive_land_time : float
+
 @onready var _hud : Control = %Hud
 @onready var _fps_label : Label = %FpsLabel
 @onready var _movestate_label : Label = %MovestateLabel
