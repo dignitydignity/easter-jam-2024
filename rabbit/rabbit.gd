@@ -80,7 +80,7 @@ func _ready() -> void:
 			# Beyond the min threshold, the rabbit can look around.
 			_last_nav_finish_time = Time.get_ticks_msec() / 1000.0
 			_idle_time = randf_range(_idle_time_min, _idle_time_max)
-			_idling_label.text = "Idling?: True"
+			_idling_label.text = "Idling?: True (%.2f s)" % _idle_time
 			_idling_label.modulate = Color.GREEN
 	)
 	
@@ -126,6 +126,12 @@ func _process(_delta : float) -> void:
 		Color.GREEN if _nav_agent.is_target_reachable() else
 		Color.RED
 	)
+	
+	var is_idling := _idling_label.modulate == Color.GREEN
+	if is_idling:
+		var remaining_idle_time = maxf(_last_nav_finish_time 
+			+ _idle_time - Time.get_ticks_msec() / 1000.0, 0)
+		_idling_label.text = "Idling?: True (%.2f s)" % remaining_idle_time
 
 func _physics_process(_delta : float) -> void:
 	# Anims can be driven by AiState + velocity.
