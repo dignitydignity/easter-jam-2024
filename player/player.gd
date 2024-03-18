@@ -22,7 +22,8 @@ static var instance : Player
 @export_range(0.02, 3) var _time_to_max_walk_speed : float
 @export_group("Sprint")
 @export_range(0.1, 100) var _sprint_speed : float
-@export_range(0.02, 5) var _time_to_sprint: float
+@export_range(0.02, 5) var _time_to_sprint : float
+@export_range(0.02, 5) var _time_to_stop_sprint : float
 @export_range(75.1, 179.0) var _sprint_fov : float
 @export_group("Dive")
 @export_range(0.5, 10) var _dive_height : float
@@ -85,7 +86,7 @@ func _process(delta : float) -> void:
 			pass
 	
 	# Cam FoV scales with with speed slightly.
-	var horz_speed := sqrt(velocity.z**2 + velocity.x**2)
+	var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 	var t := (horz_speed - _max_walk_speed) / (_sprint_speed - _max_walk_speed)
 	t = clamp(t, 0, 1)
 	const default_fov = 75.0
@@ -98,15 +99,15 @@ func _process(delta : float) -> void:
 func _physics_process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
-	
-	print(
-		"WALK" if _movestate == Movestate.WALK else 
-		"SPRINT" if _movestate == Movestate.SPRINT else  
-		"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
-		"DIVE" if _movestate == Movestate.DIVE else 
-		"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
-		""
-	)
+	#print(sqrt(velocity.x ** 2 + velocity.z ** 2))
+	#print(
+		#"WALK" if _movestate == Movestate.WALK else 
+		#"SPRINT" if _movestate == Movestate.SPRINT else  
+		#"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
+		#"DIVE" if _movestate == Movestate.DIVE else 
+		#"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
+		#""
+	#)
 
 	const err_tol = 0.0001
 
@@ -117,15 +118,22 @@ func _physics_process(delta : float) -> void:
 		and move_input.angle_to(Vector2.UP) < PI/2 - err_tol
 		and move_input.angle_to(Vector2.UP) > -PI/2 + err_tol
 	)
-	var move_input_dir := (transform.basis 
+	var move_input_rel_dir := (transform.basis 
 		* Vector3(move_input.x, 0, move_input.y)).normalized()
+	
+	#var accel_horz_vel_to := func(target_vel : Vector2,
+		#accel : float) -> void:
+		#velocity.x = move_toward(velocity.x, target_vel.x,
+			#accel * delta)
+		#velocity.z = move_toward(velocity.z, target_vel.y,
+			#accel * delta)
 	
 	var accelerate_velocity_in_move_dir := func(max_speed : float,
 		accel : float) -> void:
-		if move_input_dir: # nonzero
-			velocity.x = move_toward(velocity.x, move_input_dir.x * max_speed,
+		if move_input_rel_dir: # nonzero
+			velocity.x = move_toward(velocity.x, move_input_rel_dir.x * max_speed,
 				accel * delta)
-			velocity.z = move_toward(velocity.z, move_input_dir.z * max_speed,
+			velocity.z = move_toward(velocity.z, move_input_rel_dir.z * max_speed,
 				accel * delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0, accel * delta)
@@ -161,7 +169,15 @@ func _physics_process(delta : float) -> void:
 			handle_interact_and_grab_input.call()
 			
 			var accel := _max_walk_speed / _time_to_max_walk_speed
-			accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
+			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
+			if horz_speed > _max_walk_speed + err_tol:
+				#var target_horz_vel := _max_walk_speed * Vector2(move_input_rel_dir.x, 
+					#move_input_rel_dir.y)
+				var decel := absf(_sprint_speed - _max_walk_speed) / _time_to_stop_sprint
+				#accel_horz_vel_to.call(target_horz_vel, decel)
+				accelerate_velocity_in_move_dir.call(_max_walk_speed, decel)
+			else:
+				accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
 			
 			handle_jump_input.call()
 			
@@ -179,11 +195,13 @@ func _physics_process(delta : float) -> void:
 			var accel := _sprint_speed / _time_to_sprint
 			accelerate_velocity_in_move_dir.call(_sprint_speed, accel)
 			
-			var is_at_max_sprint_speed := (sqrt(velocity.z ** 2
-				 + velocity.x ** 2) >= _sprint_speed - err_tol)
+			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
+			var min_speed_for_dive := (_sprint_speed + _max_walk_speed) / 2.0
+			var is_at_min_speed_for_dive := horz_speed >= (min_speed_for_dive - err_tol)
+			#var is_at_max_sprint_speed := horz_speed >= (_sprint_speed - err_tol)
 			
 			var _is_dive_just_started := false
-			if Input.is_action_just_pressed("action") and is_at_max_sprint_speed:
+			if Input.is_action_just_pressed("action") and is_at_min_speed_for_dive:
 				assert(is_on_floor())
 				_is_dive_just_started = true
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
@@ -193,14 +211,14 @@ func _physics_process(delta : float) -> void:
 				var t_up := dive_y_vel / _dive_grav
 				var t_total := 2.0 * (t_up)
 				var dive_forward_vel := _dive_dist / t_total
-				velocity = dive_forward_vel * move_input_dir
+				velocity = dive_forward_vel * move_input_rel_dir
 				_ground_takeoff_horz_velocity = Vector2(velocity.x, velocity.x)
 				velocity.y = dive_y_vel
 				
 				# Turn player body in dive direction.
 				var turn_anim := create_tween()
 				var target_rot := transform.looking_at(
-					global_position + move_input_dir
+					global_position + move_input_rel_dir
 				).basis.get_euler()
 				turn_anim.tween_property(self, "rotation", 
 					target_rot, _dive_body_yaw_rot_time_length)
