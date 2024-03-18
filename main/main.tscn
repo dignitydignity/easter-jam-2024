@@ -44,6 +44,71 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6535, 0.896969, 2.47498)
 
 [node name="Level" parent="." instance=ExtResource("9_8klu4")]
 
+[node name="Aesthetics" type="Node" parent="."]
+
+[node name="Sun" type="DirectionalLight3D" parent="Aesthetics"]
+transform = Transform3D(0.0956851, 0.991438, 0.088854, -0.827121, 0.0295268, 0.561248, 0.553819, -0.127196, 0.822864, 0, 0, 0)
+light_color = Color(0.94902, 0.909804, 0.756863, 1)
+light_energy = 1.323
+shadow_enabled = true
+shadow_bias = 0.25
+shadow_opacity = 0.61
+shadow_blur = 0.205
+
+[node name="Accent" type="DirectionalLight3D" parent="Aesthetics"]
+transform = Transform3D(-0.0348994, -0.999391, 6.53052e-08, -0.998221, 0.0348586, 0.0483617, -0.0483322, 0.00168773, -0.99883, 0, 0, 0)
+light_color = Color(0.356863, 0.635294, 0.756863, 1)
+light_energy = 0.191
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+shadow_opacity = 0.61
+shadow_blur = 0.205
+sky_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Aesthetics"]
+environment = SubResource("Environment_ian28")
+
+[node name="Menus" type="Node" parent="."]
+
+[node name="PauseMenu" parent="Menus" instance=ExtResource("2_3ruti")]
+unique_name_in_owner = true
+visible = false
+
+[node name="OptionsMenu" parent="Menus" instance=ExtResource("3_aphb4")]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+
+[node name="Rabbits" type="Node" parent="."]
+
+[node name="Rabbit" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52302, 0.760723, 3.66553)
+
+[node name="Rabbit2" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.01194, -2.47379, -27.2362)
+
+[node name="Rabbit3" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82381, 0.930248, 8.53385)
+
+[node name="Rabbit4" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.68247, 1.16016, 9.434)
+
+[node name="Rabbit5" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90497, 1.11653, 16.658)
+
+[node name="Rabbit6" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1432, 1.16016, 1.53565)
+
+[node name="Rabbit7" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.9653, 1.16016, 4.42988)
+
+[node name="Rabbit8" parent="Rabbits" instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.56356, 1.14715, 17.0382)
+
 [node name="Trees" type="Node" parent="."]
 
 [node name="Tree18" parent="Trees" instance=ExtResource("8_omp7a")]
@@ -210,68 +275,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.5602, -1.30095, -85.689)
 
 [node name="Tree55" parent="Trees" instance=ExtResource("8_omp7a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.492, -2.29753, -87.3946)
-
-[node name="Rabbits" type="Node" parent="."]
-
-[node name="Rabbit" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52302, 0.760723, 3.66553)
-
-[node name="Rabbit2" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.01194, -2.47379, -27.2362)
-
-[node name="Rabbit3" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82381, 0.930248, 8.53385)
-
-[node name="Rabbit4" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.68247, 1.16016, 9.434)
-
-[node name="Rabbit5" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90497, 1.11653, 16.658)
-
-[node name="Rabbit6" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1432, 1.16016, 1.53565)
-
-[node name="Rabbit7" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.9653, 1.16016, 4.42988)
-
-[node name="Rabbit8" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.56356, 1.14715, 17.0382)
-
-[node name="Menus" type="Node" parent="."]
-
-[node name="PauseMenu" parent="Menus" instance=ExtResource("2_3ruti")]
-unique_name_in_owner = true
-visible = false
-
-[node name="OptionsMenu" parent="Menus" instance=ExtResource("3_aphb4")]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-
-[node name="Aesthetics" type="Node" parent="."]
-
-[node name="Sun" type="DirectionalLight3D" parent="Aesthetics"]
-transform = Transform3D(0.0956851, 0.991438, 0.088854, -0.827121, 0.0295268, 0.561248, 0.553819, -0.127196, 0.822864, 0, 0, 0)
-light_color = Color(0.94902, 0.909804, 0.756863, 1)
-light_energy = 1.323
-shadow_enabled = true
-shadow_bias = 0.25
-shadow_opacity = 0.61
-shadow_blur = 0.205
-
-[node name="Accent" type="DirectionalLight3D" parent="Aesthetics"]
-transform = Transform3D(-0.0348994, -0.999391, 6.53052e-08, -0.998221, 0.0348586, 0.0483617, -0.0483322, 0.00168773, -0.99883, 0, 0, 0)
-light_color = Color(0.356863, 0.635294, 0.756863, 1)
-light_energy = 0.191
-light_indirect_energy = 0.0
-light_volumetric_fog_energy = 0.0
-shadow_opacity = 0.61
-shadow_blur = 0.205
-sky_mode = 1
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Aesthetics"]
-environment = SubResource("Environment_ian28")

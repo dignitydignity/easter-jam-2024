@@ -14,6 +14,10 @@ config/name="easter-jam-2024"
 run/main_scene="res://main/main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 
+[display]
+
+window/size/always_on_top=true
+
 [importer_defaults]
 
 texture={
@@ -86,3 +90,8 @@ sprint={
 3d_physics/layer_1="default"
 3d_physics/layer_2="grabbable"
 3d_physics/layer_3="interactable"
+
+[navigation]
+
+3d/default_cell_size=0.1
+3d/default_cell_height=0.1
