@@ -1,9 +1,6 @@
 extends CharacterBody3D
 class_name Player
 
-# TODO: Make `func`s non-local for performance if needed.
-# TODO: Compute initial `_movestate`, so that I can use `assert()` later.
-
 # Globally accessible instance; there is only one player.
 static var instance : Player
 
@@ -42,6 +39,10 @@ var _mouse_relative : Vector2
 @onready var _interact_raycaster : RayCast3D = %InteractRaycaster
 var _last_grab_attempt_time : float
 
+@onready var _hud : Control = %Hud
+@onready var _fps_label : Label = %FpsLabel
+@onready var _movestate_label : Label = %MovestateLabel
+
 enum Movestate { WALK, SPRINT, JUMP_AIR, DIVE, DIVE_HITSTUN }
 var _ground_takeoff_horz_velocity : Vector2
 var _movestate : Movestate
@@ -50,11 +51,13 @@ var _last_dive_land_time : float
 var _is_sprint_toggled : bool
 
 func _ready() -> void:
+	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	instance = self
 	assert(_interact_raycaster.target_position == _grab_range * Vector3.FORWARD)
 
 func _input(event : InputEvent) -> void:
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
+	#if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
 	# If mouse position changed between polling, cache it's relative motion to
 	# rotate the camera and player body (for FPS camera controls in `_process`).
@@ -63,7 +66,18 @@ func _input(event : InputEvent) -> void:
 
 # `_process` only contains camera related stuff.
 func _process(delta : float) -> void:
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
+	
+	_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
+	_movestate_label.text = "Movestate: %s " % (
+		"WALK" if _movestate == Movestate.WALK else 
+		"SPRINT" if _movestate == Movestate.SPRINT else  
+		"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
+		"DIVE" if _movestate == Movestate.DIVE else 
+		"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
+		""
+	)
+	
+	#if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
 	match _movestate:
 		Movestate.WALK, Movestate.JUMP_AIR, Movestate.SPRINT:
@@ -97,7 +111,7 @@ func _process(delta : float) -> void:
 	(func() -> void: _mouse_relative = Vector2.ZERO).call_deferred()
 
 func _physics_process(delta : float) -> void:
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
+	#if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
 	
 	#print(sqrt(velocity.x ** 2 + velocity.z ** 2))
@@ -151,8 +165,8 @@ func _physics_process(delta : float) -> void:
 	
 	# Only call this after horizontal velocity is updated.
 	var handle_jump_input := func() -> void:
-		if Input.is_action_just_pressed("jump"):
-			assert(is_on_floor())
+		if Input.is_action_just_pressed("jump") and is_on_floor():
+			#assert(is_on_floor())
 			var jump_vel := sqrt(2 * _upwards_grav * _jump_height)
 			velocity.y = jump_vel
 			_ground_takeoff_horz_velocity = Vector2(velocity.x, velocity.z)

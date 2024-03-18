@@ -3,42 +3,42 @@ class_name Main
 
 static var rng := RandomNumberGenerator.new()
 
-@onready var pause_menu : PauseMenu = $Pause
-@onready var options_menu : Control = $OptionsMenu
+@onready var _pause_menu : PauseMenu = %Pause
+@onready var _options_menu : Control = %OptionsMenu
 
-enum GameState { DEFAULT, PAUSE, OPTIONS }
-var game_state := GameState.DEFAULT
+enum Gamestate { DEFAULT, PAUSE, OPTIONS }
+var _gamestate := Gamestate.DEFAULT:
+	get: return _gamestate
+	set(new_gamestate):
+		_gamestate = new_gamestate
+		match new_gamestate:
+			Gamestate.DEFAULT:
+				get_tree().paused = false
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+				_pause_menu.visible = false
+				_options_menu.visible = false
+			Gamestate.PAUSE:
+				get_tree().paused = true
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+				_pause_menu.visible = true
+				_options_menu.visible = false
+			Gamestate.OPTIONS:
+				get_tree().paused = true
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+				_pause_menu.visible = false
+				_options_menu.visible = true
 
 func _ready() -> void:
+	assert(process_mode == PROCESS_MODE_ALWAYS)
+	assert(_options_menu.process_mode == PROCESS_MODE_ALWAYS)
+	assert(_options_menu.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	pause_menu.options_clicked.connect(
-		func(): game_state = GameState.OPTIONS
-	)
-	pause_menu.resume_clicked.connect(
-		func(): game_state = GameState.DEFAULT
-	)
+	_pause_menu.resume_pressed.connect(func(): _gamestate = Gamestate.DEFAULT)
+	_pause_menu.options_pressed.connect(func(): _gamestate = Gamestate.OPTIONS)
 	
 func _input(input: InputEvent) -> void:
 	if input.is_action_pressed("pause"):
-		match game_state:
-			GameState.DEFAULT:
-				game_state = GameState.PAUSE
-			GameState.PAUSE:
-				game_state = GameState.DEFAULT
-			GameState.OPTIONS:
-				game_state = GameState.PAUSE
-
-func _process(_delta : float) -> void:
-	match game_state:
-		GameState.DEFAULT:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			pause_menu.visible = false
-			options_menu.visible = false
-		GameState.PAUSE:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			pause_menu.visible = true
-			options_menu.visible = false
-		GameState.OPTIONS:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			pause_menu.visible = false
-			options_menu.visible = true
+		match _gamestate:
+			Gamestate.DEFAULT: _gamestate = Gamestate.PAUSE
+			Gamestate.PAUSE: _gamestate = Gamestate.DEFAULT
+			Gamestate.OPTIONS: _gamestate = Gamestate.PAUSE

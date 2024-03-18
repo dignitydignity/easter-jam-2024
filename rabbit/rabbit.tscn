@@ -31,6 +31,7 @@ radius = 0.4
 height = 1.0
 
 [node name="Rabbit" type="CharacterBody3D" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
+process_mode = 1
 collision_layer = 3
 script = ExtResource("2_xo52y")
 _rabbit_body = NodePath("RabbitModel/RabbitBody")

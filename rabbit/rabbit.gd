@@ -11,6 +11,7 @@ class_name Rabbit
 @export var _rabbit_tail : MeshInstance3D
 
 func _ready() -> void:
+	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	# Randomize the rabbit's color.
 	var mat_body := _rabbit_body.get_surface_override_material(0) as ORMMaterial3D
 	var mat_tail := _rabbit_tail.get_surface_override_material(0) as ORMMaterial3D

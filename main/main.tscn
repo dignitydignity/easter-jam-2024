@@ -36,15 +36,18 @@ adjustment_brightness = 0.92
 adjustment_contrast = 1.42
 
 [node name="Main" type="Node3D"]
+process_mode = 3
 script = ExtResource("1_ft7y6")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ian28")
 
 [node name="Pause" parent="." instance=ExtResource("2_3ruti")]
+unique_name_in_owner = true
 visible = false
 
 [node name="OptionsMenu" parent="." instance=ExtResource("3_aphb4")]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
