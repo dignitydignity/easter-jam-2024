@@ -6,10 +6,13 @@ static var instance : Player
 
 # Design params (constants).
 @export_group("General")
-@export_range(0.1, 3) var _grab_range : float
+# To set grab range, modify GrabRaycaster's `TargetPosition`.
+@export var _grab_raycaster : RayCast3D
+@export var _interact_raycaster : RayCast3D
 @export_range(0, 5) var _grab_cooldown : float
 @export_range(0, 90) var _cam_pitch_max : float
 @export_group("Jump")
+@export_range(0, 10) var _jump_drag : float
 @export_range(0, 50) var _upwards_grav : float
 @export_range(0, 50) var _downwards_grav : float
 @export_range(0, 10) var _jump_height : float
@@ -23,6 +26,7 @@ static var instance : Player
 @export_range(0.02, 5) var _time_to_stop_sprint : float
 @export_range(75.1, 179.0) var _sprint_fov : float
 @export_group("Dive")
+@export var _dive_grab_hitboxes : Array[Area3D]
 @export_range(0.5, 10) var _dive_height : float
 @export_range(0, 20) var _dive_dist : float
 @export_range(0, 5) var _dive_cam_pitch_rot_delay : float
@@ -35,26 +39,32 @@ static var instance : Player
 @onready var cam : Camera3D = %Camera
 var _mouse_relative : Vector2
 
-@onready var _grab_raycaster : RayCast3D = %GrabRaycaster
-@onready var _interact_raycaster : RayCast3D = %InteractRaycaster
 var _last_grab_attempt_time : float
-
-@onready var _hud : Control = %Hud
-@onready var _fps_label : Label = %FpsLabel
-@onready var _movestate_label : Label = %MovestateLabel
-
 enum Movestate { WALK, SPRINT, JUMP_AIR, DIVE, DIVE_HITSTUN }
-var _ground_takeoff_horz_velocity : Vector2
+var _ground_takeoff_horz_speed : float
 var _movestate : Movestate
 var _last_dive_start_time : float # Time units = seconds.
 var _last_dive_land_time : float
 var _is_sprint_toggled : bool
+@onready var _hud : Control = %Hud
+@onready var _fps_label : Label = %FpsLabel
+@onready var _movestate_label : Label = %MovestateLabel
 
 func _ready() -> void:
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	instance = self
-	assert(_interact_raycaster.target_position == _grab_range * Vector3.FORWARD)
+	
+	for box in _dive_grab_hitboxes:
+		assert(!box.monitoring)
+		assert(!box.monitorable)
+		assert(box.collision_mask == 2)
+		box.body_entered .connect(
+			func(body : Node3D) -> void:
+				var rabbit := body as Rabbit
+				rabbit.queue_free()
+				print("dive grab!")
+		)
 
 func _input(event : InputEvent) -> void:
 	# If mouse position changed between polling, cache it's relative motion to
@@ -142,7 +152,8 @@ func _physics_process(delta : float) -> void:
 				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 				if _grab_raycaster.is_colliding():
 					is_grab_successful = true
-					var rabbit := _grab_raycaster.get_collider()
+					# TODO: Wrap queue_free() inside a "grab" function.
+					var rabbit := _grab_raycaster.get_collider() as Rabbit
 					rabbit.queue_free()
 					print("grabbed!")
 			if _interact_raycaster.is_colliding() and !is_grab_successful:
@@ -151,10 +162,10 @@ func _physics_process(delta : float) -> void:
 	# Only call this after horizontal velocity is updated.
 	var handle_jump_input := func() -> void:
 		if Input.is_action_just_pressed("jump") and is_on_floor():
-			#assert(is_on_floor())
 			var jump_vel := sqrt(2 * _upwards_grav * _jump_height)
 			velocity.y = jump_vel
-			_ground_takeoff_horz_velocity = Vector2(velocity.x, velocity.z)
+			_ground_takeoff_horz_speed = sqrt(velocity.x ** 2 + 
+				velocity.z ** 2)
 	
 	match _movestate:
 		Movestate.WALK:
@@ -202,7 +213,8 @@ func _physics_process(delta : float) -> void:
 				var t_total := 2.0 * (t_up)
 				var dive_forward_vel := _dive_dist / t_total
 				velocity = dive_forward_vel * move_input_rel_dir
-				_ground_takeoff_horz_velocity = Vector2(velocity.x, velocity.x)
+				_ground_takeoff_horz_speed = sqrt(velocity.x ** 2 
+					+ velocity.z ** 2)
 				velocity.y = dive_y_vel
 				
 				# Turn player body in dive direction.
@@ -212,6 +224,10 @@ func _physics_process(delta : float) -> void:
 				).basis.get_euler()
 				turn_anim.tween_property(self, "rotation", 
 					target_rot, _dive_body_yaw_rot_time_length)
+				
+				# Start grabbing rabbits.
+				for box in _dive_grab_hitboxes:
+					box.monitoring = true
 			
 			handle_jump_input.call()
 			
@@ -233,20 +249,33 @@ func _physics_process(delta : float) -> void:
 			handle_interact_and_grab_input.call()
 			
 			if !is_on_floor():
-				velocity.y -= (
+				velocity.y -= ( # For gamefeel.
 					_downwards_grav if velocity.y < 0 else 
 					_upwards_grav
 				) * delta
 			
+			# User inputs only maintains a fraction of their normal control
+			# while airborne.
 			var accel := _midair_accel_multiplier * (_max_walk_speed 
 				/ _time_to_max_walk_speed)
-			accelerate_velocity_in_move_dir.call(
-				_ground_takeoff_horz_velocity.length(), accel
-			)
+			if _ground_takeoff_horz_speed > err_tol:
+				accelerate_velocity_in_move_dir.call(
+					_ground_takeoff_horz_speed, accel
+				)
+			else:
+				var from_rest_jump_speed = 0.5 * _max_walk_speed 
+				accelerate_velocity_in_move_dir.call(
+					from_rest_jump_speed, accel
+				)
 			
+			velocity.x -= _jump_drag * velocity.x * delta
+			velocity.z -= _jump_drag * velocity.z * delta
+			
+			# Player can hit the ground sprinting, even if they weren't before.
 			if Input.is_action_just_pressed("sprint"):
-				_is_sprint_toggled = true
+				_is_sprint_toggled = !_is_sprint_toggled
 			
+			# But they can cancel their sprint by not holding forwards.
 			if is_on_floor() and _is_sprint_toggled and !is_moving_forwards: 
 				_is_sprint_toggled = false
 			
@@ -258,6 +287,8 @@ func _physics_process(delta : float) -> void:
 			
 		Movestate.DIVE:
 			
+			# When the dive ends, animate the camera so that it looks like
+			# the player is picking themselves off the ground.
 			if is_on_floor():
 				_last_dive_land_time = Time.get_ticks_msec() / 1000.0
 				var dive_hitstun_anim := create_tween().set_parallel()
@@ -267,6 +298,7 @@ func _physics_process(delta : float) -> void:
 					_dive_hitstun)
 			else:
 				velocity.y -= _dive_grav * delta
+			
 			_movestate = (
 				Movestate.DIVE_HITSTUN if is_on_floor() else 
 				Movestate.DIVE
@@ -275,6 +307,7 @@ func _physics_process(delta : float) -> void:
 		Movestate.DIVE_HITSTUN:
 			
 			velocity = Vector3.ZERO
+			
 			var _is_hitstun_over := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_dive_land_time + _dive_hitstun)
 			_movestate = (

@@ -14,6 +14,3 @@ func _ready() -> void:
 	_resume.pressed.connect(func(): resume_pressed.emit())
 	_options.pressed.connect(func(): options_pressed.emit())
 	_exit.pressed.connect(func(): get_tree().quit())
-
-#func _process(delta) -> void:
-	#print("pause is processing")
