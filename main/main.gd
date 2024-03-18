@@ -1,6 +1,9 @@
 extends Node3D
 class_name Main
 
+# Error tolerance for floating point comparisons.
+const ERR_TOL = 0.0001
+
 static var rng := RandomNumberGenerator.new()
 
 @onready var _pause_menu : PauseMenu = %Pause

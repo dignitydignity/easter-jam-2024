@@ -27,6 +27,7 @@ static var instance : Player
 @export_range(75.1, 179.0) var _sprint_fov : float
 @export_group("Dive")
 @export var _dive_grab_hitboxes : Array[Area3D]
+@export_range(0.1, 100) var _min_speed_for_dive : float
 @export_range(0.5, 10) var _dive_height : float
 @export_range(0, 20) var _dive_dist : float
 @export_range(0, 5) var _dive_cam_pitch_rot_delay : float
@@ -49,6 +50,8 @@ var _is_sprint_toggled : bool
 @onready var _hud : Control = %Hud
 @onready var _fps_label : Label = %FpsLabel
 @onready var _movestate_label : Label = %MovestateLabel
+@onready var _horizontal_speed_label : Label = %HorizontalSpeedLabel
+@onready var _grab_cooldown_label : Label = %GrabCooldownLabel
 
 func _ready() -> void:
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
@@ -72,9 +75,9 @@ func _input(event : InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_mouse_relative = -event.relative
 
-# `_process` only contains camera related stuff.
 func _process(delta : float) -> void:
 	
+	# Update debug labels.
 	_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
 	_movestate_label.text = "Movestate: %s " % (
 		"WALK" if _movestate == Movestate.WALK else 
@@ -84,7 +87,24 @@ func _process(delta : float) -> void:
 		"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
 		""
 	)
+	var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
+	var speed_text := "Speed: %.2f" % horz_speed
+	var is_sprinting_and_above_dive_speed_threshold := (
+		_movestate == Movestate.SPRINT 
+		and horz_speed >= _min_speed_for_dive - Main.ERR_TOL
+	)
+	if is_sprinting_and_above_dive_speed_threshold:
+		_horizontal_speed_label.add_theme_color_override("font_color", Color.GREEN)
+		_horizontal_speed_label.text = speed_text + " (can dive)"
+	else:
+		_horizontal_speed_label.add_theme_color_override("font_color", Color.WHITE)
+		_horizontal_speed_label.text = speed_text
 	
+	var remaining_grab_cooldown = maxf(_last_grab_attempt_time 
+		+ _grab_cooldown - Time.get_ticks_msec() / 1000.0, 0)
+	_grab_cooldown_label.text = "Grab Cooldown: %.2f" % remaining_grab_cooldown
+	
+	# Update camera and player rotation.
 	match _movestate:
 		Movestate.WALK, Movestate.JUMP_AIR, Movestate.SPRINT:
 			# Standard FPS cam controller.
@@ -106,7 +126,6 @@ func _process(delta : float) -> void:
 			pass
 	
 	# Cam FoV scales with with speed slightly.
-	var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 	var t := (horz_speed - _max_walk_speed) / (_sprint_speed - _max_walk_speed)
 	t = clamp(t, 0, 1)
 	const default_fov = 75.0
@@ -118,15 +137,13 @@ func _process(delta : float) -> void:
 
 func _physics_process(delta : float) -> void:
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
-
-	const err_tol = 0.0001
-
+	
 	var move_input := Input.get_vector("move_leftwards", "move_rightwards", 
 		"move_forwards", "move_backwards")
 	var is_moving_forwards := (
 		move_input != Vector2.ZERO 
-		and move_input.angle_to(Vector2.UP) < PI/2 - err_tol
-		and move_input.angle_to(Vector2.UP) > -PI/2 + err_tol
+		and move_input.angle_to(Vector2.UP) < PI/2 - Main.ERR_TOL
+		and move_input.angle_to(Vector2.UP) > -PI/2 + Main.ERR_TOL
 	)
 	var move_input_rel_dir := (transform.basis 
 		* Vector3(move_input.x, 0, move_input.y)).normalized()
@@ -174,7 +191,7 @@ func _physics_process(delta : float) -> void:
 			
 			var accel := _max_walk_speed / _time_to_max_walk_speed
 			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
-			if horz_speed > _max_walk_speed + err_tol:
+			if horz_speed > _max_walk_speed + Main.ERR_TOL:
 				# If the player stopped sprinting, they decelerate slower.
 				var decel := absf(_sprint_speed - _max_walk_speed) / _time_to_stop_sprint
 				accelerate_velocity_in_move_dir.call(_max_walk_speed, decel)
@@ -198,8 +215,7 @@ func _physics_process(delta : float) -> void:
 			accelerate_velocity_in_move_dir.call(_sprint_speed, accel)
 			
 			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
-			var min_speed_for_dive := (_sprint_speed + _max_walk_speed) / 2.0
-			var is_at_min_speed_for_dive := horz_speed >= (min_speed_for_dive - err_tol)
+			var is_at_min_speed_for_dive := horz_speed >= (_min_speed_for_dive - Main.ERR_TOL)
 			
 			var _is_dive_just_started := false
 			if Input.is_action_just_pressed("action") and is_at_min_speed_for_dive:
@@ -258,7 +274,7 @@ func _physics_process(delta : float) -> void:
 			# while airborne.
 			var accel := _midair_accel_multiplier * (_max_walk_speed 
 				/ _time_to_max_walk_speed)
-			if _ground_takeoff_horz_speed > err_tol:
+			if _ground_takeoff_horz_speed > Main.ERR_TOL:
 				accelerate_velocity_in_move_dir.call(
 					_ground_takeoff_horz_speed, accel
 				)
@@ -306,6 +322,10 @@ func _physics_process(delta : float) -> void:
 			
 		Movestate.DIVE_HITSTUN:
 			
+			# Stop grabbing rabbits.
+			for box in _dive_grab_hitboxes:
+				box.monitoring = false
+			
 			velocity = Vector3.ZERO
 			
 			var _is_hitstun_over := ((Time.get_ticks_msec() / 1000.0) 
@@ -314,5 +334,5 @@ func _physics_process(delta : float) -> void:
 				Movestate.WALK if _is_hitstun_over else
 				Movestate.DIVE_HITSTUN
 			)
-			
+	
 	move_and_slide()
