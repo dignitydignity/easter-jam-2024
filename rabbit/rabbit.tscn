@@ -10,6 +10,7 @@ resource_local_to_scene = true
 albedo_texture = ExtResource("3_ckcaq")
 emission_enabled = true
 emission = Color(0.211765, 0.239216, 0.278431, 1)
+emission_energy_multiplier = 0.1
 rim = 0.59
 backlight = Color(0.545098, 0.545098, 0.545098, 1)
 
@@ -21,6 +22,7 @@ diffuse_mode = 1
 albedo_texture = ExtResource("4_5lwgl")
 emission_enabled = true
 emission = Color(0.211765, 0.239216, 0.278431, 1)
+emission_energy_multiplier = 0.1
 billboard_mode = 1
 billboard_keep_scale = true
 
