@@ -34,14 +34,16 @@ height = 1.0
 process_mode = 1
 collision_layer = 3
 script = ExtResource("2_xo52y")
-_near_target_threshold = 0.5
 _walk_speed = 5.0
 _wander_dist_min = 10.0
 _wander_dist_max = 20.0
+_idle_time_min = 0.5
+_idle_time_max = 5.0
 _rabbit_body = NodePath("RabbitModel/RabbitBody")
 _rabbit_tail = NodePath("RabbitModel/RabbitTail")
 
 [node name="RabbitModel" parent="." instance=ExtResource("1_q6f4l")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="RabbitBody" parent="RabbitModel" index="0"]
 surface_material_override/0 = SubResource("ORMMaterial3D_lmpcg")
@@ -55,37 +57,65 @@ shape = SubResource("CapsuleShape3D_yfoac")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 unique_name_in_owner = true
+path_desired_distance = 0.5
 avoidance_enabled = true
 radius = 0.4
 debug_enabled = true
-debug_path_custom_color = Color(1, 1, 0, 1)
 
 [node name="Label3Ds" type="Node3D" parent="."]
 
 [node name="AiStateLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08296, 0)
-billboard = 2
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.74758, 0)
+billboard = 1
 text = "STATE"
 
 [node name="HorzSpeedLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.91336, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.57798, 0)
+billboard = 1
 text = "m/s"
 
 [node name="TargetPosLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7391, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.40372, 0)
+billboard = 1
 text = "TargetPos: "
 
 [node name="CurrentPosLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.57283, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.23745, 0)
+billboard = 1
 text = "CurrentPos: "
 
 [node name="DistToTargLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42853, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.09315, 0)
+billboard = 1
 text = "DistToTarg: "
+
+[node name="NavFinLabel" type="Label3D" parent="Label3Ds"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.91096, 0)
+billboard = 1
+text = "NavFin?: "
+
+[node name="TargReachedLabel" type="Label3D" parent="Label3Ds"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.76399, 0)
+billboard = 1
+text = "TargReached?: "
+
+[node name="ReachableLabel" type="Label3D" parent="Label3Ds"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5543, 0)
+billboard = 1
+text = "Reachable?:"
+
+[node name="IdlingLabel" type="Label3D" parent="Label3Ds"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36181, 0)
+billboard = 1
+text = "Idling?:"
 
 [editable path="RabbitModel"]

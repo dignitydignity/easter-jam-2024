@@ -99,10 +99,10 @@ func _process(delta : float) -> void:
 		and horz_speed >= _min_speed_for_dive - Main.ERR_TOL
 	)
 	if is_sprinting_and_above_dive_speed_threshold:
-		_horizontal_speed_label.add_theme_color_override("font_color", Color.GREEN)
+		_horizontal_speed_label.modulate = Color.GREEN
 		_horizontal_speed_label.text = speed_text + " (can dive)"
 	else:
-		_horizontal_speed_label.add_theme_color_override("font_color", Color.WHITE)
+		_horizontal_speed_label.modulate = Color.WHITE
 		_horizontal_speed_label.text = speed_text
 	
 	var remaining_grab_cooldown = maxf(_last_grab_attempt_time 
