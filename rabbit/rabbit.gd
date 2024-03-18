@@ -1,8 +1,7 @@
 extends CharacterBody3D
 class_name Rabbit
 
-# TODO: Color patterns / "rabbit types"?
-# TODO: Player detection.
+# TODO: Better vision cone (multiple area 3Ds).
 
 @export_group("Wander")
 @export_range(0.1, 10) var _walk_speed : float

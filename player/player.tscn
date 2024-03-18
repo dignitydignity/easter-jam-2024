@@ -24,6 +24,7 @@ size = Vector3(1, 2, 1)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_raycaster", "_interact_raycaster", "_dive_grab_hitboxes")]
 process_mode = 1
+collision_layer = 9
 script = ExtResource("1_fun63")
 _grab_raycaster = NodePath("Camera/GrabRaycaster")
 _interact_raycaster = NodePath("Camera/InteractRaycaster")

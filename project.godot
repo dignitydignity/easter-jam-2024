@@ -90,6 +90,7 @@ sprint={
 3d_physics/layer_1="default"
 3d_physics/layer_2="grabbable"
 3d_physics/layer_3="interactable"
+3d_physics/layer_4="detectable"
 
 [navigation]
 
