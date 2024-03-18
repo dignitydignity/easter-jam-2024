@@ -99,6 +99,7 @@ func _process(delta : float) -> void:
 func _physics_process(delta : float) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
+	
 	#print(sqrt(velocity.x ** 2 + velocity.z ** 2))
 	#print(
 		#"WALK" if _movestate == Movestate.WALK else 
@@ -120,13 +121,6 @@ func _physics_process(delta : float) -> void:
 	)
 	var move_input_rel_dir := (transform.basis 
 		* Vector3(move_input.x, 0, move_input.y)).normalized()
-	
-	#var accel_horz_vel_to := func(target_vel : Vector2,
-		#accel : float) -> void:
-		#velocity.x = move_toward(velocity.x, target_vel.x,
-			#accel * delta)
-		#velocity.z = move_toward(velocity.z, target_vel.y,
-			#accel * delta)
 	
 	var accelerate_velocity_in_move_dir := func(max_speed : float,
 		accel : float) -> void:
@@ -171,10 +165,7 @@ func _physics_process(delta : float) -> void:
 			var accel := _max_walk_speed / _time_to_max_walk_speed
 			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 			if horz_speed > _max_walk_speed + err_tol:
-				#var target_horz_vel := _max_walk_speed * Vector2(move_input_rel_dir.x, 
-					#move_input_rel_dir.y)
 				var decel := absf(_sprint_speed - _max_walk_speed) / _time_to_stop_sprint
-				#accel_horz_vel_to.call(target_horz_vel, decel)
 				accelerate_velocity_in_move_dir.call(_max_walk_speed, decel)
 			else:
 				accelerate_velocity_in_move_dir.call(_max_walk_speed, accel)
@@ -198,7 +189,6 @@ func _physics_process(delta : float) -> void:
 			var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 			var min_speed_for_dive := (_sprint_speed + _max_walk_speed) / 2.0
 			var is_at_min_speed_for_dive := horz_speed >= (min_speed_for_dive - err_tol)
-			#var is_at_max_sprint_speed := horz_speed >= (_sprint_speed - err_tol)
 			
 			var _is_dive_just_started := false
 			if Input.is_action_just_pressed("action") and is_at_min_speed_for_dive:
