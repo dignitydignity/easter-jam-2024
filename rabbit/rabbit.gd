@@ -21,6 +21,7 @@ class_name Rabbit
 @export_range(0, 100) var _grav : float
 @export_range(0, 30) var _flee_dist : float
 @export_range(0, 90) var _flee_angle_deg : float
+@export_range(0, 100) var _jump_dist_grav_scale_factor : float
 
 @export_group("References")
 @export var _rabbit_body : MeshInstance3D
@@ -31,6 +32,7 @@ enum AiState { WANDER, FLEE }
 var _ai_state := AiState.WANDER
 var _last_nav_finish_time : float
 var _idle_time : float
+var _last_scaled_grav : float
 
 # Flee target is the object to flee from. Not the target to flee towards.
 var _flee_target : Node3D
@@ -250,8 +252,10 @@ func _physics_process(delta : float) -> void:
 						(pos_to_jump_to.x - global_position.x) ** 2 
 						+ (pos_to_jump_to.z - global_position.z) ** 2
 					)
-					var jump_y_vel := sqrt(2 * _grav * _jump_height)
-					var t_up := jump_y_vel / _grav
+					# Used to increase rabbit speed
+					_last_scaled_grav = _grav * (1 + (_jump_dist_grav_scale_factor / jump_dist_concrete))
+					var jump_y_vel := sqrt(2 * _last_scaled_grav * _jump_height)
+					var t_up := jump_y_vel / _last_scaled_grav
 					var t_total := 2.0 * (t_up)
 					var jump_forwards_vel := jump_dist_concrete / t_total # _jump_dist
 					
@@ -259,6 +263,6 @@ func _physics_process(delta : float) -> void:
 					velocity.y = jump_y_vel
 					
 				else:
-					velocity.y -= _grav * delta
+					velocity.y -= _last_scaled_grav * delta
 
 	move_and_slide()

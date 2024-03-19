@@ -14,6 +14,12 @@ config/name="easter-jam-2024"
 run/main_scene="res://main/main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 
+[display]
+
+window/layer_4="detectable"
+window/default_cell_height=0.1
+window/default_cell_size=0.1
+
 [importer_defaults]
 
 texture={
