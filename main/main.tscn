@@ -39,7 +39,7 @@ process_mode = 3
 script = ExtResource("1_ft7y6")
 
 [node name="Player" parent="." instance=ExtResource("3_n6th7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6323, 1.16016, 15.7432)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.5747, 2.80788, 14.9922)
 
 [node name="NewLevel" parent="." instance=ExtResource("3_gt7pj")]
 
@@ -85,4 +85,4 @@ anchor_bottom = 0.5
 [node name="Rabbits" type="Node" parent="."]
 
 [node name="Rabbit" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -15.8097, 1.16016, 7.05289)
+transform = Transform3D(-0.677004, 0, 0.735979, 0, 1, 0, -0.735979, 0, -0.677004, -42.7644, 2.04177, 7.67572)

@@ -35,9 +35,18 @@ var _idle_time : float
 var _last_scaled_grav : float
 
 # Flee target is the object to flee from. Not the target to flee towards.
-var _flee_target : Node3D
+var _player_in_cone : Player # When walks into vision cone.
+var _flee_target : Node3D:
+	get: return _flee_target
+	set(value):
+		_flee_target = value
+		if _flee_target != null:
+			_ai_state = AiState.FLEE
+		else:
+			_ai_state = AiState.WANDER
 
 @onready var _vision_cone : Area3D = %VisionCone
+@onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
 
 @onready var _ai_state_label : Label3D = %AiStateLabel
 @onready var _horz_speed_label : Label3D = %HorzSpeedLabel
@@ -97,6 +106,7 @@ func _ready() -> void:
 	# Ai detection.
 	assert(_vision_cone.collision_mask == 8)
 	assert(!_vision_cone.monitorable)
+	#assert(!_line_of_sight_raycaster.enabled)
 	# TODO: `for` loop over vision cones array.
 	_vision_cone.body_entered.connect(
 		func(body: Node3D):
@@ -109,18 +119,37 @@ func _ready() -> void:
 					_ai_state = AiState.FLEE
 					var spook_breadcrumb := Node3D.new()
 					# When return to Wander, delete spook breadcrumb.
+					var breadcrumb_timer := get_tree().create_timer(5)
+					breadcrumb_timer.timeout.connect(
+						func():
+							spook_breadcrumb.queue_free()
+							breadcrumb_timer.queue_free()
+					)
 					get_tree().current_scene.add_child(spook_breadcrumb)
 					spook_breadcrumb.global_position = other_rabbit.global_position
 					_flee_target = spook_breadcrumb
-					
 			elif other_rabbit == self:
 				pass
 			else:
 				var player := body as Player
 				assert(player != null)
-				_flee_target = player # TODO: Forget the reference eventually.
-				if _ai_state != AiState.FLEE:
-					_ai_state = AiState.FLEE
+				_player_in_cone = player
+				_check_player_in_los()
+				#_potential_flee_target = player
+				
+				#var dir := _line_of_sight_raycaster.global_position.direction_to()
+				#_flee_target = player # TODO: Forget the reference eventually.
+				
+				
+				
+				#if _ai_state != AiState.FLEE:
+					#_ai_state = AiState.FLEE
+	)
+	
+	_vision_cone.body_exited.connect(
+		func(body : Node3D) -> void:
+			if body is Player:
+				_player_in_cone = null
 	)
 	
 	# Rest of `_ready` is dedicated to setting up ai navigation.
@@ -141,6 +170,46 @@ func _ready() -> void:
 			_idling_label.text = "Idling?: True (%.2f s)" % _idle_time
 			_idling_label.modulate = Color.GREEN
 	)
+
+func _check_player_in_los():
+	if _player_in_cone == null: return
+	
+	print("player in vis cone")
+	var is_player_in_los := false
+	for los_marker in _player_in_cone.line_of_sight_markers:
+		const dist := 10
+		var dir := (los_marker.global_position - _line_of_sight_raycaster.global_position).normalized()
+
+		_line_of_sight_raycaster.target_position = dir * dist
+		_line_of_sight_raycaster.force_raycast_update()
+
+		var is_col := _line_of_sight_raycaster.is_colliding()
+		var is_player := _line_of_sight_raycaster.get_collider() is Player
+		print(_line_of_sight_raycaster.get_collider())
+
+		if is_col and is_player:
+			is_player_in_los = true
+			break  
+
+
+	#var is_player_in_los := false
+	#for los_marker in _player_in_cone.line_of_sight_markers:
+		#const dist := 10
+		#var dir := _line_of_sight_raycaster.global_position.direction_to(
+			#los_marker.global_position).normalized()
+		#var dir_rel := (_line_of_sight_raycaster.basis * dir).normalized()
+		#_line_of_sight_raycaster.target_position = dist * dir_rel
+		#_line_of_sight_raycaster.force_raycast_update()
+		#var is_col := _line_of_sight_raycaster.is_colliding()
+		#var is_player := _line_of_sight_raycaster.get_collider() is Player
+		#print(_line_of_sight_raycaster.get_collider())
+		#if is_col and is_player:
+			#is_player_in_los = true
+	
+	if is_player_in_los:
+		print("player is in los")
+		_flee_target = _player_in_cone
+
 
 # Labels.
 func _process(_delta : float) -> void:
@@ -200,6 +269,9 @@ func _process(_delta : float) -> void:
 		_flee_targ_label.modulate = Color.RED
 
 func _physics_process(delta : float) -> void:
+	
+	_check_player_in_los()
+	
 	# Anims can be driven by AiState + velocity.
 	match _ai_state:
 		AiState.WANDER:
@@ -228,6 +300,7 @@ func _physics_process(delta : float) -> void:
 					)
 				
 				if !is_on_floor():
+					print('eyh')
 					velocity.y -= _grav * delta
 				
 		AiState.FLEE:
@@ -264,5 +337,8 @@ func _physics_process(delta : float) -> void:
 					
 				else:
 					velocity.y -= _last_scaled_grav * delta
+					
+				if _flee_target == null:
+					_ai_state = AiState.WANDER
 
 	move_and_slide()

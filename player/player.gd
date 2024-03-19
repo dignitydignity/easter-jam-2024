@@ -11,6 +11,7 @@ static var instance : Player
 # To set grab range, modify reference's `TargetPosition`.
 @export var _grab_raycaster : RayCast3D
 @export var _interact_raycaster : RayCast3D
+@export var line_of_sight_markers : Array[Marker3D]
 @export_range(0, 5) var _grab_cooldown : float
 @export_range(0, 90) var _cam_pitch_max : float
 @export_group("Jump")
@@ -57,6 +58,7 @@ var _last_dive_land_time : float
 @onready var _movestate_label : Label = %MovestateLabel
 @onready var _horizontal_speed_label : Label = %HorizontalSpeedLabel
 @onready var _grab_cooldown_label : Label = %GrabCooldownLabel
+
 
 func _ready() -> void:
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
