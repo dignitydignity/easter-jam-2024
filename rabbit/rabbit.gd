@@ -18,8 +18,9 @@ class_name Rabbit
 # TODO: Most important thing for gameplay is consistent rabbit speed? So use:
 #       @export_range(0, 100) var _jump_init_horz_speed : float
 @export_range(0, 10) var _jump_height : float
-@export_range(0, 50) var _grav : float
-@export_range(0, 20) var _jump_dist : float
+@export_range(0, 100) var _grav : float
+@export_range(0, 30) var _jump_dist : float
+@export_range(0, 90) var _flee_angle_deg : float
 
 @export_group("References")
 @export var _rabbit_body : MeshInstance3D
@@ -52,6 +53,15 @@ func _set_random_nav_agent_target_pos(dist : float) -> void:
 	var rand_angle := randf() * 2 * PI
 	var rand_dir := Vector3(cos(rand_angle), 0,  sin(rand_angle))
 	_nav_agent.target_position = global_position + rand_dir * dist
+
+func _set_random_nav_agent_target_pos_away_fom_flee_target(dist : float) -> void:
+	var dir_to_flee_targ := global_position.direction_to(_flee_target.global_position)
+	var angle_to_flee_targ := atan2(dir_to_flee_targ.z, dir_to_flee_targ.x)
+	var opp_angle := angle_to_flee_targ + PI
+	var arc_width := deg_to_rad(_flee_angle_deg)
+	var rand_angle := opp_angle + randf() * arc_width - arc_width / 2
+	var rand_dir_away_from_flee_targ := Vector3(cos(rand_angle), 0, sin(rand_angle))
+	_nav_agent.target_position = global_position + rand_dir_away_from_flee_targ * dist
 
 func _ready() -> void:
 	seed(12345) # Fix seed for testing.
@@ -129,13 +139,6 @@ func _ready() -> void:
 			_idling_label.text = "Idling?: True (%.2f s)" % _idle_time
 			_idling_label.modulate = Color.GREEN
 	)
-	
-	# Avoid other agents.
-	#_nav_agent.velocity_computed.connect(
-		#func(safe_velocity : Vector3) -> void:
-			#velocity = safe_velocity
-			#move_and_slide()
-	#)
 
 # Labels.
 func _process(_delta : float) -> void:
@@ -226,56 +229,73 @@ func _physics_process(delta : float) -> void:
 					velocity.y -= _grav * delta
 				
 		AiState.FLEE:
-			
-					# The random target_pos might be invalid (not on NavMesh).
-					# Being off NavMesh is bad, because it means if the rabbit
-					# goes to idle, it will be stuck (maybe not a problem)?
-					# Overall, the possibility of invalid target_pos leads 
-					# to the following challenges:
-					# - If the target pos is invalid, what do I do?
-					#   Do I recompute it? How so? Implementaiton must be fast.
-					# - How do I even check if it's invalid? Maybe I can
-					#   just constrain myself to `reachable` locations?
-					# - Do I need to take into account height offsets
-					#   in my jump maths?
 					
 				if is_on_floor():
 					
-					_set_random_nav_agent_target_pos(_jump_dist)
+					_set_random_nav_agent_target_pos_away_fom_flee_target(_jump_dist)
+					
+					var path := _nav_agent.get_current_navigation_path()
+					var n_path_elements := path.size()
+					var sharp_turn_id := -1
+					const sharp_turn_angle_threshold := 35.0
+					for i in (n_path_elements - 1):
+						if i < 1: continue
+						var segment1 := (path[i] - path[i - 1]).normalized()
+						var segment2 := (path[i + 1] - path[i]).normalized()
+						var angle = rad_to_deg(acos(segment1.dot(segment2))) 
+						
+						if angle > sharp_turn_angle_threshold:
+							print("Sharp turn at index: ", i)
+							sharp_turn_id = i
+							break
+					
+					var is_path_completely_blocked := false
+					if path.size() > 1 and sharp_turn_id < 0:
+						var segment1 := (path[1] - path[0]).normalized()
+						var segment2 := (path[0] - path[-1]).normalized()
+						var angle := rad_to_deg(acos(segment1.dot(segment2)))
+						if angle > sharp_turn_angle_threshold:
+							is_path_completely_blocked = true
+					
+					# global_position.distance_to(_nav_agent.target_position) 
+					#var is_target_behind_wall := _nav_agent.distance_to_target() > _jump_dist + Main.ERR_TOL
+					#var jump_to_pos := (
+						#path[sharp_turn_id] if sharp_turn_id >= 0 else
+						#path[1] if is_path_completely_blocked else
+						#_nav_agent.target_position
+					#)
+					
+					var jump_to_pos := (
+						_nav_agent.get_next_path_position()
+					)
+					
+					if path.size() > 1 and jump_to_pos == path[1]:
+						print("jump_to_pos == path[1]")
+					
+					look_at(jump_to_pos)
+					rotation.x = 0
+					rotation.z = 0
+					
+					var jump_dir := Vector3(
+						jump_to_pos.x - global_position.x,
+						0,
+						jump_to_pos.z - global_position.z
+					).normalized()
+					
+					#var jump_dir_rel := -(transform.basis * jump_dir).normalized()
+					var jump_dist_concrete := sqrt(
+						(jump_to_pos.x - global_position.x) ** 2 
+						+ (jump_to_pos.z - global_position.z) ** 2
+					)
 					var jump_y_vel := sqrt(2 * _grav * _jump_height)
 					var t_up := jump_y_vel / _grav
 					var t_total := 2.0 * (t_up)
-					var jump_forwards_vel := _jump_dist / t_total
-					var jump_dir := Vector3(
-						_nav_agent.target_position.x - global_position.x,
-						0,
-						_nav_agent.target_position.z - global_position.z
-					).normalized()
-					var jump_dir_rel := (transform.basis * jump_dir).normalized()
-					velocity = jump_forwards_vel * jump_dir_rel
+					var jump_forwards_vel := jump_dist_concrete / t_total # _jump_dist
+					
+					velocity = jump_forwards_vel * jump_dir
 					velocity.y = jump_y_vel
 					
 				else:
 					velocity.y -= _grav * delta
-					
-					
-					
-					
-					
-			# - Precompute jump landing position, and see if it's on the NavMesh.
-			#   If it isn't, then check earlier / less distant landing points in
-			#   same dir until one within the fixed distance range is found.
-			#   If no valid points on NavMesh in that direction, then pick 
-			#   another random direction and repeat. Once one is finally found, 
-			#   that is going to be the landing position (jump height may
-			#   need to be adjusted to fit, perhaps ignore fixed height?).
-			# - When landing, immediately set a new target, then jump again.
-			# - Sometimes sample very nearby "islands" (high or lower segments of 
-			#   terrain). If one is found, can do "superjump" or "drop"
-			#   to try to dodge player.
-			# - If _flee_from is far from rabbit and behind, rabbit can "forget" 
-			#   about _flee_from and return to wander state.
-			# If _flee_from != player, and rabbit detects / sees player, 
-			#   immediately set _flee_from = player.
 
 	move_and_slide()

@@ -42,9 +42,10 @@ _wander_dist_min = 10.0
 _wander_dist_max = 20.0
 _idle_time_min = 0.5
 _idle_time_max = 5.0
-_jump_height = 10.0
-_grav = 9.8
-_jump_dist = 20.0
+_jump_height = 1.0
+_grav = 66.876
+_jump_dist = 10.0
+_flee_angle_deg = 5.0
 _rabbit_body = NodePath("RabbitModel/RabbitBody")
 _rabbit_tail = NodePath("RabbitModel/RabbitTail")
 
@@ -63,8 +64,6 @@ shape = SubResource("CapsuleShape3D_yfoac")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 unique_name_in_owner = true
-path_desired_distance = 0.5
-avoidance_enabled = true
 radius = 0.4
 debug_enabled = true
 
