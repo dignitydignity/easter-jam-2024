@@ -41,9 +41,12 @@ var _flee_target : Node3D:
 	set(value):
 		_flee_target = value
 		if _flee_target != null:
+			_last_flee_start_time = Time.get_ticks_msec() / 1000.0
 			_ai_state = AiState.FLEE
 		else:
 			_ai_state = AiState.WANDER
+var _last_flee_start_time : float
+var _last_flee_forget_dist_reach_time : float
 
 @onready var _vision_cone : Area3D = %VisionCone
 @onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
@@ -131,10 +134,11 @@ func _ready() -> void:
 			elif other_rabbit == self:
 				pass
 			else:
+				# If player is in LOS, flee.
 				var player := body as Player
 				assert(player != null)
 				_player_in_cone = player
-				_check_player_in_los()
+				_check_player_in_los_and_begin_flee_if_so()
 				#_potential_flee_target = player
 				
 				#var dir := _line_of_sight_raycaster.global_position.direction_to()
@@ -171,7 +175,7 @@ func _ready() -> void:
 			_idling_label.modulate = Color.GREEN
 	)
 
-func _check_player_in_los():
+func _check_player_in_los_and_begin_flee_if_so():
 	if _player_in_cone == null: return
 	_line_of_sight_raycaster.target_position = _line_of_sight_raycaster.to_local(
 		_player_in_cone.global_position + Vector3.UP)
@@ -241,7 +245,18 @@ func _process(_delta : float) -> void:
 
 func _physics_process(delta : float) -> void:
 	
-	_check_player_in_los()
+	_check_player_in_los_and_begin_flee_if_so()
+	
+	# End flee if _flee_target is far
+	if _flee_target != null:
+		const forget_dist := 3.0
+		var flee_target_is_far = global_position.distance_to(_flee_target.global_position) >= forget_dist
+		if flee_target_is_far:
+			const forget_time := 1.0
+			var enough_time_has_passed := Time.get_ticks_msec() / 1000.0 >= _last_flee_start_time + forget_time
+			if enough_time_has_passed:
+				print("Rabbit forgot about ", _flee_target.name)
+				_flee_target = null
 	
 	# Anims can be driven by AiState + velocity.
 	match _ai_state:
@@ -270,8 +285,8 @@ func _physics_process(delta : float) -> void:
 						randf_range(_wander_dist_min, _wander_dist_max)
 					)
 				
-				if !is_on_floor():
-					velocity.y -= _grav * delta
+			if !is_on_floor():
+				velocity.y -= 40 * _grav * delta
 				
 		AiState.FLEE:
 					
@@ -307,8 +322,5 @@ func _physics_process(delta : float) -> void:
 					
 				else:
 					velocity.y -= _last_scaled_grav * delta
-					
-				if _flee_target == null:
-					_ai_state = AiState.WANDER
 
 	move_and_slide()
