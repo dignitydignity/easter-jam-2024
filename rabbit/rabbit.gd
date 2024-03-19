@@ -175,38 +175,14 @@ func _check_player_in_los():
 	if _player_in_cone == null: return
 	
 	print("player in vis cone")
-	var is_player_in_los := false
-	for los_marker in _player_in_cone.line_of_sight_markers:
-		const dist := 10
-		var dir := (los_marker.global_position - _line_of_sight_raycaster.global_position).normalized()
 
-		_line_of_sight_raycaster.target_position = dir * dist
-		_line_of_sight_raycaster.force_raycast_update()
-
-		var is_col := _line_of_sight_raycaster.is_colliding()
-		var is_player := _line_of_sight_raycaster.get_collider() is Player
-		print(_line_of_sight_raycaster.get_collider())
-
-		if is_col and is_player:
-			is_player_in_los = true
-			break  
-
-
-	#var is_player_in_los := false
-	#for los_marker in _player_in_cone.line_of_sight_markers:
-		#const dist := 10
-		#var dir := _line_of_sight_raycaster.global_position.direction_to(
-			#los_marker.global_position).normalized()
-		#var dir_rel := (_line_of_sight_raycaster.basis * dir).normalized()
-		#_line_of_sight_raycaster.target_position = dist * dir_rel
-		#_line_of_sight_raycaster.force_raycast_update()
-		#var is_col := _line_of_sight_raycaster.is_colliding()
-		#var is_player := _line_of_sight_raycaster.get_collider() is Player
-		#print(_line_of_sight_raycaster.get_collider())
-		#if is_col and is_player:
-			#is_player_in_los = true
+	_line_of_sight_raycaster.target_position = _line_of_sight_raycaster.to_local(
+		_player_in_cone.global_position + Vector3.UP)
+	var is_col := _line_of_sight_raycaster.is_colliding()
+	var is_player := _line_of_sight_raycaster.get_collider() is Player
+	print(_line_of_sight_raycaster.get_collider())
 	
-	if is_player_in_los:
+	if is_col and is_player:
 		print("player is in los")
 		_flee_target = _player_in_cone
 

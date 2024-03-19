@@ -22,13 +22,12 @@ size = Vector3(0.5, 0.25, 0.08)
 [sub_resource type="BoxShape3D" id="BoxShape3D_42s1t"]
 size = Vector3(1, 2, 1)
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_raycaster", "_interact_raycaster", "line_of_sight_markers", "_dive_grab_hitboxes")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_raycaster", "_interact_raycaster", "_dive_grab_hitboxes")]
 process_mode = 1
 collision_layer = 9
 script = ExtResource("1_fun63")
 _grab_raycaster = NodePath("Camera/GrabRaycaster")
 _interact_raycaster = NodePath("Camera/InteractRaycaster")
-line_of_sight_markers = [NodePath("LineOfSightMarkers/Marker3D"), NodePath("LineOfSightMarkers/Marker3D2"), NodePath("LineOfSightMarkers/Marker3D3"), NodePath("LineOfSightMarkers/Marker3D4"), NodePath("LineOfSightMarkers/Marker3D5")]
 _grab_cooldown = 0.25
 _cam_pitch_max = 75.0
 _jump_drag = 1.2
@@ -139,21 +138,3 @@ monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DiveGrabHitbox2"]
 shape = SubResource("BoxShape3D_42s1t")
-
-[node name="LineOfSightMarkers" type="Node3D" parent="."]
-unique_name_in_owner = true
-
-[node name="Marker3D" type="Marker3D" parent="LineOfSightMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.25, 0)
-
-[node name="Marker3D2" type="Marker3D" parent="LineOfSightMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.25, 0)
-
-[node name="Marker3D3" type="Marker3D" parent="LineOfSightMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.75, 0)
-
-[node name="Marker3D4" type="Marker3D" parent="LineOfSightMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.75, 0)
-
-[node name="Marker3D5" type="Marker3D" parent="LineOfSightMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

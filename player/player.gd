@@ -11,7 +11,6 @@ static var instance : Player
 # To set grab range, modify reference's `TargetPosition`.
 @export var _grab_raycaster : RayCast3D
 @export var _interact_raycaster : RayCast3D
-@export var line_of_sight_markers : Array[Marker3D]
 @export_range(0, 5) var _grab_cooldown : float
 @export_range(0, 90) var _cam_pitch_max : float
 @export_group("Jump")
