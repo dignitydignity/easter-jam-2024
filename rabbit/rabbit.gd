@@ -46,7 +46,6 @@ var _flee_target : Node3D:
 		else:
 			_ai_state = AiState.WANDER
 var _last_flee_start_time : float
-var _last_flee_forget_dist_reach_time : float
 
 @onready var _vision_cone : Area3D = %VisionCone
 @onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
@@ -124,9 +123,7 @@ func _ready() -> void:
 					# When return to Wander, delete spook breadcrumb.
 					var breadcrumb_timer := get_tree().create_timer(5)
 					breadcrumb_timer.timeout.connect(
-						func():
-							spook_breadcrumb.queue_free()
-							breadcrumb_timer.queue_free()
+						func(): spook_breadcrumb.queue_free()
 					)
 					get_tree().current_scene.add_child(spook_breadcrumb)
 					spook_breadcrumb.global_position = other_rabbit.global_position
@@ -134,20 +131,10 @@ func _ready() -> void:
 			elif other_rabbit == self:
 				pass
 			else:
-				# If player is in LOS, flee.
 				var player := body as Player
 				assert(player != null)
 				_player_in_cone = player
 				_check_player_in_los_and_begin_flee_if_so()
-				#_potential_flee_target = player
-				
-				#var dir := _line_of_sight_raycaster.global_position.direction_to()
-				#_flee_target = player # TODO: Forget the reference eventually.
-				
-				
-				
-				#if _ai_state != AiState.FLEE:
-					#_ai_state = AiState.FLEE
 	)
 	
 	_vision_cone.body_exited.connect(
