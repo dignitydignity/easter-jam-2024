@@ -173,17 +173,12 @@ func _ready() -> void:
 
 func _check_player_in_los():
 	if _player_in_cone == null: return
-	
-	print("player in vis cone")
-
 	_line_of_sight_raycaster.target_position = _line_of_sight_raycaster.to_local(
 		_player_in_cone.global_position + Vector3.UP)
 	var is_col := _line_of_sight_raycaster.is_colliding()
 	var is_player := _line_of_sight_raycaster.get_collider() is Player
-	print(_line_of_sight_raycaster.get_collider())
 	
 	if is_col and is_player:
-		print("player is in los")
 		_flee_target = _player_in_cone
 
 
@@ -276,7 +271,6 @@ func _physics_process(delta : float) -> void:
 					)
 				
 				if !is_on_floor():
-					print('eyh')
 					velocity.y -= _grav * delta
 				
 		AiState.FLEE:
