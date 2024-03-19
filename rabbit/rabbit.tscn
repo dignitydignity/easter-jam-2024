@@ -42,6 +42,9 @@ _wander_dist_min = 10.0
 _wander_dist_max = 20.0
 _idle_time_min = 0.5
 _idle_time_max = 5.0
+_jump_height = 10.0
+_grav = 9.8
+_jump_dist = 20.0
 _rabbit_body = NodePath("RabbitModel/RabbitBody")
 _rabbit_tail = NodePath("RabbitModel/RabbitTail")
 
@@ -79,51 +82,57 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.86451, 0)
 billboard = 1
 text = "m/s"
 
+[node name="GroundedLabel" type="Label3D" parent="Label3Ds"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.67039, 0)
+billboard = 1
+text = "Grounded?:"
+
 [node name="TargetPosLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.69025, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.46442, 0)
 billboard = 1
 text = "TargetPos: "
 
 [node name="CurrentPosLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52398, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29816, 0)
 billboard = 1
 text = "CurrentPos: "
 
 [node name="DistToTargLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.37968, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15385, 0)
 billboard = 1
 text = "DistToTarg: "
 
 [node name="NavFinLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.19749, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.97167, 0)
 billboard = 1
 text = "NavFin?: "
 
 [node name="TargReachedLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05052, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8247, 0)
 billboard = 1
 text = "TargReached?: "
 
 [node name="ReachableLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.84083, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61501, 0)
 billboard = 1
 text = "Reachable?:"
 
 [node name="IdlingLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.64834, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42251, 0)
 billboard = 1
 text = "Idling?:"
 
 [node name="FleeTargLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47403, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2482, 0)
 billboard = 1
 text = "FleeTarg:"
 

@@ -14,6 +14,12 @@ class_name Rabbit
 @export_range(0, 20) var _idle_time_min : float
 @export_range(0, 20) var _idle_time_max : float
 @export_group("Flee")
+# TODO: min and max ranges for height & jump dist?
+# TODO: Most important thing for gameplay is consistent rabbit speed? So use:
+#       @export_range(0, 100) var _jump_init_horz_speed : float
+@export_range(0, 10) var _jump_height : float
+@export_range(0, 50) var _grav : float
+@export_range(0, 20) var _jump_dist : float
 
 @export_group("References")
 @export var _rabbit_body : MeshInstance3D
@@ -24,12 +30,15 @@ enum AiState { WANDER, FLEE }
 var _ai_state := AiState.WANDER
 var _last_nav_finish_time : float
 var _idle_time : float
+
+# Flee target is the object to flee from. Not the target to flee towards.
 var _flee_target : Node3D
 
 @onready var _vision_cone : Area3D = %VisionCone
 
 @onready var _ai_state_label : Label3D = %AiStateLabel
 @onready var _horz_speed_label : Label3D = %HorzSpeedLabel
+@onready var _grounded_label : Label3D = %GroundedLabel
 @onready var _target_pos_label : Label3D = %TargetPosLabel
 @onready var _current_pos_label : Label3D = %CurrentPosLabel
 @onready var _dist_to_targ_label : Label3D = %DistToTargLabel
@@ -39,12 +48,10 @@ var _flee_target : Node3D
 @onready var _idling_label : Label3D = %IdlingLabel
 @onready var _flee_targ_label : Label3D = %FleeTargLabel
 
-func _acquire_random_wander_target() -> void:
+func _set_random_nav_agent_target_pos(dist : float) -> void:
 	var rand_angle := randf() * 2 * PI
 	var rand_dir := Vector3(cos(rand_angle), 0,  sin(rand_angle))
-	var rand_dist := randf_range(_wander_dist_min,
-		 _wander_dist_max)
-	_nav_agent.target_position = global_position + rand_dir * rand_dist
+	_nav_agent.target_position = global_position + rand_dir * dist
 
 func _ready() -> void:
 	seed(12345) # Fix seed for testing.
@@ -86,7 +93,6 @@ func _ready() -> void:
 				and other_rabbit != self)
 			
 			if saw_fleeing_rabbit:
-				print("%s: saw fleeing rabbit!" % name)
 				if _ai_state != AiState.FLEE:
 					_ai_state = AiState.FLEE
 					var spook_breadcrumb := Node3D.new()
@@ -94,12 +100,12 @@ func _ready() -> void:
 					get_tree().current_scene.add_child(spook_breadcrumb)
 					spook_breadcrumb.global_position = other_rabbit.global_position
 					_flee_target = spook_breadcrumb
+					
 			elif other_rabbit == self:
 				pass
 			else:
 				var player := body as Player
 				assert(player != null)
-				print("%s: saw player!" % name)
 				_flee_target = player # TODO: Forget the reference eventually.
 				if _ai_state != AiState.FLEE:
 					_ai_state = AiState.FLEE
@@ -107,7 +113,9 @@ func _ready() -> void:
 	
 	# Rest of `_ready` is dedicated to setting up ai navigation.
 	_ai_state = AiState.WANDER
-	_acquire_random_wander_target()
+	_set_random_nav_agent_target_pos(
+		randf_range(_wander_dist_min, _wander_dist_max)
+	)
 	_idling_label.text = "Idling?: false"
 	_idling_label.modulate = Color.RED
 	
@@ -123,21 +131,30 @@ func _ready() -> void:
 	)
 	
 	# Avoid other agents.
-	_nav_agent.velocity_computed.connect(
-		func(safe_velocity : Vector3) -> void:
-			velocity = safe_velocity
-			move_and_slide()
-	)
+	#_nav_agent.velocity_computed.connect(
+		#func(safe_velocity : Vector3) -> void:
+			#velocity = safe_velocity
+			#move_and_slide()
+	#)
 
 # Labels.
 func _process(_delta : float) -> void:
+	
 	_ai_state_label.text = (
 		"WANDER" if _ai_state == AiState.WANDER else
 		"FLEE" if _ai_state == AiState.FLEE else 
 		"INVALID"
 	)
+	
 	_horz_speed_label.text = "%.2f m/s" % sqrt(velocity.x ** 2 
 		+ velocity.z ** 2)
+		
+	_grounded_label.text = "Grounded?: %s" % is_on_floor()
+	_grounded_label.modulate = (
+		Color.GREEN if is_on_floor() else
+		Color.RED
+	)
+	
 	_target_pos_label.text = "TargetPos: %.2v" % _nav_agent.target_position
 	_current_pos_label.text = "CurrentPos: %.2v" % global_position
 	_dist_to_targ_label.text = ("DistToTarg: %.2f" 
@@ -177,16 +194,23 @@ func _process(_delta : float) -> void:
 		_flee_targ_label.text = "FleeTarg: NONE"
 		_flee_targ_label.modulate = Color.RED
 
-func _physics_process(_delta : float) -> void:
+func _physics_process(delta : float) -> void:
 	# Anims can be driven by AiState + velocity.
 	match _ai_state:
 		AiState.WANDER:
+			
 			if !_nav_agent.is_navigation_finished():
-				var next_path_position := _nav_agent.get_next_path_position()
-				velocity = (global_position.direction_to(next_path_position) 
-					* _walk_speed)
-				if global_position.distance_to(next_path_position) > Main.ERR_TOL:
-					look_at(next_path_position)
+				var next_path_pos := _nav_agent.get_next_path_position()
+				velocity = _walk_speed * Vector3(
+					next_path_pos.x - global_position.x,
+					0,
+					next_path_pos.z - global_position.z
+				).normalized()
+				# TODO: lerp to target look_at.
+				if global_position.distance_to(next_path_pos) > Main.ERR_TOL:
+					look_at(next_path_pos)
+					rotation.x = 0
+					rotation.z = 0
 			else:
 				velocity = Vector3.ZERO
 				var is_done_idling := (Time.get_ticks_msec() / 1000.0 
@@ -194,13 +218,50 @@ func _physics_process(_delta : float) -> void:
 				if is_done_idling:
 					_idling_label.text = "Idling?: False"
 					_idling_label.modulate = Color.RED
-					_acquire_random_wander_target()
-
+					_set_random_nav_agent_target_pos(
+						randf_range(_wander_dist_min, _wander_dist_max)
+					)
+				
+				if !is_on_floor():
+					velocity.y -= _grav * delta
+				
 		AiState.FLEE:
-			# - If has target, jump towards it.
-			# - Jumps should be fixed height (or within narrow range).
-			# - Jumps should be fixed distance or takeoff horz_vel
-			#    (or within a narrow-ish range).
+			
+					# The random target_pos might be invalid (not on NavMesh).
+					# Being off NavMesh is bad, because it means if the rabbit
+					# goes to idle, it will be stuck (maybe not a problem)?
+					# Overall, the possibility of invalid target_pos leads 
+					# to the following challenges:
+					# - If the target pos is invalid, what do I do?
+					#   Do I recompute it? How so? Implementaiton must be fast.
+					# - How do I even check if it's invalid? Maybe I can
+					#   just constrain myself to `reachable` locations?
+					# - Do I need to take into account height offsets
+					#   in my jump maths?
+					
+				if is_on_floor():
+					
+					_set_random_nav_agent_target_pos(_jump_dist)
+					var jump_y_vel := sqrt(2 * _grav * _jump_height)
+					var t_up := jump_y_vel / _grav
+					var t_total := 2.0 * (t_up)
+					var jump_forwards_vel := _jump_dist / t_total
+					var jump_dir := Vector3(
+						_nav_agent.target_position.x - global_position.x,
+						0,
+						_nav_agent.target_position.z - global_position.z
+					).normalized()
+					var jump_dir_rel := (transform.basis * jump_dir).normalized()
+					velocity = jump_forwards_vel * jump_dir_rel
+					velocity.y = jump_y_vel
+					
+				else:
+					velocity.y -= _grav * delta
+					
+					
+					
+					
+					
 			# - Precompute jump landing position, and see if it's on the NavMesh.
 			#   If it isn't, then check earlier / less distant landing points in
 			#   same dir until one within the fixed distance range is found.
@@ -216,5 +277,5 @@ func _physics_process(_delta : float) -> void:
 			#   about _flee_from and return to wander state.
 			# If _flee_from != player, and rabbit detects / sees player, 
 			#   immediately set _flee_from = player.
-			pass
+
 	move_and_slide()
