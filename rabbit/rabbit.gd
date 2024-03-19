@@ -19,7 +19,7 @@ class_name Rabbit
 #       @export_range(0, 100) var _jump_init_horz_speed : float
 @export_range(0, 10) var _jump_height : float
 @export_range(0, 100) var _grav : float
-@export_range(0, 30) var _jump_dist : float
+@export_range(0, 30) var _flee_dist : float
 @export_range(0, 90) var _flee_angle_deg : float
 
 @export_group("References")
@@ -232,60 +232,23 @@ func _physics_process(delta : float) -> void:
 					
 				if is_on_floor():
 					
-					_set_random_nav_agent_target_pos_away_fom_flee_target(_jump_dist)
+					_set_random_nav_agent_target_pos_away_fom_flee_target(_flee_dist)
 					
-					var path := _nav_agent.get_current_navigation_path()
-					var n_path_elements := path.size()
-					var sharp_turn_id := -1
-					const sharp_turn_angle_threshold := 35.0
-					for i in (n_path_elements - 1):
-						if i < 1: continue
-						var segment1 := (path[i] - path[i - 1]).normalized()
-						var segment2 := (path[i + 1] - path[i]).normalized()
-						var angle = rad_to_deg(acos(segment1.dot(segment2))) 
-						
-						if angle > sharp_turn_angle_threshold:
-							print("Sharp turn at index: ", i)
-							sharp_turn_id = i
-							break
-					
-					var is_path_completely_blocked := false
-					if path.size() > 1 and sharp_turn_id < 0:
-						var segment1 := (path[1] - path[0]).normalized()
-						var segment2 := (path[0] - path[-1]).normalized()
-						var angle := rad_to_deg(acos(segment1.dot(segment2)))
-						if angle > sharp_turn_angle_threshold:
-							is_path_completely_blocked = true
-					
-					# global_position.distance_to(_nav_agent.target_position) 
-					#var is_target_behind_wall := _nav_agent.distance_to_target() > _jump_dist + Main.ERR_TOL
-					#var jump_to_pos := (
-						#path[sharp_turn_id] if sharp_turn_id >= 0 else
-						#path[1] if is_path_completely_blocked else
-						#_nav_agent.target_position
-					#)
-					
-					var jump_to_pos := (
-						_nav_agent.get_next_path_position()
-					)
-					
-					if path.size() > 1 and jump_to_pos == path[1]:
-						print("jump_to_pos == path[1]")
-					
-					look_at(jump_to_pos)
+					var pos_to_jump_to := _nav_agent.get_next_path_position()
+					look_at(_nav_agent.get_next_path_position())
 					rotation.x = 0
 					rotation.z = 0
 					
 					var jump_dir := Vector3(
-						jump_to_pos.x - global_position.x,
+						pos_to_jump_to.x - global_position.x,
 						0,
-						jump_to_pos.z - global_position.z
+						pos_to_jump_to.z - global_position.z
 					).normalized()
 					
 					#var jump_dir_rel := -(transform.basis * jump_dir).normalized()
 					var jump_dist_concrete := sqrt(
-						(jump_to_pos.x - global_position.x) ** 2 
-						+ (jump_to_pos.z - global_position.z) ** 2
+						(pos_to_jump_to.x - global_position.x) ** 2 
+						+ (pos_to_jump_to.z - global_position.z) ** 2
 					)
 					var jump_y_vel := sqrt(2 * _grav * _jump_height)
 					var t_up := jump_y_vel / _grav
