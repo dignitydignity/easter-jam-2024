@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://d1iv44sh4ql74"]
+[gd_scene load_steps=10 format=3 uid="uid://d1iv44sh4ql74"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_fun63"]
+[ext_resource type="Texture2D" uid="uid://8po4wouod3js" path="res://images/shadow.png" id="2_bolwv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r833c"]
 
@@ -80,6 +81,7 @@ shape = SubResource("BoxShape3D_7syi4")
 
 [node name="Body" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 mesh = SubResource("CapsuleMesh_o67n7")
 
 [node name="Face" type="MeshInstance3D" parent="Body"]
@@ -138,3 +140,8 @@ monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DiveGrabHitbox2"]
 shape = SubResource("BoxShape3D_42s1t")
+
+[node name="Decal" type="Decal" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.11708, -0.0506592)
+size = Vector3(1.5, 5, 1.5)
+texture_albedo = ExtResource("2_bolwv")
