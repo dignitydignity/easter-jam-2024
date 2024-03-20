@@ -10,6 +10,8 @@ obj/
 .vs/
 .DS_Store
 
+export_presets.cfg
+
 *.tmp
 *.translation
 *.blend1
