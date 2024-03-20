@@ -33,7 +33,7 @@ var _gamestate := Gamestate.DEFAULT:
 				_options_menu.visible = true
 
 func _ready() -> void:
-	seed(12345) # Fixed seed for debugging.
+	#seed(12345) # Fixed seed for debugging.
 	#randomize() # Randomize initial seed for global RNG.
 	
 	assert(process_mode == PROCESS_MODE_ALWAYS)

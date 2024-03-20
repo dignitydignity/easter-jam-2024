@@ -85,7 +85,7 @@ anchor_bottom = 0.5
 [node name="Rabbits" type="Node" parent="."]
 
 [node name="Rabbit" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(-0.677004, 0, 0.735979, 0, 1, 0, -0.735979, 0, -0.677004, -42.7644, 2.04177, 7.67572)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.7644, 2.04177, 7.67572)
 
 [node name="Rabbit2" parent="Rabbits" instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.3466, 1.7452, 20.621)

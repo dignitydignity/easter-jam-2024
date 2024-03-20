@@ -1,34 +1,73 @@
-[gd_scene load_steps=9 format=3 uid="uid://qrod1vm4th82"]
+[gd_scene load_steps=21 format=3 uid="uid://qrod1vm4th82"]
 
-[ext_resource type="PackedScene" uid="uid://dn1fv61dpndg6" path="res://rabbit/rabbit.blend" id="1_q6f4l"]
+[ext_resource type="PackedScene" uid="uid://ioi7pvm513pm" path="res://rabbit/rabbit_1.blend" id="2_liecm"]
 [ext_resource type="Script" path="res://rabbit/rabbit.gd" id="2_xo52y"]
 [ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="3_ckcaq"]
-[ext_resource type="Texture2D" uid="uid://bvhgvas070gab" path="res://rabbit/textures/rabbit_tail_albedo.png" id="4_5lwgl"]
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_lmpcg"]
-resource_local_to_scene = true
-albedo_texture = ExtResource("3_ckcaq")
-emission_enabled = true
-emission = Color(0.211765, 0.239216, 0.278431, 1)
-emission_energy_multiplier = 0.1
-rim = 0.59
-backlight = Color(0.545098, 0.545098, 0.545098, 1)
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_fgyje"]
-resource_local_to_scene = true
-transparency = 1
-cull_mode = 2
-diffuse_mode = 1
-albedo_texture = ExtResource("4_5lwgl")
-emission_enabled = true
-emission = Color(0.211765, 0.239216, 0.278431, 1)
-emission_energy_multiplier = 0.1
-billboard_mode = 1
-billboard_keep_scale = true
+[ext_resource type="Animation" uid="uid://dq65nv7ddqbr3" path="res://rabbit/anims/idle.tres" id="4_tcfl3"]
+[ext_resource type="Animation" uid="uid://bjrv148mdytk0" path="res://rabbit/anims/midair_idle.tres" id="5_wb4ut"]
+[ext_resource type="Animation" uid="uid://csflw727ok73p" path="res://rabbit/anims/looking.tres" id="6_836yw"]
+[ext_resource type="Animation" uid="uid://chei5btmrj82q" path="res://rabbit/anims/walk.tres" id="7_7rmt5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yfoac"]
 radius = 0.4
 height = 1.0
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_8efu4"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("3_ckcaq")
+emission_enabled = true
+emission_energy_multiplier = 0.1
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_7jpjs"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("3_ckcaq")
+emission_enabled = true
+emission_energy_multiplier = 0.1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rice2"]
+_data = {
+"idle": ExtResource("4_tcfl3"),
+"looking": ExtResource("6_836yw"),
+"midair_idle": ExtResource("5_wb4ut"),
+"walk": ExtResource("7_7rmt5")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_n5f3t"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vjj1a"]
+animation = &"walk"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_lodyl"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_n5f3t")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_vjj1a")
+blend_point_1/pos = 1.0
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_5k0a1"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_00wgx"]
+animation = &"looking"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2slhr"]
+animation = &"midair_idle"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_wg01l"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ctj5o"]
+graph_offset = Vector2(-45.3567, -135.411)
+nodes/idle_walk/node = SubResource("AnimationNodeBlendSpace1D_lodyl")
+nodes/idle_walk/position = Vector2(213.333, 160)
+nodes/jump_blend/node = SubResource("AnimationNodeBlend2_5k0a1")
+nodes/jump_blend/position = Vector2(1200, 373.333)
+nodes/looking/node = SubResource("AnimationNodeAnimation_00wgx")
+nodes/looking/position = Vector2(266.667, 480)
+nodes/midair_idle/node = SubResource("AnimationNodeAnimation_2slhr")
+nodes/midair_idle/position = Vector2(640, 586.667)
+nodes/oneshot_look/node = SubResource("AnimationNodeOneShot_wg01l")
+nodes/oneshot_look/position = Vector2(800, -53.3333)
+nodes/output/position = Vector2(1520, 53.3333)
+node_connections = [&"jump_blend", 0, &"oneshot_look", &"jump_blend", 1, &"midair_idle", &"oneshot_look", 0, &"idle_walk", &"oneshot_look", 1, &"looking", &"output", 0, &"jump_blend"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o7oip"]
 size = Vector3(10, 5, 10)
@@ -47,21 +86,52 @@ _grav = 10.0
 _flee_dist = 10.0
 _flee_angle_deg = 90.0
 _jump_dist_grav_scale_factor = 20.0
-_rabbit_body = NodePath("RabbitModel/RabbitBody")
-_rabbit_tail = NodePath("RabbitModel/RabbitTail")
-
-[node name="RabbitModel" parent="." instance=ExtResource("1_q6f4l")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="RabbitBody" parent="RabbitModel" index="0"]
-surface_material_override/0 = SubResource("ORMMaterial3D_lmpcg")
-
-[node name="RabbitTail" parent="RabbitModel" index="1"]
-surface_material_override/0 = SubResource("ORMMaterial3D_fgyje")
+_rabbit_body = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_body")
+_rabbit_tail = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_tail")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CapsuleShape3D_yfoac")
+
+[node name="rabbit_1" parent="." instance=ExtResource("2_liecm")]
+transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
+
+[node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
+bones/0/position = Vector3(0, 0.29938, 0)
+bones/0/scale = Vector3(1.00067, 1, 1.00018)
+bones/1/position = Vector3(0, 1.4191, 0)
+bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
+bones/1/scale = Vector3(1, 1, 1)
+bones/2/rotation = Quaternion(-0.263289, -0.0186659, -0.0696093, 0.962021)
+bones/3/rotation = Quaternion(-0.0320935, -0.00309922, 0.0180951, 0.999316)
+bones/4/rotation = Quaternion(-0.263289, 0.0186657, 0.0696092, 0.962021)
+bones/5/rotation = Quaternion(-0.0320935, 0.00309922, -0.0180951, 0.999316)
+bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
+bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
+bones/6/scale = Vector3(1, 1, 1)
+bones/7/position = Vector3(-0.376932, 0.165171, -0.106271)
+bones/7/rotation = Quaternion(0.00246617, 0.603339, 0.797454, 0.00660179)
+bones/7/scale = Vector3(1, 1, 1)
+
+[node name="rabbit_body" parent="rabbit_1/Armature/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("ORMMaterial3D_8efu4")
+
+[node name="rabbit_tail" parent="rabbit_1/Armature/Skeleton3D" index="1"]
+surface_material_override/0 = SubResource("ORMMaterial3D_7jpjs")
+
+[node name="AnimationTree" type="AnimationTree" parent="rabbit_1"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_rice2")
+}
+tree_root = SubResource("AnimationNodeBlendTree_ctj5o")
+advance_expression_base_node = NodePath("../..")
+anim_player = NodePath("../AnimationPlayer")
+parameters/idle_walk/blend_position = 0.0
+parameters/jump_blend/blend_amount = 0.0
+parameters/oneshot_look/active = false
+parameters/oneshot_look/internal_active = false
+parameters/oneshot_look/request = 0
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 unique_name_in_owner = true
@@ -69,7 +139,6 @@ radius = 0.4
 debug_enabled = true
 
 [node name="Label3Ds" type="Node3D" parent="."]
-visible = false
 
 [node name="AiStateLabel" type="Label3D" parent="Label3Ds"]
 unique_name_in_owner = true
@@ -152,4 +221,4 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 target_position = Vector3(0, 0, -10)
 
-[editable path="RabbitModel"]
+[editable path="rabbit_1"]

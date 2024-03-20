@@ -34,6 +34,9 @@ var _last_nav_finish_time : float
 var _idle_time : float
 var _last_scaled_grav : float
 
+# ANIMATIONS
+@onready var _animtree : AnimationTree = %AnimationTree
+
 # Flee target is the object to flee from. Not the target to flee towards.
 var _player_in_cone : Player # When walks into vision cone.
 var _flee_target : Node3D:
@@ -77,7 +80,7 @@ func _set_random_nav_agent_target_pos_away_fom_flee_target(dist : float) -> void
 	_nav_agent.target_position = global_position + rand_dir_away_from_flee_targ * dist
 
 func _ready() -> void:
-	seed(12345) # Fix seed for testing.
+	#seed(12345) # Fix seed for testing.
 	# TODO: REMOVE FIXED SEED
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	assert(_wander_dist_max > _wander_dist_min)
@@ -99,6 +102,8 @@ func _ready() -> void:
 	)
 	mat_body.albedo_color = rand_color
 	mat_tail.albedo_color = rand_color
+	assert(mat_body.emission_enabled)
+	assert(mat_tail.emission_enabled)
 	mat_body.emission = rand_color
 	mat_tail.emission = rand_color
 	# Don't share materials. Each rabbit get's it's own color.
@@ -232,6 +237,17 @@ func _process(_delta : float) -> void:
 
 func _physics_process(delta : float) -> void:
 	
+	var horz_vel := sqrt(velocity.x ** 2 + velocity.z ** 2)
+	_animtree.set("parameters/idle_walk/blend_position", horz_vel/_walk_speed)
+	_animtree.set("parameters/jump_blend/blend_amount", (
+		0.0 if is_on_floor() else 
+		1.0
+	))
+	
+	#if _ai_state == AiState.WANDER and horz_vel < Main.ERR_TOL and randf() < .0001: # 1% chance of doing
+		#print("woot")
+		#_animtree.set("parameters/oneshot_look/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+	
 	_check_player_in_los_and_begin_flee_if_so()
 	
 	# End flee if _flee_target is far
@@ -245,7 +261,6 @@ func _physics_process(delta : float) -> void:
 				print("Rabbit forgot about ", _flee_target.name)
 				_flee_target = null
 	
-	# Anims can be driven by AiState + velocity.
 	match _ai_state:
 		AiState.WANDER:
 			
