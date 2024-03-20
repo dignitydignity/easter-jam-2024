@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://d1iv44sh4ql74"]
+[gd_scene load_steps=11 format=3 uid="uid://d1iv44sh4ql74"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_fun63"]
 [ext_resource type="Texture2D" uid="uid://8po4wouod3js" path="res://images/shadow.png" id="2_bolwv"]
+[ext_resource type="Texture2D" uid="uid://by6ot25v8v5tw" path="res://images/headcount.png" id="2_nulv3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r833c"]
 
@@ -102,6 +103,7 @@ mouse_filter = 2
 
 [node name="FpsLabel" type="Label" parent="Hud"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
@@ -109,6 +111,7 @@ text = "FPS:"
 
 [node name="MovestateLabel" type="Label" parent="Hud"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_top = 23.0
 offset_right = 40.0
@@ -117,6 +120,7 @@ text = "Movestate:"
 
 [node name="HorizontalSpeedLabel" type="Label" parent="Hud"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_top = 46.0
 offset_right = 86.0
@@ -125,11 +129,27 @@ text = "Speed:"
 
 [node name="GrabCooldownLabel" type="Label" parent="Hud"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_top = 69.0
 offset_right = 128.0
 offset_bottom = 92.0
 text = "Grab Cooldown: "
+
+[node name="Headcount" type="TextureRect" parent="Hud"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_nulv3")
+
+[node name="HeadcountLabel" type="Label" parent="Hud"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 45.0
+offset_top = 12.0
+offset_right = 85.0
+offset_bottom = 35.0
+text = "x 0"
 
 [node name="DiveGrabHitbox2" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

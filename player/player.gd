@@ -57,7 +57,8 @@ var _last_dive_land_time : float
 @onready var _movestate_label : Label = %MovestateLabel
 @onready var _horizontal_speed_label : Label = %HorizontalSpeedLabel
 @onready var _grab_cooldown_label : Label = %GrabCooldownLabel
-
+@onready var _headcount_label : Label = %HeadcountLabel
+var _num_caught_rabbits := 0
 
 func _ready() -> void:
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
@@ -72,6 +73,8 @@ func _ready() -> void:
 			func(body : Node3D) -> void:
 				var rabbit := body as Rabbit
 				rabbit.queue_free()
+				_num_caught_rabbits += 1
+				_headcount_label.text = "x %d" % _num_caught_rabbits
 				print("dive grab!")
 		)
 
@@ -83,32 +86,34 @@ func _input(event : InputEvent) -> void:
 
 func _process(delta : float) -> void:
 	
-	# Update debug labels.
-	_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
-	_movestate_label.text = "Movestate: %s " % (
-		"WALK" if _movestate == Movestate.WALK else 
-		"SPRINT" if _movestate == Movestate.SPRINT else  
-		"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
-		"DIVE" if _movestate == Movestate.DIVE else 
-		"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
-		""
-	)
 	var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
-	var speed_text := "Speed: %.2f" % horz_speed
-	var is_sprinting_and_above_dive_speed_threshold := (
-		_movestate == Movestate.SPRINT 
-		and horz_speed >= _min_speed_for_dive - Main.ERR_TOL
-	)
-	if is_sprinting_and_above_dive_speed_threshold:
-		_horizontal_speed_label.modulate = Color.GREEN
-		_horizontal_speed_label.text = speed_text + " (can dive)"
-	else:
-		_horizontal_speed_label.modulate = Color.WHITE
-		_horizontal_speed_label.text = speed_text
 	
-	var remaining_grab_cooldown = maxf(_last_grab_attempt_time 
-		+ _grab_cooldown - Time.get_ticks_msec() / 1000.0, 0)
-	_grab_cooldown_label.text = "Grab Cooldown: %.2f" % remaining_grab_cooldown
+	# Update debug labels.
+	#_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
+	#_movestate_label.text = "Movestate: %s " % (
+		#"WALK" if _movestate == Movestate.WALK else 
+		#"SPRINT" if _movestate == Movestate.SPRINT else  
+		#"JUMP_AIR" if _movestate == Movestate.JUMP_AIR else 
+		#"DIVE" if _movestate == Movestate.DIVE else 
+		#"DIVE HITSTUN" if _movestate == Movestate.DIVE_HITSTUN else 
+		#""
+	#)
+
+	#var speed_text := "Speed: %.2f" % horz_speed
+	#var is_sprinting_and_above_dive_speed_threshold := (
+		#_movestate == Movestate.SPRINT 
+		#and horz_speed >= _min_speed_for_dive - Main.ERR_TOL
+	#)
+	#if is_sprinting_and_above_dive_speed_threshold:
+		#_horizontal_speed_label.modulate = Color.GREEN
+		#_horizontal_speed_label.text = speed_text + " (can dive)"
+	#else:
+		#_horizontal_speed_label.modulate = Color.WHITE
+		#_horizontal_speed_label.text = speed_text
+	#
+	#var remaining_grab_cooldown = maxf(_last_grab_attempt_time 
+		#+ _grab_cooldown - Time.get_ticks_msec() / 1000.0, 0)
+	#_grab_cooldown_label.text = "Grab Cooldown: %.2f" % remaining_grab_cooldown
 	
 	# Update camera and player rotation.
 	match _movestate:
@@ -182,6 +187,8 @@ func _physics_process(delta : float) -> void:
 					# TODO: Wrap queue_free() inside a "grab" function.
 					var rabbit := _grab_raycaster.get_collider() as Rabbit
 					rabbit.queue_free()
+					_num_caught_rabbits += 1
+					_headcount_label.text = "x %d" % _num_caught_rabbits
 					#print("grabbed!")
 			if _interact_raycaster.is_colliding() and !is_grab_successful:
 				print("non-grab action!")
