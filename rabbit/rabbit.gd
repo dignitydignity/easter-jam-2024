@@ -183,70 +183,76 @@ func _check_player_in_los_and_begin_flee_if_so():
 
 
 # Labels.
-func _process(_delta : float) -> void:
-	
-	_ai_state_label.text = (
-		"WANDER" if _ai_state == AiState.WANDER else
-		"FLEE" if _ai_state == AiState.FLEE else 
-		"INVALID"
-	)
-	
-	_horz_speed_label.text = "%.2f m/s" % sqrt(velocity.x ** 2 
-		+ velocity.z ** 2)
-		
-	_grounded_label.text = "Grounded?: %s" % is_on_floor()
-	_grounded_label.modulate = (
-		Color.GREEN if is_on_floor() else
-		Color.RED
-	)
-	
-	_target_pos_label.text = "TargetPos: %.2v" % _nav_agent.target_position
-	_current_pos_label.text = "CurrentPos: %.2v" % global_position
-	_dist_to_targ_label.text = ("DistToTarg: %.2f" 
-		% _nav_agent.distance_to_target())
-	
-	_nav_fin_label.text = ("NavFin?: %s" 
-		% _nav_agent.is_navigation_finished())
-	_nav_fin_label.modulate = (
-		Color.GREEN if _nav_agent.is_navigation_finished() else
-		Color.RED
-	)
-	
-	_targ_reached_label.text = ("TargReached?: %s" 
-		% _nav_agent.is_target_reached())
-	_targ_reached_label.modulate = (
-		Color.GREEN if _nav_agent.is_target_reached() else
-		Color.RED
-	)
-	
-	_reachable_label.text = ("Reachable?: %s" 
-		% _nav_agent.is_target_reachable())
-	_reachable_label.modulate = (
-		Color.GREEN if _nav_agent.is_target_reachable() else
-		Color.RED
-	)
-	
-	var is_idling := _idling_label.modulate == Color.GREEN
-	if is_idling:
-		var remaining_idle_time = maxf(_last_nav_finish_time 
-			+ _idle_time - Time.get_ticks_msec() / 1000.0, 0)
-		_idling_label.text = "Idling?: True (%.2f s)" % remaining_idle_time
-	
-	if _flee_target != null:
-		_flee_targ_label.text = "FleeTarg: %s" % _flee_target.name
-		_flee_targ_label.modulate = Color.GREEN
-	else:
-		_flee_targ_label.text = "FleeTarg: NONE"
-		_flee_targ_label.modulate = Color.RED
+#func _process(_delta : float) -> void:
+	#
+	#_ai_state_label.text = (
+		#"WANDER" if _ai_state == AiState.WANDER else
+		#"FLEE" if _ai_state == AiState.FLEE else 
+		#"INVALID"
+	#)
+	#
+	#_horz_speed_label.text = "%.2f m/s" % sqrt(velocity.x ** 2 
+		#+ velocity.z ** 2)
+		#
+	#_grounded_label.text = "Grounded?: %s" % is_on_floor()
+	#_grounded_label.modulate = (
+		#Color.GREEN if is_on_floor() else
+		#Color.RED
+	#)
+	#
+	#_target_pos_label.text = "TargetPos: %.2v" % _nav_agent.target_position
+	#_current_pos_label.text = "CurrentPos: %.2v" % global_position
+	#_dist_to_targ_label.text = ("DistToTarg: %.2f" 
+		#% _nav_agent.distance_to_target())
+	#
+	#_nav_fin_label.text = ("NavFin?: %s" 
+		#% _nav_agent.is_navigation_finished())
+	#_nav_fin_label.modulate = (
+		#Color.GREEN if _nav_agent.is_navigation_finished() else
+		#Color.RED
+	#)
+	#
+	#_targ_reached_label.text = ("TargReached?: %s" 
+		#% _nav_agent.is_target_reached())
+	#_targ_reached_label.modulate = (
+		#Color.GREEN if _nav_agent.is_target_reached() else
+		#Color.RED
+	#)
+	#
+	#_reachable_label.text = ("Reachable?: %s" 
+		#% _nav_agent.is_target_reachable())
+	#_reachable_label.modulate = (
+		#Color.GREEN if _nav_agent.is_target_reachable() else
+		#Color.RED
+	#)
+	#
+	#var is_idling := _idling_label.modulate == Color.GREEN
+	#if is_idling:
+		#var remaining_idle_time = maxf(_last_nav_finish_time 
+			#+ _idle_time - Time.get_ticks_msec() / 1000.0, 0)
+		#_idling_label.text = "Idling?: True (%.2f s)" % remaining_idle_time
+	#
+	#if _flee_target != null:
+		#_flee_targ_label.text = "FleeTarg: %s" % _flee_target.name
+		#_flee_targ_label.modulate = Color.GREEN
+	#else:
+		#_flee_targ_label.text = "FleeTarg: NONE"
+		#_flee_targ_label.modulate = Color.RED
+
+var first_one := true
 
 func _physics_process(delta : float) -> void:
 	
+	if first_one:
+		first_one = false
+		return
+	
 	var horz_vel := sqrt(velocity.x ** 2 + velocity.z ** 2)
-	_animtree.set("parameters/idle_walk/blend_position", horz_vel/_walk_speed)
-	_animtree.set("parameters/jump_blend/blend_amount", (
-		0.0 if is_on_floor() else 
-		1.0
-	))
+	#_animtree.set("parameters/idle_walk/blend_position", horz_vel/_walk_speed)
+	#_animtree.set("parameters/jump_blend/blend_amount", (
+		#0.0 if is_on_floor() else 
+		#1.0
+	#))
 	
 	#if _ai_state == AiState.WANDER and horz_vel < Main.ERR_TOL and randf() < .0001: # 1% chance of doing
 		#_animtree.set("parameters/oneshot_look/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)

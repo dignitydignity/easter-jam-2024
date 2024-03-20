@@ -139,7 +139,11 @@ func _process(delta : float) -> void:
 	
 	# Since `_mouse_relative` is only updated when mouse position changes, we
 	# manually reset it right before the next frame using `call_deferred`.
-	(func() -> void: _mouse_relative = Vector2.ZERO).call_deferred()
+	_reset_mouse_rel.call_deferred()
+	#(func() -> void: _mouse_relative = Vector2.ZERO).call_deferred()
+
+func _reset_mouse_rel() -> void:
+	_mouse_relative = Vector2.ZERO
 
 func _physics_process(delta : float) -> void:
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
