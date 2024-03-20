@@ -24,12 +24,12 @@ size = Vector3(0.5, 0.25, 0.08)
 [sub_resource type="BoxShape3D" id="BoxShape3D_42s1t"]
 size = Vector3(1, 2, 1)
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_raycaster", "_interact_raycaster", "_dive_grab_hitboxes")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_hitbox", "_interact_raycaster", "_dive_grab_hitboxes")]
 process_mode = 1
 collision_layer = 9
 safe_margin = 0.005
 script = ExtResource("1_fun63")
-_grab_raycaster = NodePath("Camera/GrabRaycaster")
+_grab_hitbox = NodePath("Camera/DiveGrabHitbox1")
 _interact_raycaster = NodePath("Camera/InteractRaycaster")
 _grab_cooldown = 0.25
 _cam_pitch_max = 75.0
@@ -62,10 +62,6 @@ shape = SubResource("CapsuleShape3D_r833c")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.375, -0.362)
 cull_mask = 1048573
-
-[node name="GrabRaycaster" type="RayCast3D" parent="Camera"]
-target_position = Vector3(0, 0, -2)
-collision_mask = 2
 
 [node name="InteractRaycaster" type="RayCast3D" parent="Camera"]
 target_position = Vector3(0, 0, -1)

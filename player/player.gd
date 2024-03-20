@@ -9,7 +9,8 @@ static var instance : Player
 # 	Time units = seconds.
 @export_group("General")
 # To set grab range, modify reference's `TargetPosition`.
-@export var _grab_raycaster : RayCast3D
+#@export var _grab_raycaster : RayCast3D
+@export var _grab_hitbox : Area3D
 @export var _interact_raycaster : RayCast3D
 @export_range(0, 5) var _grab_cooldown : float
 @export_range(0, 90) var _cam_pitch_max : float
@@ -69,7 +70,7 @@ func _ready() -> void:
 		assert(!box.monitoring)
 		assert(!box.monitorable)
 		assert(box.collision_mask == 2)
-		box.body_entered .connect(
+		box.body_entered.connect(
 			func(body : Node3D) -> void:
 				var rabbit := body as Rabbit
 				rabbit.queue_free()
@@ -152,6 +153,7 @@ func _reset_mouse_rel() -> void:
 
 func _physics_process(delta : float) -> void:
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
+	_grab_hitbox.monitoring = _movestate == Movestate.DIVE
 	
 	var move_input := Input.get_vector("move_leftwards", "move_rightwards", 
 		"move_forwards", "move_backwards")
@@ -182,12 +184,13 @@ func _physics_process(delta : float) -> void:
 				>= _last_grab_attempt_time + _grab_cooldown)
 			if _is_grab_off_cooldown:
 				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
-				if _grab_raycaster.is_colliding():
-					is_grab_successful = true
-					var rabbit := _grab_raycaster.get_collider() as Rabbit
-					rabbit.queue_free()
-					_num_caught_rabbits += 1
-					_headcount_label.text = "x %d" % _num_caught_rabbits
+				_grab_hitbox.monitoring = true # Turn it on for a frame (gets reset above).
+				#if _grab_raycaster.is_colliding():
+					#is_grab_successful = true
+					#var rabbit := _grab_raycaster.get_collider() as Rabbit
+					#rabbit.queue_free()
+					#_num_caught_rabbits += 1
+					#_headcount_label.text = "x %d" % _num_caught_rabbits
 					#print("grabbed!")
 			if _interact_raycaster.is_colliding() and !is_grab_successful:
 				print("non-grab action!")
