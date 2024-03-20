@@ -75,19 +75,20 @@ size = Vector3(10, 5, 10)
 [node name="Rabbit" type="CharacterBody3D" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
 process_mode = 1
 collision_layer = 11
+safe_margin = 0.005
 script = ExtResource("2_xo52y")
-_walk_speed = 8.0
-_wander_dist_min = 10.0
-_wander_dist_max = 20.0
+_walk_speed = 4.0
+_wander_dist_min = 2.0
+_wander_dist_max = 5.0
 _idle_time_min = 0.5
-_idle_time_max = 3.0
-_jump_height = 0.75
+_idle_time_max = 2.0
+_jump_height = 0.5
 _grav = 10.0
 _flee_dist = 10.0
 _flee_angle_deg = 90.0
 _jump_dist_grav_scale_factor = 20.0
-_forget_dist = 40.0
-_forget_time = 30.0
+_forget_dist = 30.0
+_forget_time = 10.0
 _rabbit_body = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_body")
 _rabbit_tail = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_tail")
 
@@ -99,15 +100,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.231906, 0)
-bones/0/scale = Vector3(1.07365, 1, 1.02007)
-bones/1/position = Vector3(0, 1.32049, 0)
+bones/0/position = Vector3(0, 0.27058, 0)
+bones/0/scale = Vector3(1.03183, 1, 1.00867)
+bones/1/position = Vector3(0, 1.37702, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.320921, -0.0228367, -0.0683546, 0.94436)
-bones/3/rotation = Quaternion(-0.159406, -0.0192509, 0.0176504, 0.986868)
-bones/4/rotation = Quaternion(-0.320916, 0.0228361, 0.0683547, 0.944362)
-bones/5/rotation = Quaternion(-0.159406, 0.0192509, -0.0176504, 0.986868)
+bones/2/rotation = Quaternion(-0.288043, -0.0204572, -0.0691042, 0.954902)
+bones/3/rotation = Quaternion(-0.0866176, -0.0100146, 0.0179418, 0.99603)
+bones/4/rotation = Quaternion(-0.288043, 0.020457, 0.0691041, 0.954902)
+bones/5/rotation = Quaternion(-0.0866177, 0.0100146, -0.0179418, 0.99603)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)
@@ -223,6 +224,12 @@ shape = SubResource("BoxShape3D_o7oip")
 [node name="LineOfSightRaycaster" type="RayCast3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
 target_position = Vector3(0, 0, -10)
+
+[node name="WallChecker" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+target_position = Vector3(0, 0, -2)
 
 [editable path="rabbit_1"]

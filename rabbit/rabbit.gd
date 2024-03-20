@@ -45,10 +45,12 @@ var _flee_target : Node3D:
 	get: return _flee_target
 	set(value):
 		if value != null:
+			if _flee_target != null and !(_flee_target is Player): # is breadcrumb
+				_flee_target.queue_free()
 			_last_flee_start_time = Time.get_ticks_msec() / 1000.0
 			_ai_state = AiState.FLEE
 		else:
-			if !(_flee_target is Player):
+			if !(_flee_target is Player): # is breadcrumb
 				_flee_target.queue_free()
 			_ai_state = AiState.WANDER
 		_flee_target = value
@@ -56,18 +58,19 @@ var _last_flee_start_time : float
 
 @onready var _vision_cone : Area3D = %VisionCone
 @onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
+@onready var _wallchecker : RayCast3D = %WallChecker
 
-@onready var _ai_state_label : Label3D = %AiStateLabel
-@onready var _horz_speed_label : Label3D = %HorzSpeedLabel
-@onready var _grounded_label : Label3D = %GroundedLabel
-@onready var _target_pos_label : Label3D = %TargetPosLabel
-@onready var _current_pos_label : Label3D = %CurrentPosLabel
-@onready var _dist_to_targ_label : Label3D = %DistToTargLabel
-@onready var _nav_fin_label : Label3D = %NavFinLabel
-@onready var _targ_reached_label : Label3D = %TargReachedLabel
-@onready var _reachable_label : Label3D = %ReachableLabel
-@onready var _idling_label : Label3D = %IdlingLabel
-@onready var _flee_targ_label : Label3D = %FleeTargLabel
+#@onready var _ai_state_label : Label3D = %AiStateLabel
+#@onready var _horz_speed_label : Label3D = %HorzSpeedLabel
+#@onready var _grounded_label : Label3D = %GroundedLabel
+#@onready var _target_pos_label : Label3D = %TargetPosLabel
+#@onready var _current_pos_label : Label3D = %CurrentPosLabel
+#@onready var _dist_to_targ_label : Label3D = %DistToTargLabel
+#@onready var _nav_fin_label : Label3D = %NavFinLabel
+#@onready var _targ_reached_label : Label3D = %TargReachedLabel
+#@onready var _reachable_label : Label3D = %ReachableLabel
+#@onready var _idling_label : Label3D = %IdlingLabel
+#@onready var _flee_targ_label : Label3D = %FleeTargLabel
 
 func _set_random_nav_agent_target_pos(dist : float) -> void:
 	var rand_angle := randf() * 2 * PI
@@ -134,6 +137,7 @@ func _ready() -> void:
 					#breadcrumb_timer.timeout.connect(
 						#func(): spook_breadcrumb.queue_free()
 					#)
+					#spook_breadcrumb.owner = get_tree().current_scene
 					get_tree().current_scene.add_child(spook_breadcrumb)
 					spook_breadcrumb.global_position = other_rabbit.global_position
 					_flee_target = spook_breadcrumb
@@ -157,8 +161,8 @@ func _ready() -> void:
 	_set_random_nav_agent_target_pos(
 		randf_range(_wander_dist_min, _wander_dist_max)
 	)
-	_idling_label.text = "Idling?: false"
-	_idling_label.modulate = Color.RED
+	#_idling_label.text = "Idling?: false"
+	#_idling_label.modulate = Color.RED
 	
 	# When navigation finishes, decide for how long to idle.
 	_nav_agent.navigation_finished.connect(
@@ -167,8 +171,8 @@ func _ready() -> void:
 			# Beyond the min threshold, the rabbit can look around.
 			_last_nav_finish_time = Time.get_ticks_msec() / 1000.0
 			_idle_time = randf_range(_idle_time_min, _idle_time_max)
-			_idling_label.text = "Idling?: True (%.2f s)" % _idle_time
-			_idling_label.modulate = Color.GREEN
+			#_idling_label.text = "Idling?: True (%.2f s)" % _idle_time
+			#_idling_label.modulate = Color.GREEN
 	)
 
 func _check_player_in_los_and_begin_flee_if_so():
@@ -248,11 +252,11 @@ func _physics_process(delta : float) -> void:
 		return
 	
 	var horz_vel := sqrt(velocity.x ** 2 + velocity.z ** 2)
-	#_animtree.set("parameters/idle_walk/blend_position", horz_vel/_walk_speed)
-	#_animtree.set("parameters/jump_blend/blend_amount", (
-		#0.0 if is_on_floor() else 
-		#1.0
-	#))
+	_animtree.set("parameters/idle_walk/blend_position", horz_vel/_walk_speed)
+	_animtree.set("parameters/jump_blend/blend_amount", (
+		0.0 if is_on_floor() else 
+		1.0
+	))
 	
 	#if _ai_state == AiState.WANDER and horz_vel < Main.ERR_TOL and randf() < .0001: # 1% chance of doing
 		#_animtree.set("parameters/oneshot_look/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
@@ -290,8 +294,8 @@ func _physics_process(delta : float) -> void:
 				var is_done_idling := (Time.get_ticks_msec() / 1000.0 
 					>= _last_nav_finish_time + _idle_time)
 				if is_done_idling:
-					_idling_label.text = "Idling?: False"
-					_idling_label.modulate = Color.RED
+					#_idling_label.text = "Idling?: False"
+					#_idling_label.modulate = Color.RED
 					_set_random_nav_agent_target_pos(
 						randf_range(_wander_dist_min, _wander_dist_max)
 					)
@@ -327,6 +331,11 @@ func _physics_process(delta : float) -> void:
 					var t_up := jump_y_vel / _last_scaled_grav
 					var t_total := 2.0 * (t_up)
 					var jump_forwards_vel := jump_dist_concrete / t_total # _jump_dist
+					
+					_wallchecker.target_position = jump_dist_concrete * jump_dir
+					_wallchecker.force_raycast_update()
+					if _wallchecker.is_colliding():
+						jump_dir = -jump_dir
 					
 					velocity = jump_forwards_vel * jump_dir
 					velocity.y = jump_y_vel

@@ -27,6 +27,7 @@ size = Vector3(1, 2, 1)
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_raycaster", "_interact_raycaster", "_dive_grab_hitboxes")]
 process_mode = 1
 collision_layer = 9
+safe_margin = 0.005
 script = ExtResource("1_fun63")
 _grab_raycaster = NodePath("Camera/GrabRaycaster")
 _interact_raycaster = NodePath("Camera/InteractRaycaster")
@@ -42,7 +43,7 @@ _time_to_max_walk_speed = 0.02
 _sprint_speed = 12.0
 _time_to_sprint = 0.5
 _time_to_stop_sprint = 0.75
-_sprint_fov = 75.1
+_sprint_fov = 80.0
 _dive_grab_hitboxes = [NodePath("Camera/DiveGrabHitbox1"), NodePath("DiveGrabHitbox2")]
 _min_speed_for_dive = 10.0
 _dive_height = 1.0

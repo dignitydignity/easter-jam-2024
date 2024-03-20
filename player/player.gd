@@ -53,10 +53,10 @@ var _last_dive_start_time : float
 var _last_dive_land_time : float
 
 @onready var _hud : Control = %Hud
-@onready var _fps_label : Label = %FpsLabel
-@onready var _movestate_label : Label = %MovestateLabel
-@onready var _horizontal_speed_label : Label = %HorizontalSpeedLabel
-@onready var _grab_cooldown_label : Label = %GrabCooldownLabel
+#@onready var _fps_label : Label = %FpsLabel
+#@onready var _movestate_label : Label = %MovestateLabel
+#@onready var _horizontal_speed_label : Label = %HorizontalSpeedLabel
+#@onready var _grab_cooldown_label : Label = %GrabCooldownLabel
 @onready var _headcount_label : Label = %HeadcountLabel
 var _num_caught_rabbits := 0
 
@@ -184,7 +184,6 @@ func _physics_process(delta : float) -> void:
 				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 				if _grab_raycaster.is_colliding():
 					is_grab_successful = true
-					# TODO: Wrap queue_free() inside a "grab" function.
 					var rabbit := _grab_raycaster.get_collider() as Rabbit
 					rabbit.queue_free()
 					_num_caught_rabbits += 1

@@ -42,7 +42,14 @@ _subresources={
 "generate/physics": true,
 "physics/shape_type": 2
 },
+"PATH:RabbitPlayArea": {
+"generate/physics": true,
+"physics/shape_type": 2
+},
 "PATH:Water": {
+"physics/shape_type": 2
+},
+"PATH:volcano": {
 "generate/physics": true,
 "physics/shape_type": 2
 }

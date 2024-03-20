@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c2lijmalpvaff" path="res://pause_menu/pause_menu.tscn" id="2_3ruti"]
 [ext_resource type="Texture2D" uid="uid://3s4px84g4q5" path="res://main/sky.png" id="2_aehxd"]
 [ext_resource type="PackedScene" uid="uid://bcnui5cq2h4mv" path="res://options_menu/options_menu.tscn" id="3_aphb4"]
-[ext_resource type="PackedScene" uid="uid://d0yfrxkn1s1q5" path="res://new_level/new_level.tscn" id="3_gt7pj"]
+[ext_resource type="PackedScene" uid="uid://dyp7o6s7fonay" path="res://new_new_level/new_new_level.tscn" id="3_hk7mv"]
 [ext_resource type="PackedScene" uid="uid://d1iv44sh4ql74" path="res://player/player.tscn" id="3_n6th7"]
 [ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="4_kp1fs"]
 
@@ -41,7 +41,7 @@ script = ExtResource("1_ft7y6")
 [node name="Player" parent="." instance=ExtResource("3_n6th7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.5747, 2.80788, 14.9922)
 
-[node name="NewLevel" parent="." instance=ExtResource("3_gt7pj")]
+[node name="NewNewLevel" parent="." instance=ExtResource("3_hk7mv")]
 
 [node name="Aesthetics" type="Node" parent="."]
 
@@ -104,3 +104,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69.7067, 1.74536, 6.97355)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+volume_db = -25.685
