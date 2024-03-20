@@ -86,7 +86,7 @@ _jump_height = 0.5
 _grav = 10.0
 _flee_dist = 10.0
 _flee_angle_deg = 90.0
-_jump_dist_grav_scale_factor = 20.0
+_jump_dist_grav_scale_factor = 16.21
 _forget_dist = 30.0
 _forget_time = 10.0
 _rabbit_body = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_body")
@@ -100,15 +100,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.27058, 0)
-bones/0/scale = Vector3(1.03183, 1, 1.00867)
-bones/1/position = Vector3(0, 1.37702, 0)
+bones/0/position = Vector3(0, 0.283842, 0)
+bones/0/scale = Vector3(1.01747, 1, 1.00476)
+bones/1/position = Vector3(0, 1.39639, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.288043, -0.0204572, -0.0691042, 0.954902)
-bones/3/rotation = Quaternion(-0.0866176, -0.0100146, 0.0179418, 0.99603)
-bones/4/rotation = Quaternion(-0.288043, 0.020457, 0.0691041, 0.954902)
-bones/5/rotation = Quaternion(-0.0866177, 0.0100146, -0.0179418, 0.99603)
+bones/2/rotation = Quaternion(-0.276694, -0.0196359, -0.0693419, 0.958252)
+bones/3/rotation = Quaternion(-0.0615991, -0.00684107, 0.018019, 0.997915)
+bones/4/rotation = Quaternion(-0.276694, 0.0196356, 0.0693418, 0.958252)
+bones/5/rotation = Quaternion(-0.0615991, 0.00684108, -0.018019, 0.997915)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)
@@ -140,7 +140,6 @@ parameters/oneshot_look/request = 0
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 unique_name_in_owner = true
 radius = 0.4
-debug_enabled = true
 
 [node name="Label3Ds" type="Node3D" parent="."]
 visible = false
@@ -226,10 +225,5 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 visible = false
 target_position = Vector3(0, 0, -10)
-
-[node name="WallChecker" type="RayCast3D" parent="."]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-target_position = Vector3(0, 0, -2)
 
 [editable path="rabbit_1"]

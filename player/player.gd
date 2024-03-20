@@ -53,7 +53,7 @@ var _last_dive_start_time : float
 var _last_dive_land_time : float
 
 @onready var _hud : Control = %Hud
-#@onready var _fps_label : Label = %FpsLabel
+@onready var _fps_label : Label = %FpsLabel
 #@onready var _movestate_label : Label = %MovestateLabel
 #@onready var _horizontal_speed_label : Label = %HorizontalSpeedLabel
 #@onready var _grab_cooldown_label : Label = %GrabCooldownLabel
@@ -89,7 +89,7 @@ func _process(delta : float) -> void:
 	var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 	
 	# Update debug labels.
-	#_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
+	_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
 	#_movestate_label.text = "Movestate: %s " % (
 		#"WALK" if _movestate == Movestate.WALK else 
 		#"SPRINT" if _movestate == Movestate.SPRINT else  

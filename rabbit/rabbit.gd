@@ -58,7 +58,7 @@ var _last_flee_start_time : float
 
 @onready var _vision_cone : Area3D = %VisionCone
 @onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
-@onready var _wallchecker : RayCast3D = %WallChecker
+#@onready var _wallchecker : RayCast3D = %WallChecker
 
 #@onready var _ai_state_label : Label3D = %AiStateLabel
 #@onready var _horz_speed_label : Label3D = %HorzSpeedLabel
@@ -326,16 +326,19 @@ func _physics_process(delta : float) -> void:
 						+ (pos_to_jump_to.z - global_position.z) ** 2
 					)
 					# Used to increase rabbit speed
+					assert(jump_dist_concrete > Main.ERR_TOL)
+					jump_dist_concrete = max(jump_dist_concrete, 0)
 					_last_scaled_grav = _grav * (1 + (_jump_dist_grav_scale_factor / jump_dist_concrete))
 					var jump_y_vel := sqrt(2 * _last_scaled_grav * _jump_height)
 					var t_up := jump_y_vel / _last_scaled_grav
 					var t_total := 2.0 * (t_up)
 					var jump_forwards_vel := jump_dist_concrete / t_total # _jump_dist
 					
-					_wallchecker.target_position = jump_dist_concrete * jump_dir
-					_wallchecker.force_raycast_update()
-					if _wallchecker.is_colliding():
-						jump_dir = -jump_dir
+					#_wallchecker.target_position = jump_dist_concrete * jump_dir
+					#print(_wallchecker.target_position)
+					#_wallchecker.force_raycast_update()
+					#if _wallchecker.is_colliding():
+						#jump_dir = -jump_dir
 					
 					velocity = jump_forwards_vel * jump_dir
 					velocity.y = jump_y_vel
