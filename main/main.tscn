@@ -1,38 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://bvrkwhbglkglt"]
+[gd_scene load_steps=8 format=3 uid="uid://bvrkwhbglkglt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_ft7y6"]
 [ext_resource type="PackedScene" uid="uid://c2lijmalpvaff" path="res://pause_menu/pause_menu.tscn" id="2_3ruti"]
-[ext_resource type="Texture2D" uid="uid://3s4px84g4q5" path="res://main/sky.png" id="2_aehxd"]
 [ext_resource type="PackedScene" uid="uid://bcnui5cq2h4mv" path="res://options_menu/options_menu.tscn" id="3_aphb4"]
 [ext_resource type="PackedScene" uid="uid://dyp7o6s7fonay" path="res://new_new_level/new_new_level.tscn" id="3_hk7mv"]
 [ext_resource type="PackedScene" uid="uid://d1iv44sh4ql74" path="res://player/player.tscn" id="3_n6th7"]
 [ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="4_kp1fs"]
-
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_35myi"]
-panorama = ExtResource("2_aehxd")
-
-[sub_resource type="Sky" id="Sky_5wb4o"]
-sky_material = SubResource("PanoramaSkyMaterial_35myi")
-
-[sub_resource type="Environment" id="Environment_ian28"]
-background_mode = 2
-sky = SubResource("Sky_5wb4o")
-sky_custom_fov = 103.4
-ambient_light_source = 2
-ambient_light_color = Color(0.109804, 0.266667, 0.329412, 1)
-ambient_light_energy = 0.33
-reflected_light_source = 1
-tonemap_exposure = 1.04
-ssr_enabled = true
-glow_intensity = 0.0
-fog_enabled = true
-fog_light_color = Color(1, 1, 1, 1)
-fog_light_energy = 0.2
-fog_density = 0.005
-fog_sky_affect = 0.0
-adjustment_enabled = true
-adjustment_brightness = 0.92
-adjustment_contrast = 1.42
+[ext_resource type="Environment" uid="uid://4oh8dsdquo51" path="res://main/main_env.tres" id="4_ui4we"]
 
 [node name="Main" type="Node3D"]
 process_mode = 3
@@ -65,7 +39,7 @@ shadow_blur = 0.205
 sky_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Aesthetics"]
-environment = SubResource("Environment_ian28")
+environment = ExtResource("4_ui4we")
 
 [node name="Menus" type="Node" parent="."]
 

@@ -234,8 +234,8 @@ func _physics_process(delta : float) -> void:
 			var is_at_min_speed_for_dive := horz_speed >= (_min_speed_for_dive - Main.ERR_TOL)
 			
 			var _is_dive_just_started := false
-			if Input.is_action_just_pressed("action") and is_at_min_speed_for_dive:
-				assert(is_on_floor())
+			if is_on_floor() and Input.is_action_just_pressed("action") and is_at_min_speed_for_dive:
+				#assert(is_on_floor())
 				_is_dive_just_started = true
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
 				

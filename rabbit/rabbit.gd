@@ -327,7 +327,7 @@ func _physics_process(delta : float) -> void:
 					)
 					# Used to increase rabbit speed
 					assert(jump_dist_concrete > Main.ERR_TOL)
-					jump_dist_concrete = max(jump_dist_concrete, 0)
+					jump_dist_concrete = max(jump_dist_concrete, 2.0*Main.ERR_TOL)
 					_last_scaled_grav = _grav * (1 + (_jump_dist_grav_scale_factor / jump_dist_concrete))
 					var jump_y_vel := sqrt(2 * _last_scaled_grav * _jump_height)
 					var t_up := jump_y_vel / _last_scaled_grav
