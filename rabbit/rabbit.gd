@@ -58,6 +58,7 @@ var _last_flee_start_time : float
 
 @onready var _vision_cone : Area3D = %VisionCone
 @onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
+
 #@onready var _wallchecker : RayCast3D = %WallChecker
 
 #@onready var _ai_state_label : Label3D = %AiStateLabel
@@ -71,6 +72,9 @@ var _last_flee_start_time : float
 #@onready var _reachable_label : Label3D = %ReachableLabel
 #@onready var _idling_label : Label3D = %IdlingLabel
 #@onready var _flee_targ_label : Label3D = %FleeTargLabel
+
+
+const _pfx_factory : PackedScene = preload("res://pfx/pfx_2.tscn")
 
 func _set_random_nav_agent_target_pos(dist : float) -> void:
 	var rand_angle := randf() * 2 * PI
@@ -243,7 +247,7 @@ func _check_player_in_los_and_begin_flee_if_so():
 		#_flee_targ_label.text = "FleeTarg: NONE"
 		#_flee_targ_label.modulate = Color.RED
 
-var first_one := true
+var first_one := true # prevent annoying debug messages
 
 func _physics_process(delta : float) -> void:
 	
@@ -326,8 +330,8 @@ func _physics_process(delta : float) -> void:
 						+ (pos_to_jump_to.z - global_position.z) ** 2
 					)
 					# Used to increase rabbit speed
-					assert(jump_dist_concrete > Main.ERR_TOL)
-					jump_dist_concrete = max(jump_dist_concrete, 2.0*Main.ERR_TOL)
+					#assert(jump_dist_concrete > Main.ERR_TOL) # THIS GETS HIT, LEADING TO INF VELOCITY!
+					jump_dist_concrete = max(jump_dist_concrete, 10.0 * Main.ERR_TOL) # Prevent division by zero
 					_last_scaled_grav = _grav * (1 + (_jump_dist_grav_scale_factor / jump_dist_concrete))
 					var jump_y_vel := sqrt(2 * _last_scaled_grav * _jump_height)
 					var t_up := jump_y_vel / _last_scaled_grav
@@ -342,6 +346,13 @@ func _physics_process(delta : float) -> void:
 					
 					velocity = jump_forwards_vel * jump_dir
 					velocity.y = jump_y_vel
+					
+					var pfx := _pfx_factory.instantiate() as GPUParticles3D
+					assert(pfx != null)
+					add_child(pfx)
+					pfx.emitting = true
+					pfx.finished.connect(func() -> void: pfx.queue_free())
+
 					
 				else:
 					velocity.y -= _last_scaled_grav * delta

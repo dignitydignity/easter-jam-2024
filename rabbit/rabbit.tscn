@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://qrod1vm4th82"]
+[gd_scene load_steps=22 format=3 uid="uid://qrod1vm4th82"]
 
 [ext_resource type="PackedScene" uid="uid://ioi7pvm513pm" path="res://rabbit/rabbit_1.blend" id="2_liecm"]
 [ext_resource type="Script" path="res://rabbit/rabbit.gd" id="2_xo52y"]
@@ -7,6 +7,7 @@
 [ext_resource type="Animation" uid="uid://bjrv148mdytk0" path="res://rabbit/anims/midair_idle.tres" id="5_wb4ut"]
 [ext_resource type="Animation" uid="uid://csflw727ok73p" path="res://rabbit/anims/looking.tres" id="6_836yw"]
 [ext_resource type="Animation" uid="uid://chei5btmrj82q" path="res://rabbit/anims/walk.tres" id="7_7rmt5"]
+[ext_resource type="PackedScene" uid="uid://6xfw6pcqa47h" path="res://pfx/pfx_2.tscn" id="8_x1yo3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yfoac"]
 radius = 0.4
@@ -100,15 +101,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.20291, 0)
-bones/0/scale = Vector3(1.10502, 1, 1.0286)
-bones/1/position = Vector3(0, 1.27811, 0)
+bones/0/position = Vector3(0, 0.204044, 0)
+bones/0/scale = Vector3(1.10379, 1, 1.02827)
+bones/1/position = Vector3(0, 1.27977, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.345308, -0.024602, -0.0677393, 0.935718)
-bones/3/rotation = Quaternion(-0.213276, -0.0260903, 0.0173694, 0.976489)
-bones/4/rotation = Quaternion(-0.345308, 0.0246017, 0.0677392, 0.935718)
-bones/5/rotation = Quaternion(-0.213276, 0.0260903, -0.0173694, 0.976489)
+bones/2/rotation = Quaternion(-0.344359, -0.0245333, -0.0677642, 0.936068)
+bones/3/rotation = Quaternion(-0.211187, -0.025825, 0.0173814, 0.97695)
+bones/4/rotation = Quaternion(-0.344359, 0.024533, 0.0677641, 0.936068)
+bones/5/rotation = Quaternion(-0.211187, 0.025825, -0.0173814, 0.97695)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)
@@ -225,5 +226,8 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 visible = false
 target_position = Vector3(0, 0, -10)
+
+[node name="Pfx2" parent="." instance=ExtResource("8_x1yo3")]
+unique_name_in_owner = true
 
 [editable path="rabbit_1"]
