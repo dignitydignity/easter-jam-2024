@@ -76,16 +76,18 @@ size = Vector3(10, 5, 10)
 process_mode = 1
 collision_layer = 11
 script = ExtResource("2_xo52y")
-_walk_speed = 5.0
+_walk_speed = 8.0
 _wander_dist_min = 10.0
 _wander_dist_max = 20.0
 _idle_time_min = 0.5
-_idle_time_max = 5.0
+_idle_time_max = 3.0
 _jump_height = 0.75
 _grav = 10.0
 _flee_dist = 10.0
 _flee_angle_deg = 90.0
 _jump_dist_grav_scale_factor = 20.0
+_forget_dist = 40.0
+_forget_time = 30.0
 _rabbit_body = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_body")
 _rabbit_tail = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_tail")
 
@@ -97,15 +99,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.29938, 0)
-bones/0/scale = Vector3(1.00067, 1, 1.00018)
-bones/1/position = Vector3(0, 1.4191, 0)
+bones/0/position = Vector3(0, 0.199103, 0)
+bones/0/scale = Vector3(1.10914, 1, 1.02973)
+bones/1/position = Vector3(0, 1.27255, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.263289, -0.0186659, -0.0696093, 0.962021)
-bones/3/rotation = Quaternion(-0.0320935, -0.00309922, 0.0180951, 0.999316)
-bones/4/rotation = Quaternion(-0.263289, 0.0186657, 0.0696092, 0.962021)
-bones/5/rotation = Quaternion(-0.0320935, 0.00309922, -0.0180951, 0.999316)
+bones/2/rotation = Quaternion(-0.34849, -0.0248323, -0.0676552, 0.934538)
+bones/3/rotation = Quaternion(-0.220275, -0.0269791, 0.0173288, 0.974911)
+bones/4/rotation = Quaternion(-0.34849, 0.0248321, 0.0676551, 0.934538)
+bones/5/rotation = Quaternion(-0.220275, 0.0269791, -0.0173288, 0.974911)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)
@@ -121,6 +123,7 @@ surface_material_override/0 = SubResource("ORMMaterial3D_7jpjs")
 
 [node name="AnimationTree" type="AnimationTree" parent="rabbit_1"]
 unique_name_in_owner = true
+root_node = NodePath("%AnimationTree/..")
 libraries = {
 "": SubResource("AnimationLibrary_rice2")
 }

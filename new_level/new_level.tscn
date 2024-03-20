@@ -595,6 +595,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.492, -2.29753, -87.3946)
 
 [node name="Boundaries" type="MeshInstance3D" parent="NewLevel"]
 transform = Transform3D(1, 0, 0, 0, 1.485, 0, 0, 0, 1, 0, -7.54163, 0)
+visible = false
 mesh = SubResource("ArrayMesh_1yf3a")
 skeleton = NodePath("")
 

@@ -22,6 +22,8 @@ class_name Rabbit
 @export_range(0, 30) var _flee_dist : float
 @export_range(0, 90) var _flee_angle_deg : float
 @export_range(0, 100) var _jump_dist_grav_scale_factor : float
+@export_range(0.1, 100) var _forget_dist : float
+@export_range(0.1, 100) var _forget_time : float
 
 @export_group("References")
 @export var _rabbit_body : MeshInstance3D
@@ -42,12 +44,14 @@ var _player_in_cone : Player # When walks into vision cone.
 var _flee_target : Node3D:
 	get: return _flee_target
 	set(value):
-		_flee_target = value
-		if _flee_target != null:
+		if value != null:
 			_last_flee_start_time = Time.get_ticks_msec() / 1000.0
 			_ai_state = AiState.FLEE
 		else:
+			if !(_flee_target is Player):
+				_flee_target.queue_free()
 			_ai_state = AiState.WANDER
+		_flee_target = value
 var _last_flee_start_time : float
 
 @onready var _vision_cone : Area3D = %VisionCone
@@ -126,10 +130,10 @@ func _ready() -> void:
 					_ai_state = AiState.FLEE
 					var spook_breadcrumb := Node3D.new()
 					# When return to Wander, delete spook breadcrumb.
-					var breadcrumb_timer := get_tree().create_timer(5)
-					breadcrumb_timer.timeout.connect(
-						func(): spook_breadcrumb.queue_free()
-					)
+					#var breadcrumb_timer := get_tree().create_timer()
+					#breadcrumb_timer.timeout.connect(
+						#func(): spook_breadcrumb.queue_free()
+					#)
 					get_tree().current_scene.add_child(spook_breadcrumb)
 					spook_breadcrumb.global_position = other_rabbit.global_position
 					_flee_target = spook_breadcrumb
@@ -245,24 +249,23 @@ func _physics_process(delta : float) -> void:
 	))
 	
 	#if _ai_state == AiState.WANDER and horz_vel < Main.ERR_TOL and randf() < .0001: # 1% chance of doing
-		#print("woot")
 		#_animtree.set("parameters/oneshot_look/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 	
 	_check_player_in_los_and_begin_flee_if_so()
 	
 	# End flee if _flee_target is far
 	if _flee_target != null:
-		const forget_dist := 3.0
-		var flee_target_is_far = global_position.distance_to(_flee_target.global_position) >= forget_dist
+		var flee_target_is_far = global_position.distance_to(_flee_target.global_position) >= _forget_dist
 		if flee_target_is_far:
-			const forget_time := 1.0
-			var enough_time_has_passed := Time.get_ticks_msec() / 1000.0 >= _last_flee_start_time + forget_time
+			var enough_time_has_passed := Time.get_ticks_msec() / 1000.0 >= _last_flee_start_time + _forget_time
 			if enough_time_has_passed:
-				print("Rabbit forgot about ", _flee_target.name)
 				_flee_target = null
 	
 	match _ai_state:
 		AiState.WANDER:
+			
+			#if !_nav_agent.is_target_reachable():
+				#print("Unreachable Target on rabbit: ", name)
 			
 			if !_nav_agent.is_navigation_finished():
 				var next_path_pos := _nav_agent.get_next_path_position()

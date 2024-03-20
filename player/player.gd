@@ -167,7 +167,7 @@ func _physics_process(delta : float) -> void:
 	
 	var handle_interact_and_grab_input := func() -> void:
 		if Input.is_action_just_pressed("action"):
-			print("attempted action!")
+			#print("attempted action!")
 			var is_grab_successful := false 
 			var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_grab_attempt_time + _grab_cooldown)
@@ -178,7 +178,7 @@ func _physics_process(delta : float) -> void:
 					# TODO: Wrap queue_free() inside a "grab" function.
 					var rabbit := _grab_raycaster.get_collider() as Rabbit
 					rabbit.queue_free()
-					print("grabbed!")
+					#print("grabbed!")
 			if _interact_raycaster.is_colliding() and !is_grab_successful:
 				print("non-grab action!")
 	

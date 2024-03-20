@@ -4,10 +4,13 @@ class_name Main
 # Error tolerance for floating point comparisons.
 const ERR_TOL = 0.0001
 
-#static var rng := RandomNumberGenerator.new()
-
 @onready var _pause_menu : PauseMenu = %PauseMenu
 @onready var _options_menu : Control = %OptionsMenu
+@onready var _music : AudioStreamPlayer = %Music
+
+const song1 := preload("res://audio/music/roy_t1.mp3")
+const song2 := preload("res://audio/music/nate_t1.mp3")
+const song3 := preload("res://audio/music/nate_t2.mp3")
 
 # When `_gamestate` mutates, important side effects occur.
 enum Gamestate { DEFAULT, PAUSE, OPTIONS }
@@ -33,6 +36,12 @@ var _gamestate := Gamestate.DEFAULT:
 				_options_menu.visible = true
 
 func _ready() -> void:
+	_music.stream = song2
+	_music.play()
+	_music.finished.connect(
+		func():
+			_music.play()
+	)
 	#seed(12345) # Fixed seed for debugging.
 	#randomize() # Randomize initial seed for global RNG.
 	
