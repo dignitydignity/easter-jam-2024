@@ -15,6 +15,7 @@ const ERR_TOL = 0.0001
 @onready var _scorecard_resume : TextureButton = %ScorecardResume
 @onready var _scorecard_label : Label = %ScorecardLabel
 @onready var _options_back : Button = %OptionsBack
+@onready var _world_env : WorldEnvironment = %WorldEnvironment
 
 @onready var _music_slider : HSlider = %MusicSlider
 @onready var _volume_slider : HSlider = %VolumeSlider
@@ -97,6 +98,7 @@ var _gamestate : Gamestate:
 var _music_bus_id : int
 var _sfx_bus_id : int
 static var mouse_sens : float = 1.0
+static var _first_speedup := false
 
 func _ready() -> void:
 	_transition_screen.color = Color(Color.BLACK, 0.0)
@@ -108,14 +110,32 @@ func _ready() -> void:
 	_gamestate = Gamestate.START_MENU
 	_music.stream = song1
 	_music.play()
+	
+	
 	_music.finished.connect(
-		func(): 
+		func():
 			if _music.stream == song2:
 				_music.stream = song3
+				if !_first_speedup:
+					_first_speedup = true
+					Player.instance._max_walk_speed = 7.0 + Player.instance._num_caught_rabbits * 0.1
+					Player.instance._sprint_speed = 12.0/7.0 * Player.instance._max_walk_speed
+					Player.instance._dive_dist = Player.instance._sprint_speed
+					Player.instance._min_speed_for_dive = Player.instance._max_walk_speed * 10.0/7.0
+					Player.instance._jump_height = 1.5 + 0.1 * Player.instance._num_caught_rabbits
+					Player.instance._grab_cooldown = 0.25 - 0.01 * Player.instance._num_caught_rabbits
+					Player.instance._grab_cooldown = max(Player.instance._grab_cooldown, 0.01)
 			elif _music.stream == song3:
 				_music.stream = song2
+				#Player.instance._max_walk_speed = 7.0
+				#Player.instance._sprint_speed = 12.0
+				#Player.instance._dive_dist = Player.instance._sprint_speed
+				#Player.instance._min_speed_for_dive = 10.0
+				#Player.instance._jump_height = 1.5
 			_music.play()
 	)
+	
+	
 	
 	assert(process_mode == PROCESS_MODE_ALWAYS)
 	assert(_options_menu.process_mode == PROCESS_MODE_ALWAYS)

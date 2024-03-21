@@ -14,7 +14,6 @@ sky = SubResource("Sky_5wb4o")
 sky_custom_fov = 103.4
 ambient_light_source = 2
 ambient_light_color = Color(0.109804, 0.266667, 0.329412, 1)
-ambient_light_energy = 0.33
 reflected_light_source = 1
 tonemap_exposure = 1.04
 ssr_enabled = true

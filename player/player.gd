@@ -103,11 +103,14 @@ func _ready() -> void:
 				else:
 					_num_caught_rabbits += 1
 				
-				_max_walk_speed = 7.0 + _num_caught_rabbits * 0.2
-				_sprint_speed = 12.0/7.0 * _max_walk_speed
-				_dive_dist = _sprint_speed
-				_min_speed_for_dive = _max_walk_speed * 10.0/7.0
-				_jump_height += .1
+				if !Main._first_speedup: 
+					Player.instance._max_walk_speed = 7.0 + Player.instance._num_caught_rabbits * 0.1
+					Player.instance._sprint_speed = 12.0/7.0 * Player.instance._max_walk_speed
+					Player.instance._dive_dist = Player.instance._sprint_speed
+					Player.instance._min_speed_for_dive = Player.instance._max_walk_speed * 10.0/7.0
+					Player.instance._jump_height = 1.5 + 0.1 * Player.instance._num_caught_rabbits
+					Player.instance._grab_cooldown = 0.25 - 0.01 * Player.instance._num_caught_rabbits
+					Player.instance._grab_cooldown = max(Player.instance._grab_cooldown, 0.01)
 				
 				#if _num_caught_rabbits == 100:
 					
@@ -130,7 +133,7 @@ func _process(delta : float) -> void:
 	var horz_speed := sqrt(velocity.x ** 2 + velocity.z ** 2)
 	
 	# Update debug labels.
-	_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
+	#_fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
 	#_movestate_label.text = "Movestate: %s " % (
 		#"WALK" if _movestate == Movestate.WALK else 
 		#"SPRINT" if _movestate == Movestate.SPRINT else  
@@ -193,7 +196,7 @@ func _reset_mouse_rel() -> void:
 
 
 var num_physics_updates := 0
-const CLOCK_START_TIME = 15
+const CLOCK_START_TIME = 99
 @onready var _clock_label : Label = %ClockLabel
 @onready var _sfx_clock : AudioStreamPlayer = %SfxClock
 const SFX_TIMEOUT = preload("res://audio/sfx/timeout.wav")
