@@ -125,3 +125,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.32759, 8.7012, 54.2219)
 [node name="Music" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 volume_db = -31.09
+
+[node name="Rabbit" parent="." instance=ExtResource("4_kp1fs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00999, 2.37284, 64.7872)

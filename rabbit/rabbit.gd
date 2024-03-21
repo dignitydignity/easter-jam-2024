@@ -40,24 +40,29 @@ const SFX_VOL = -40.0 # Default val, but not for giggle (0)
 
 var _jump_count : int = 0
 var _catch_time : float
-var _respawn_cooldown := 30.0
+var _respawn_cooldown := 30
 
 @onready var _collider : CollisionShape3D = %CollisionShape3D
 
 var _is_caught := false
 func catch() -> void:
 	if _is_caught: return
+	assert(!_is_caught)
 	_is_caught = true
 	_catch_time = Time.get_ticks_msec() / 1000.0
 	visible = false
-	_collider.disabled = true
+	_collider.set_deferred("disabled", true)
+	_flee_target = null
 
 var start_pos : Vector3
 func respawn() -> void:
 	_is_caught = false
 	visible = true
-	_collider.disabled = false
-	_respawn_cooldown -= 1.0
+	_collider.set_deferred("disabled", false)
+	global_position = start_pos
+	#_respawn_cooldown -= 1.0
+	#_respawn_cooldown = max(_respawn_cooldown, 15.0)
+	_flee_target = null
 	
 # Flee target is the object to flee from. Not the target to flee towards.
 var _player_in_cone : Player # When walks into vision cone.
@@ -70,7 +75,7 @@ var _flee_target : Node3D:
 			_last_flee_start_time = Time.get_ticks_msec() / 1000.0
 			_ai_state = AiState.FLEE
 		else:
-			if !(_flee_target is Player): # is breadcrumb
+			if _flee_target != null and !(_flee_target is Player): # is breadcrumb
 				_flee_target.queue_free()
 			_ai_state = AiState.WANDER
 		_flee_target = value
