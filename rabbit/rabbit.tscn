@@ -100,15 +100,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.287315, 0)
-bones/0/scale = Vector3(1.01372, 1, 1.00374)
-bones/1/position = Vector3(0, 1.40148, 0)
+bones/0/position = Vector3(0, 0.194433, 0)
+bones/0/scale = Vector3(1.11419, 1, 1.03111)
+bones/1/position = Vector3(0, 1.26542, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.273717, -0.0194204, -0.0694026, 0.959107)
-bones/3/rotation = Quaternion(-0.0550537, -0.00601092, 0.0180373, 0.998302)
-bones/4/rotation = Quaternion(-0.273717, 0.0194201, 0.0694025, 0.959107)
-bones/5/rotation = Quaternion(-0.0550537, 0.00601092, -0.0180373, 0.998302)
+bones/2/rotation = Quaternion(-0.352386, -0.0251144, -0.067551, 0.933076)
+bones/3/rotation = Quaternion(-0.229211, -0.0281139, 0.0172754, 0.972817)
+bones/4/rotation = Quaternion(-0.352386, 0.0251142, 0.0675509, 0.933076)
+bones/5/rotation = Quaternion(-0.229211, 0.0281139, -0.0172754, 0.972817)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)
@@ -140,75 +140,6 @@ parameters/oneshot_look/request = 0
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 unique_name_in_owner = true
 radius = 0.4
-
-[node name="Label3Ds" type="Node3D" parent="."]
-visible = false
-
-[node name="AiStateLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.03411, 0)
-billboard = 1
-text = "STATE"
-
-[node name="HorzSpeedLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.86451, 0)
-billboard = 1
-text = "m/s"
-
-[node name="GroundedLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.67039, 0)
-billboard = 1
-text = "Grounded?:"
-
-[node name="TargetPosLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.46442, 0)
-billboard = 1
-text = "TargetPos: "
-
-[node name="CurrentPosLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29816, 0)
-billboard = 1
-text = "CurrentPos: "
-
-[node name="DistToTargLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15385, 0)
-billboard = 1
-text = "DistToTarg: "
-
-[node name="NavFinLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.97167, 0)
-billboard = 1
-text = "NavFin?: "
-
-[node name="TargReachedLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8247, 0)
-billboard = 1
-text = "TargReached?: "
-
-[node name="ReachableLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61501, 0)
-billboard = 1
-text = "Reachable?:"
-
-[node name="IdlingLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42251, 0)
-billboard = 1
-text = "Idling?:"
-
-[node name="FleeTargLabel" type="Label3D" parent="Label3Ds"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2482, 0)
-billboard = 1
-text = "FleeTarg:"
 
 [node name="VisionCone" type="Area3D" parent="."]
 unique_name_in_owner = true

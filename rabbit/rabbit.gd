@@ -60,20 +60,6 @@ var _last_flee_start_time : float
 @onready var _vision_cone : Area3D = %VisionCone
 @onready var _line_of_sight_raycaster : RayCast3D = %LineOfSightRaycaster
 
-#@onready var _wallchecker : RayCast3D = %WallChecker
-
-#@onready var _ai_state_label : Label3D = %AiStateLabel
-#@onready var _horz_speed_label : Label3D = %HorzSpeedLabel
-#@onready var _grounded_label : Label3D = %GroundedLabel
-#@onready var _target_pos_label : Label3D = %TargetPosLabel
-#@onready var _current_pos_label : Label3D = %CurrentPosLabel
-#@onready var _dist_to_targ_label : Label3D = %DistToTargLabel
-#@onready var _nav_fin_label : Label3D = %NavFinLabel
-#@onready var _targ_reached_label : Label3D = %TargReachedLabel
-#@onready var _reachable_label : Label3D = %ReachableLabel
-#@onready var _idling_label : Label3D = %IdlingLabel
-#@onready var _flee_targ_label : Label3D = %FleeTargLabel
-
 const _pfx_factory : PackedScene = preload("res://pfx/pfx_2.tscn")
 
 func _set_random_nav_agent_target_pos(dist : float) -> void:
@@ -144,12 +130,6 @@ func _ready() -> void:
 				if _ai_state != AiState.FLEE:
 					_ai_state = AiState.FLEE
 					var spook_breadcrumb := Node3D.new()
-					# When return to Wander, delete spook breadcrumb.
-					#var breadcrumb_timer := get_tree().create_timer()
-					#breadcrumb_timer.timeout.connect(
-						#func(): spook_breadcrumb.queue_free()
-					#)
-					#spook_breadcrumb.owner = get_tree().current_scene
 					get_tree().current_scene.add_child(spook_breadcrumb)
 					spook_breadcrumb.global_position = other_rabbit.global_position
 					_flee_target = spook_breadcrumb
@@ -173,8 +153,6 @@ func _ready() -> void:
 	_set_random_nav_agent_target_pos(
 		randf_range(_wander_dist_min, _wander_dist_max)
 	)
-	#_idling_label.text = "Idling?: false"
-	#_idling_label.modulate = Color.RED
 	
 	# When navigation finishes, decide for how long to idle.
 	_nav_agent.navigation_finished.connect(
@@ -196,65 +174,7 @@ func _check_player_in_los_and_begin_flee_if_so():
 	
 	if is_col and is_player:
 		_flee_target = _player_in_cone
-
-
-# Labels.
-#func _process(_delta : float) -> void:
-	#
-	#_ai_state_label.text = (
-		#"WANDER" if _ai_state == AiState.WANDER else
-		#"FLEE" if _ai_state == AiState.FLEE else 
-		#"INVALID"
-	#)
-	#
-	#_horz_speed_label.text = "%.2f m/s" % sqrt(velocity.x ** 2 
-		#+ velocity.z ** 2)
-		#
-	#_grounded_label.text = "Grounded?: %s" % is_on_floor()
-	#_grounded_label.modulate = (
-		#Color.GREEN if is_on_floor() else
-		#Color.RED
-	#)
-	#
-	#_target_pos_label.text = "TargetPos: %.2v" % _nav_agent.target_position
-	#_current_pos_label.text = "CurrentPos: %.2v" % global_position
-	#_dist_to_targ_label.text = ("DistToTarg: %.2f" 
-		#% _nav_agent.distance_to_target())
-	#
-	#_nav_fin_label.text = ("NavFin?: %s" 
-		#% _nav_agent.is_navigation_finished())
-	#_nav_fin_label.modulate = (
-		#Color.GREEN if _nav_agent.is_navigation_finished() else
-		#Color.RED
-	#)
-	#
-	#_targ_reached_label.text = ("TargReached?: %s" 
-		#% _nav_agent.is_target_reached())
-	#_targ_reached_label.modulate = (
-		#Color.GREEN if _nav_agent.is_target_reached() else
-		#Color.RED
-	#)
-	#
-	#_reachable_label.text = ("Reachable?: %s" 
-		#% _nav_agent.is_target_reachable())
-	#_reachable_label.modulate = (
-		#Color.GREEN if _nav_agent.is_target_reachable() else
-		#Color.RED
-	#)
-	#
-	#var is_idling := _idling_label.modulate == Color.GREEN
-	#if is_idling:
-		#var remaining_idle_time = maxf(_last_nav_finish_time 
-			#+ _idle_time - Time.get_ticks_msec() / 1000.0, 0)
-		#_idling_label.text = "Idling?: True (%.2f s)" % remaining_idle_time
-	#
-	#if _flee_target != null:
-		#_flee_targ_label.text = "FleeTarg: %s" % _flee_target.name
-		#_flee_targ_label.modulate = Color.GREEN
-	#else:
-		#_flee_targ_label.text = "FleeTarg: NONE"
-		#_flee_targ_label.modulate = Color.RED
-
+		
 var first_one := true # prevent annoying debug messages
 
 var _time_since_idle_ended : float
