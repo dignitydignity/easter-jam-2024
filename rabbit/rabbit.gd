@@ -180,6 +180,7 @@ func _ready() -> void:
 	
 	# Rest of `_ready` is dedicated to setting up ai navigation.
 	_ai_state = AiState.WANDER
+	#_last_nav_finish_time = 0.0
 	_set_random_nav_agent_target_pos(
 		randf_range(_wander_dist_min, _wander_dist_max)
 	)
