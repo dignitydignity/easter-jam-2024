@@ -1,6 +1,9 @@
 extends Control
 class_name StartMenu
 
+@onready var title_card : TextureRect = %TitleCard
+@onready var button_holder : TextureRect = %ButtonHolder
+
 @onready var play : TextureButton = %Play
 @onready var options : TextureButton = %Options
 @onready var exit : TextureButton = %Exit

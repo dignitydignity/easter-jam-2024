@@ -168,11 +168,14 @@ texture_albedo = ExtResource("2_bolwv")
 [node name="SfxGrab" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("4_el3xy")
+bus = &"Sfx"
 
 [node name="SfxLand" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("5_doten")
+bus = &"Sfx"
 
 [node name="SfxCatch" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("6_vrn0o")
+bus = &"Sfx"

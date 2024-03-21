@@ -1,9 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://bvrkwhbglkglt"]
+[gd_scene load_steps=17 format=3 uid="uid://bvrkwhbglkglt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_ft7y6"]
 [ext_resource type="PackedScene" uid="uid://c2lijmalpvaff" path="res://pause_menu/pause_menu.tscn" id="2_3ruti"]
 [ext_resource type="PackedScene" uid="uid://b2a47dtv564ib" path="res://new_menus/start_menu.tscn" id="2_7hl0l"]
-[ext_resource type="PackedScene" uid="uid://bcnui5cq2h4mv" path="res://options_menu/options_menu.tscn" id="3_aphb4"]
 [ext_resource type="PackedScene" uid="uid://dyp7o6s7fonay" path="res://new_new_level/new_new_level.tscn" id="3_hk7mv"]
 [ext_resource type="PackedScene" uid="uid://d1iv44sh4ql74" path="res://player/player.tscn" id="3_n6th7"]
 [ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="4_kp1fs"]
@@ -12,7 +11,11 @@
 [ext_resource type="PackedScene" uid="uid://b4qpxuw2bac5" path="res://boat/boat.tscn" id="9_4bt2e"]
 [ext_resource type="Texture2D" uid="uid://pj8mrw83337k" path="res://images/tutorial_start_button.png" id="9_pemr2"]
 [ext_resource type="Texture2D" uid="uid://cv0ajegcv2ctg" path="res://images/tutorial_start_button_clicked.png" id="10_rxbwi"]
+[ext_resource type="Texture2D" uid="uid://d0aht3slpvugk" path="res://images/options_menu.png" id="11_qkk22"]
 [ext_resource type="Texture2D" uid="uid://n6g7jkrqipc5" path="res://images/tutorial_start_hovered.png" id="11_rc3cs"]
+[ext_resource type="Texture2D" uid="uid://cj6pvyfaxev77" path="res://images/fullscreen_button.png" id="12_e6i1v"]
+[ext_resource type="Texture2D" uid="uid://brfdyapcxt50t" path="res://images/hslider_handle.png" id="13_j2guc"]
+[ext_resource type="Texture2D" uid="uid://hsuf5cdfnwot" path="res://images/vslider_handle.png" id="14_nmcjb"]
 
 [node name="Main" type="Node3D"]
 process_mode = 3
@@ -56,18 +59,10 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 visible = false
 
-[node name="OptionsMenu" parent="Menus" instance=ExtResource("3_aphb4")]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-
 [node name="Tutorial" type="Control" parent="Menus"]
 unique_name_in_owner = true
 process_mode = 3
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,10 +76,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -4.0
-offset_top = 1.0
-offset_right = -4.0
-offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -92,18 +83,97 @@ texture = ExtResource("8_mkvtc")
 
 [node name="TutorialStartButton" type="TextureButton" parent="Menus/Tutorial/TextureRect"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 664.0
-offset_top = 504.0
-offset_right = 891.0
-offset_bottom = 585.0
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -486.545
+offset_top = -144.16
+offset_right = -259.545
+offset_bottom = -63.1599
+grow_horizontal = 0
+grow_vertical = 0
 texture_normal = ExtResource("9_pemr2")
 texture_pressed = ExtResource("10_rxbwi")
 texture_hover = ExtResource("11_rc3cs")
 
+[node name="OptionsMenu" type="Control" parent="Menus"]
+unique_name_in_owner = true
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Menus/OptionsMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -247.0
+offset_top = -165.5
+offset_right = 247.0
+offset_bottom = 165.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("11_qkk22")
+
+[node name="FullscreenButton" type="TextureButton" parent="Menus/OptionsMenu/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 429.0
+offset_top = 10.5
+offset_right = 469.0
+offset_bottom = 50.5
+texture_normal = ExtResource("12_e6i1v")
+
+[node name="MusicSlider" type="HSlider" parent="Menus/OptionsMenu/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 46.0
+offset_top = 188.5
+offset_right = 130.76
+offset_bottom = 222.5
+theme_override_icons/grabber = ExtResource("13_j2guc")
+max_value = 2.0
+step = 0.01
+value = 1.0
+
+[node name="VolumeSlider" type="HSlider" parent="Menus/OptionsMenu/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 46.0
+offset_top = 269.4
+offset_right = 130.76
+offset_bottom = 303.4
+theme_override_icons/grabber = ExtResource("13_j2guc")
+max_value = 2.0
+step = 0.01
+value = 1.0
+
+[node name="MouseSensSlider" type="VSlider" parent="Menus/OptionsMenu/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 394.0
+offset_top = 129.5
+offset_right = 427.0
+offset_bottom = 269.765
+theme_override_icons/grabber = ExtResource("14_nmcjb")
+max_value = 5.0
+step = 0.01
+value = 1.0
+
 [node name="Music" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
-volume_db = -31.09
+bus = &"Music"
 
 [node name="Rabbits" type="Node" parent="."]
 

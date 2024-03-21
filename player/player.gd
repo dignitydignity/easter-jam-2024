@@ -101,7 +101,8 @@ func _input(event : InputEvent) -> void:
 	# If mouse position changed between polling, cache it's relative motion to
 	# rotate the camera and player body (for FPS camera controls in `_process`).
 	if event is InputEventMouseMotion:
-		_mouse_relative = -event.relative
+		_mouse_relative = - Main.mouse_sens * event.relative
+
 
 func _process(delta : float) -> void:
 	

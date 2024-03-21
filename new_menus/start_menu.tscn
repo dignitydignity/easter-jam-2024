@@ -26,9 +26,12 @@ mouse_filter = 2
 script = ExtResource("1_a67tu")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 648.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="Background" type="TextureRect" parent="MarginContainer"]
@@ -38,20 +41,33 @@ texture = ExtResource("1_wgxvk")
 stretch_mode = 4
 
 [node name="TitleCard" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 341.0
-offset_top = 34.0
-offset_right = 841.001
-offset_bottom = 249.0
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 35.0
+offset_right = 250.001
+offset_bottom = 250.0
+grow_horizontal = 2
 mouse_filter = 2
 texture = ExtResource("2_p81g8")
 
 [node name="ButtonHolder" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 505.0
-offset_top = 283.0
-offset_right = 674.0
-offset_bottom = 502.0
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -84.5
+offset_top = -22.385
+offset_right = 84.5
+offset_bottom = 196.615
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_bejp0")
 
