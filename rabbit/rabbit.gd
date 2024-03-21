@@ -39,7 +39,26 @@ const SFX_JUMP2	 = preload("res://audio/sfx/rabbit_jump2.wav")
 const SFX_VOL = -40.0 # Default val, but not for giggle (0)
 
 var _jump_count : int = 0
+var _catch_time : float
+var _respawn_cooldown := 30.0
 
+@onready var _collider : CollisionShape3D = %CollisionShape3D
+
+var _is_caught := false
+func catch() -> void:
+	if _is_caught: return
+	_is_caught = true
+	_catch_time = Time.get_ticks_msec() / 1000.0
+	visible = false
+	_collider.disabled = true
+
+var start_pos : Vector3
+func respawn() -> void:
+	_is_caught = false
+	visible = true
+	_collider.disabled = false
+	_respawn_cooldown -= 1.0
+	
 # Flee target is the object to flee from. Not the target to flee towards.
 var _player_in_cone : Player # When walks into vision cone.
 var _flee_target : Node3D:
@@ -63,11 +82,13 @@ var _last_flee_start_time : float
 const _pfx_factory : PackedScene = preload("res://pfx/pfx_2.tscn")
 
 func _set_random_nav_agent_target_pos(dist : float) -> void:
+	if _is_caught: return
 	var rand_angle := randf() * 2 * PI
 	var rand_dir := Vector3(cos(rand_angle), 0,  sin(rand_angle))
 	_nav_agent.target_position = global_position + rand_dir * dist
 
 func _set_random_nav_agent_target_pos_away_fom_flee_target(dist : float) -> void:
+	if _is_caught: return
 	var dir_to_flee_targ := global_position.direction_to(_flee_target.global_position)
 	var angle_to_flee_targ := atan2(dir_to_flee_targ.z, dir_to_flee_targ.x)
 	var opp_angle := angle_to_flee_targ + PI
@@ -77,8 +98,9 @@ func _set_random_nav_agent_target_pos_away_fom_flee_target(dist : float) -> void
 	_nav_agent.target_position = global_position + rand_dir_away_from_flee_targ * dist
 
 func _ready() -> void:
-	#seed(12345) # Fix seed for testing.
-	# TODO: REMOVE FIXED SEED
+	_is_caught = false
+	start_pos = global_position
+
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	assert(_wander_dist_max > _wander_dist_min)
 	assert(_idle_time_max > _idle_time_min)
@@ -86,6 +108,7 @@ func _ready() -> void:
 	# Giggle if player dives and misses.
 	Player.instance.dive_land_missed.connect(
 		func(): 
+			if _is_caught: return
 			if _ai_state == AiState.FLEE:
 				_sfx_giggle.stream = SFX_GIGGLE
 				_sfx_giggle.play()
@@ -122,6 +145,7 @@ func _ready() -> void:
 	# TODO: `for` loop over vision cones array.
 	_vision_cone.body_entered.connect(
 		func(body: Node3D):
+			if _is_caught: return
 			var other_rabbit := body as Rabbit
 			var saw_fleeing_rabbit := (other_rabbit != null 
 				and other_rabbit != self)
@@ -144,6 +168,7 @@ func _ready() -> void:
 	
 	_vision_cone.body_exited.connect(
 		func(body : Node3D) -> void:
+			if _is_caught: return
 			if body is Player:
 				_player_in_cone = null
 	)
@@ -157,6 +182,7 @@ func _ready() -> void:
 	# When navigation finishes, decide for how long to idle.
 	_nav_agent.navigation_finished.connect(
 		func() -> void:
+			if _is_caught: return
 			# TODO: Bias THE `_idle_time` to be above a min threshold.
 			# Beyond the min threshold, the rabbit can look around.
 			_last_nav_finish_time = Time.get_ticks_msec() / 1000.0
@@ -166,6 +192,7 @@ func _ready() -> void:
 	)
 
 func _check_player_in_los_and_begin_flee_if_so():
+	if _is_caught: return
 	if _player_in_cone == null: return
 	_line_of_sight_raycaster.target_position = _line_of_sight_raycaster.to_local(
 		_player_in_cone.global_position + Vector3.UP)
@@ -180,6 +207,12 @@ var first_one := true # prevent annoying debug messages
 var _time_since_idle_ended : float
 
 func _physics_process(delta : float) -> void:
+	if _is_caught:
+		var is_respawn_off_cd := (Time.get_ticks_msec() / 1000.0 
+			> _catch_time + _respawn_cooldown)
+		if is_respawn_off_cd:
+			respawn()
+		return
 	
 	if first_one:
 		first_one = false

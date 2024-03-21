@@ -93,6 +93,7 @@ _rabbit_body = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_body")
 _rabbit_tail = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_tail")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CapsuleShape3D_yfoac")
 
@@ -100,15 +101,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.194433, 0)
-bones/0/scale = Vector3(1.11419, 1, 1.03111)
-bones/1/position = Vector3(0, 1.26542, 0)
+bones/0/position = Vector3(0, 0.286639, 0)
+bones/0/scale = Vector3(1.01446, 1, 1.00394)
+bones/1/position = Vector3(0, 1.40048, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.352386, -0.0251144, -0.067551, 0.933076)
-bones/3/rotation = Quaternion(-0.229211, -0.0281139, 0.0172754, 0.972817)
-bones/4/rotation = Quaternion(-0.352386, 0.0251142, 0.0675509, 0.933076)
-bones/5/rotation = Quaternion(-0.229211, 0.0281139, -0.0172754, 0.972817)
+bones/2/rotation = Quaternion(-0.274296, -0.0194624, -0.0693908, 0.958941)
+bones/3/rotation = Quaternion(-0.0563275, -0.00617248, 0.0180338, 0.99823)
+bones/4/rotation = Quaternion(-0.274296, 0.0194621, 0.0693907, 0.958941)
+bones/5/rotation = Quaternion(-0.0563275, 0.00617248, -0.0180338, 0.99823)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)

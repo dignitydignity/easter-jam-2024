@@ -87,7 +87,10 @@ func _ready() -> void:
 			func(body : Node3D) -> void:
 				_is_dive_land_miss = false
 				var rabbit := body as Rabbit
-				rabbit.queue_free()
+				assert(!rabbit._is_caught)
+				rabbit.catch()
+				assert(rabbit._is_caught)
+				#rabbit.queue_free()
 				_sfx_catch.play()
 				_num_caught_rabbits += 1
 				_headcount_label.text = "x %d" % _num_caught_rabbits
