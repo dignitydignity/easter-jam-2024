@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://d1iv44sh4ql74"]
+[gd_scene load_steps=16 format=3 uid="uid://d1iv44sh4ql74"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_fun63"]
 [ext_resource type="Texture2D" uid="uid://8po4wouod3js" path="res://images/shadow.png" id="2_bolwv"]
 [ext_resource type="Texture2D" uid="uid://by6ot25v8v5tw" path="res://images/headcount.png" id="2_nulv3"]
+[ext_resource type="Texture2D" uid="uid://6skmo6k48dv6" path="res://images/timer.png" id="3_sb7i2"]
 [ext_resource type="AudioStream" uid="uid://cv6slclu4hj0q" path="res://audio/sfx/grab_rabbit.wav" id="4_el3xy"]
 [ext_resource type="AudioStream" uid="uid://bololk3ofeoeb" path="res://audio/sfx/player_land.wav" id="5_doten"]
 [ext_resource type="AudioStream" uid="uid://cpwcprh1mesmn" path="res://audio/sfx/magic_game_win_success_cc0.wav" id="6_vrn0o"]
@@ -23,6 +24,9 @@ material = SubResource("ORMMaterial3D_rwryp")
 [sub_resource type="BoxMesh" id="BoxMesh_qvb2d"]
 material = SubResource("ORMMaterial3D_atbv3")
 size = Vector3(0.5, 0.25, 0.08)
+
+[sub_resource type="SystemFont" id="SystemFont_nnbxp"]
+font_names = PackedStringArray("Microsoft Himalaya")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_42s1t"]
 size = Vector3(1, 2, 1)
@@ -102,6 +106,7 @@ mouse_filter = 2
 
 [node name="FpsLabel" type="Label" parent="Hud"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_top = 54.945
 offset_right = 40.0
@@ -137,18 +142,61 @@ text = "Grab Cooldown: "
 
 [node name="Headcount" type="TextureRect" parent="Hud"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 10.0
+offset_right = 80.0
+offset_bottom = 90.0
 texture = ExtResource("2_nulv3")
 
-[node name="HeadcountLabel" type="Label" parent="Hud"]
+[node name="HeadcountLabel" type="Label" parent="Hud/Headcount"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 45.0
-offset_top = 12.0
-offset_right = 85.0
-offset_bottom = 35.0
-text = "x 0"
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 4.565
+offset_top = -21.375
+offset_right = 54.565
+offset_bottom = 45.625
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_nnbxp")
+theme_override_font_sizes/font_size = 66
+text = "x0"
+
+[node name="TextureRect" type="TextureRect" parent="Hud"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -125.0
+offset_right = 112.0
+offset_bottom = -10.0
+grow_vertical = 0
+texture = ExtResource("3_sb7i2")
+
+[node name="ClockLabel" type="Label" parent="Hud/TextureRect"]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -28.52
+offset_right = 38.0
+offset_bottom = 62.48
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_nnbxp")
+theme_override_font_sizes/font_size = 86
+text = "60"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="DiveGrabHitbox2" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

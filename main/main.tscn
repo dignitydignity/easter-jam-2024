@@ -54,6 +54,7 @@ environment = ExtResource("4_ui4we")
 
 [node name="StartMenu" parent="Menus" instance=ExtResource("2_7hl0l")]
 unique_name_in_owner = true
+visible = false
 
 [node name="PauseMenu" parent="Menus" instance=ExtResource("2_3ruti")]
 unique_name_in_owner = true
@@ -102,6 +103,7 @@ texture_hover = ExtResource("11_rc3cs")
 [node name="OptionsMenu" type="Control" parent="Menus"]
 unique_name_in_owner = true
 process_mode = 3
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

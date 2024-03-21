@@ -75,6 +75,7 @@ var _is_dive_land_miss := true
 signal dive_land_missed
 
 func _ready() -> void:
+	_clock_label.text = "%d" % CLOCK_START_TIME
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	instance = self
@@ -93,7 +94,7 @@ func _ready() -> void:
 				#rabbit.queue_free()
 				_sfx_catch.play()
 				_num_caught_rabbits += 1
-				_headcount_label.text = "x %d" % _num_caught_rabbits
+				_headcount_label.text = "x%d" % _num_caught_rabbits
 				print("dive grab!")
 		)
 
@@ -170,7 +171,19 @@ func _process(delta : float) -> void:
 func _reset_mouse_rel() -> void:
 	_mouse_relative = Vector2.ZERO
 
+
+var num_physics_updates := 0
+const CLOCK_START_TIME = 99
+@onready var _clock_label : Label = %ClockLabel
+
+# delta = 1/60
 func _physics_process(delta : float) -> void:
+	num_physics_updates += 1
+	if num_physics_updates % 60 == 0:
+		var time_left := CLOCK_START_TIME - num_physics_updates / 60
+		time_left = max(time_left, 0)
+		_clock_label.text = "%d" % time_left
+	
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
 	_grab_hitbox.monitoring = _movestate == Movestate.DIVE
 	
