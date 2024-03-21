@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://3o4ndx3qbe42"]
+
+[ext_resource type="PackedScene" uid="uid://qrod1vm4th82" path="res://rabbit/rabbit.tscn" id="1_kcwpo"]
+[ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="2_vgtvc"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_e2ya4"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("2_vgtvc")
+emission_enabled = true
+emission_energy_multiplier = 0.1
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_583d5"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("2_vgtvc")
+emission_enabled = true
+emission_energy_multiplier = 0.1
+
+[node name="ChillRabbit" instance=ExtResource("1_kcwpo")]
+
+[node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
+bones/0/position = Vector3(0, 0.264461, 0)
+bones/0/scale = Vector3(1.03844, 1, 1.01047)
+bones/1/position = Vector3(0, 1.36808, 0)
+bones/2/rotation = Quaternion(-0.293268, -0.0208353, -0.068991, 0.95331)
+bones/3/rotation = Quaternion(-0.0981628, -0.0114792, 0.0179023, 0.994943)
+bones/4/rotation = Quaternion(-0.293268, 0.020835, 0.0689909, 0.95331)
+bones/5/rotation = Quaternion(-0.0981629, 0.0114792, -0.0179022, 0.994943)
+
+[node name="rabbit_body" parent="rabbit_1/Armature/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("ORMMaterial3D_e2ya4")
+
+[node name="rabbit_tail" parent="rabbit_1/Armature/Skeleton3D" index="1"]
+surface_material_override/0 = SubResource("ORMMaterial3D_583d5")
+
+[node name="VisionCone" parent="." index="3"]
+monitoring = false
+
+[editable path="rabbit_1"]

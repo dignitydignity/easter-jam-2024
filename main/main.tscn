@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://bvrkwhbglkglt"]
+[gd_scene load_steps=25 format=3 uid="uid://bvrkwhbglkglt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_ft7y6"]
 [ext_resource type="PackedScene" uid="uid://c2lijmalpvaff" path="res://pause_menu/pause_menu.tscn" id="2_3ruti"]
@@ -16,13 +16,11 @@
 [ext_resource type="Texture2D" uid="uid://cj6pvyfaxev77" path="res://images/fullscreen_button.png" id="12_e6i1v"]
 [ext_resource type="Texture2D" uid="uid://brfdyapcxt50t" path="res://images/hslider_handle.png" id="13_j2guc"]
 [ext_resource type="Texture2D" uid="uid://hsuf5cdfnwot" path="res://images/vslider_handle.png" id="14_nmcjb"]
-[ext_resource type="Script" path="res://rabbit/rabbit.gd" id="16_4rery"]
-[ext_resource type="PackedScene" uid="uid://ioi7pvm513pm" path="res://rabbit/rabbit_1.blend" id="17_stdpc"]
-[ext_resource type="Texture2D" uid="uid://cpcvoiwhio6fo" path="res://rabbit/textures/rabbit_body_albedo.png" id="18_x2pbi"]
-[ext_resource type="Animation" uid="uid://dq65nv7ddqbr3" path="res://rabbit/anims/idle.tres" id="19_g4il6"]
-[ext_resource type="Animation" uid="uid://bjrv148mdytk0" path="res://rabbit/anims/midair_idle.tres" id="20_1f1n2"]
-[ext_resource type="Animation" uid="uid://csflw727ok73p" path="res://rabbit/anims/looking.tres" id="21_4luq4"]
-[ext_resource type="Animation" uid="uid://chei5btmrj82q" path="res://rabbit/anims/walk.tres" id="22_76048"]
+[ext_resource type="Texture2D" uid="uid://ba5do1uakjnp0" path="res://images/scorecard.png" id="15_ax2un"]
+[ext_resource type="Texture2D" uid="uid://ctbw3iha6qg83" path="res://new_menus/Textures/RESUME.png" id="16_0p4dd"]
+[ext_resource type="Texture2D" uid="uid://c51pdwmnjd14h" path="res://new_menus/Textures/RESUME_Clicked.png" id="17_8atf5"]
+[ext_resource type="PackedScene" uid="uid://3o4ndx3qbe42" path="res://rabbit/chill_rabbit.tscn" id="17_en8oj"]
+[ext_resource type="Texture2D" uid="uid://c3wsdlkdymfss" path="res://new_menus/Textures/RESUME_Hovered.png" id="18_gpe0q"]
 
 [sub_resource type="Animation" id="Animation_w7ym1"]
 resource_name = "scene_fade"
@@ -45,69 +43,9 @@ _data = {
 "scene_fade": SubResource("Animation_w7ym1")
 }
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yfoac"]
-radius = 0.4
-height = 1.0
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_2rl4p"]
-resource_local_to_scene = true
-albedo_texture = ExtResource("18_x2pbi")
-emission_enabled = true
-emission_energy_multiplier = 0.1
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_eqps6"]
-resource_local_to_scene = true
-albedo_texture = ExtResource("18_x2pbi")
-emission_enabled = true
-emission_energy_multiplier = 0.1
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_rice2"]
-_data = {
-"idle": ExtResource("19_g4il6"),
-"looking": ExtResource("21_4luq4"),
-"midair_idle": ExtResource("20_1f1n2"),
-"walk": ExtResource("22_76048")
-}
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_n5f3t"]
-animation = &"idle"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vjj1a"]
-animation = &"walk"
-
-[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_lodyl"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_n5f3t")
-blend_point_0/pos = 0.0
-blend_point_1/node = SubResource("AnimationNodeAnimation_vjj1a")
-blend_point_1/pos = 1.0
-
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_5k0a1"]
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_00wgx"]
-animation = &"looking"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2slhr"]
-animation = &"midair_idle"
-
-[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_wg01l"]
-
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ctj5o"]
-graph_offset = Vector2(-45.3567, -135.411)
-nodes/idle_walk/node = SubResource("AnimationNodeBlendSpace1D_lodyl")
-nodes/idle_walk/position = Vector2(213.333, 160)
-nodes/jump_blend/node = SubResource("AnimationNodeBlend2_5k0a1")
-nodes/jump_blend/position = Vector2(1200, 373.333)
-nodes/looking/node = SubResource("AnimationNodeAnimation_00wgx")
-nodes/looking/position = Vector2(266.667, 480)
-nodes/midair_idle/node = SubResource("AnimationNodeAnimation_2slhr")
-nodes/midair_idle/position = Vector2(640, 586.667)
-nodes/oneshot_look/node = SubResource("AnimationNodeOneShot_wg01l")
-nodes/oneshot_look/position = Vector2(800, -53.3333)
-nodes/output/position = Vector2(1520, 53.3333)
-node_connections = [&"jump_blend", 0, &"oneshot_look", &"jump_blend", 1, &"midair_idle", &"oneshot_look", 0, &"idle_walk", &"oneshot_look", 1, &"looking", &"output", 0, &"jump_blend"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_o7oip"]
-size = Vector3(10, 5, 10)
+[sub_resource type="SystemFont" id="SystemFont_0c0hv"]
+font_names = PackedStringArray("Microsoft Himalaya")
+subpixel_positioning = 0
 
 [node name="Main" type="Node3D"]
 process_mode = 3
@@ -282,6 +220,71 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
 
+[node name="Scorecard" type="Control" parent="Menus"]
+unique_name_in_owner = true
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="Menus/Scorecard"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -247.0
+offset_top = -165.5
+offset_right = 247.0
+offset_bottom = 165.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("15_ax2un")
+
+[node name="ScorecardLabel" type="Label" parent="Menus/Scorecard/TextureRect"]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -63.0
+offset_top = -35.71
+offset_right = 63.0
+offset_bottom = 96.2901
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_0c0hv")
+theme_override_font_sizes/font_size = 131
+text = "7"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScorecardResume" type="TextureButton" parent="Menus/Scorecard/TextureRect"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.5
+offset_top = 83.695
+offset_right = 76.5
+offset_bottom = 132.695
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("16_0p4dd")
+texture_pressed = ExtResource("17_8atf5")
+texture_hover = ExtResource("18_gpe0q")
+
 [node name="Music" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 bus = &"Music"
@@ -342,21 +345,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70.32, 7.13681, -64.8022)
 [node name="Rabbit18" parent="Rabbits" instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.6735, 1.7369, -13.5537)
 
-[node name="Rabbit19" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.57187, 2.87516, 66.3147)
-
-[node name="Rabbit21" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.1275, 5.45406, -79.1485)
-
-[node name="Rabbit22" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.583, 4.96522, -87.7336)
-
-[node name="Rabbit23" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -93.8751, 5.93267, -86.0306)
-
-[node name="Rabbit24" parent="Rabbits" instance=ExtResource("4_kp1fs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -88.5792, 5.53146, -74.2183)
-
 [node name="Rabbit25" parent="Rabbits" instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -43.8983, -2.56416, -79.0785)
 
@@ -372,105 +360,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.1691, -2.59384, -63.1907)
 [node name="Rabbit28" parent="Rabbits" instance=ExtResource("4_kp1fs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.1181, 1.43574, 12.5385)
 
-[node name="Rabbit29" type="CharacterBody3D" parent="Rabbits" node_paths=PackedStringArray("_rabbit_body", "_rabbit_tail")]
-process_mode = 1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7625, -4.38307, 25.108)
-collision_layer = 11
-safe_margin = 0.005
-script = ExtResource("16_4rery")
-_walk_speed = 4.0
-_wander_dist_min = 2.0
-_wander_dist_max = 5.0
-_idle_time_min = 0.5
-_idle_time_max = 2.0
-_jump_height = 0.5
-_grav = 10.0
-_flee_dist = 10.0
-_flee_angle_deg = 90.0
-_jump_dist_grav_scale_factor = 16.21
-_forget_dist = 30.0
-_forget_time = 10.0
-_rabbit_body = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_body")
-_rabbit_tail = NodePath("rabbit_1/Armature/Skeleton3D/rabbit_tail")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Rabbits/Rabbit29"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("CapsuleShape3D_yfoac")
-
-[node name="rabbit_1" parent="Rabbits/Rabbit29" instance=ExtResource("17_stdpc")]
-transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
-
-[node name="Skeleton3D" parent="Rabbits/Rabbit29/rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.270871, 0)
-bones/0/scale = Vector3(1.03151, 1, 1.00858)
-bones/1/position = Vector3(0, 1.37744, 0)
-bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
-bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.287795, -0.0204392, -0.0691094, 0.954977)
-bones/3/rotation = Quaternion(-0.0860687, -0.00994489, 0.0179437, 0.996078)
-bones/4/rotation = Quaternion(-0.287795, 0.0204389, 0.0691093, 0.954977)
-bones/5/rotation = Quaternion(-0.0860687, 0.00994489, -0.0179437, 0.996078)
-bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
-bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
-bones/6/scale = Vector3(1, 1, 1)
-bones/7/position = Vector3(-0.376932, 0.165171, -0.106271)
-bones/7/rotation = Quaternion(0.00246617, 0.603339, 0.797454, 0.00660179)
-bones/7/scale = Vector3(1, 1, 1)
-
-[node name="rabbit_body" parent="Rabbits/Rabbit29/rabbit_1/Armature/Skeleton3D" index="0"]
-surface_material_override/0 = SubResource("ORMMaterial3D_2rl4p")
-
-[node name="rabbit_tail" parent="Rabbits/Rabbit29/rabbit_1/Armature/Skeleton3D" index="1"]
-surface_material_override/0 = SubResource("ORMMaterial3D_eqps6")
-
-[node name="AnimationTree" type="AnimationTree" parent="Rabbits/Rabbit29/rabbit_1"]
-unique_name_in_owner = true
-root_node = NodePath("%AnimationTree/..")
-libraries = {
-"": SubResource("AnimationLibrary_rice2")
-}
-tree_root = SubResource("AnimationNodeBlendTree_ctj5o")
-advance_expression_base_node = NodePath("../../../Rabbit29")
-anim_player = NodePath("../AnimationPlayer")
-parameters/idle_walk/blend_position = 0.0
-parameters/jump_blend/blend_amount = 0.0
-parameters/oneshot_look/active = false
-parameters/oneshot_look/internal_active = false
-parameters/oneshot_look/request = 0
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="Rabbits/Rabbit29"]
-unique_name_in_owner = true
-radius = 0.4
-
-[node name="VisionCone" type="Area3D" parent="Rabbits/Rabbit29"]
-unique_name_in_owner = true
-collision_layer = 0
-collision_mask = 8
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Rabbits/Rabbit29/VisionCone"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -5)
-shape = SubResource("BoxShape3D_o7oip")
-disabled = true
-
-[node name="LineOfSightRaycaster" type="RayCast3D" parent="Rabbits/Rabbit29"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-visible = false
-target_position = Vector3(0, 0, -10)
-
-[node name="Sfx" type="AudioStreamPlayer3D" parent="Rabbits/Rabbit29"]
-unique_name_in_owner = true
-unit_size = 3.0
-bus = &"Sfx"
-
-[node name="SfxGiggle" type="AudioStreamPlayer3D" parent="Rabbits/Rabbit29"]
-unique_name_in_owner = true
-bus = &"Sfx"
-
 [node name="Boat2" parent="." instance=ExtResource("9_4bt2e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, -4.45461, 36)
 
+[node name="ChillRabbits" type="Node" parent="."]
+
+[node name="ChillRabbit2" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -93, 6, -86)
+
+[node name="ChillRabbit3" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95.2714, 5.45406, -78.959)
+
+[node name="ChillRabbit4" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -89.1066, 5.41574, -74.536)
+
+[node name="ChillRabbit5" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.793, 4.96522, -87.7717)
+
+[node name="ChillRabbit6" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.13919, 2.87516, 65.6648)
+
 [editable path="Player"]
-[editable path="Rabbits/Rabbit29/rabbit_1"]

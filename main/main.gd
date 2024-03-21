@@ -11,6 +11,9 @@ const ERR_TOL = 0.0001
 @onready var _tutorial : Control = %Tutorial
 @onready var _tutorial_start_button : TextureButton = %TutorialStartButton
 @onready var fullscreen_button : TextureButton = %FullscreenButton
+@onready var _scorecard : Control = %Scorecard
+@onready var _scorecard_resume : TextureButton = %ScorecardResume
+@onready var _scorecard_label : Label = %ScorecardLabel
 
 @onready var _music_slider : HSlider = %MusicSlider
 @onready var _volume_slider : HSlider = %VolumeSlider
@@ -25,7 +28,7 @@ const song3 := preload("res://audio/music/nate_t2.mp3")
 # vol = -25?
 
 # When `_gamestate` mutates, important side effects occur.
-enum Gamestate { DEFAULT, START_MENU, TUTORIAL, PAUSE, OPTIONS }
+enum Gamestate { DEFAULT, START_MENU, TUTORIAL, PAUSE, OPTIONS, SCORECARD }
 var _last_gamestate : Gamestate
 var _gamestate : Gamestate:
 	get: return _gamestate
@@ -38,6 +41,7 @@ var _gamestate : Gamestate:
 			Gamestate.START_MENU: pass
 			Gamestate.PAUSE: pass
 			Gamestate.OPTIONS: pass
+			Gamestate.SCORECARD: pass
 		
 		_last_gamestate = _gamestate
 		_gamestate = new_gamestate
@@ -50,6 +54,7 @@ var _gamestate : Gamestate:
 				_start_menu.visible = false
 				_pause_menu.visible = false
 				_options_menu.visible = false
+				_scorecard.visible = false
 			Gamestate.START_MENU:	
 				get_tree().paused = true
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -59,6 +64,7 @@ var _gamestate : Gamestate:
 				_options_menu.visible = false
 				_start_menu.button_holder.visible = true
 				_start_menu.title_card.visible = true
+				_scorecard.visible = false
 			Gamestate.TUTORIAL:
 				get_tree().paused = true
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -66,6 +72,7 @@ var _gamestate : Gamestate:
 				_start_menu.visible = false
 				_pause_menu.visible = false
 				_options_menu.visible = false
+				_scorecard.visible = false
 			Gamestate.PAUSE:
 				get_tree().paused = true
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -73,15 +80,18 @@ var _gamestate : Gamestate:
 				_start_menu.visible = false
 				_pause_menu.visible = true
 				_options_menu.visible = false
+				_scorecard.visible = false
 			Gamestate.OPTIONS:
 				get_tree().paused = true
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 				_start_menu.button_holder.visible = false
 				_start_menu.title_card.visible = false
-				#_tutorial.visible = false
-				#_start_menu.visible = false
-				#_pause_menu.visible = false
 				_options_menu.visible = true
+				_scorecard.visible = false
+			Gamestate.SCORECARD:
+				get_tree().paused = true
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+				_scorecard.visible = true
 
 var _music_bus_id : int
 var _sfx_bus_id : int
@@ -140,6 +150,18 @@ func _ready() -> void:
 				func() -> void: _gamestate = Gamestate.DEFAULT
 			)
 	)
+	
+	Player.instance.clock_timeout.connect(
+		func(): 
+			_scorecard_label.text = "%d" %  Player.instance._num_caught_rabbits
+			_gamestate = Gamestate.SCORECARD
+	)
+	_scorecard_resume.pressed.connect(
+		func(): 
+			_gamestate = Gamestate.DEFAULT
+			Player.instance._clock_label.text = "∞"
+			Player.instance._clock_label.position.y = -1.21
+	)
 
 func _start_tutorial() -> void:
 	_gamestate = Gamestate.TUTORIAL
@@ -155,3 +177,4 @@ func _input(event: InputEvent) -> void:
 			Gamestate.TUTORIAL: pass
 			Gamestate.PAUSE: _gamestate = Gamestate.DEFAULT
 			Gamestate.OPTIONS: _gamestate = _last_gamestate
+			Gamestate.SCORECARD: pass

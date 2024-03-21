@@ -74,6 +74,8 @@ var _num_caught_rabbits := 0
 var _is_dive_land_miss := true
 signal dive_land_missed
 
+signal clock_timeout
+
 func _ready() -> void:
 	_clock_label.text = "%d" % CLOCK_START_TIME
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
@@ -178,6 +180,7 @@ const CLOCK_START_TIME = 15
 @onready var _clock_label : Label = %ClockLabel
 @onready var _sfx_clock : AudioStreamPlayer = %SfxClock
 const SFX_TIMEOUT = preload("res://audio/sfx/timeout.wav")
+var clock_donzo := false
 
 # delta = 1/60
 func _physics_process(delta : float) -> void:
@@ -190,7 +193,12 @@ func _physics_process(delta : float) -> void:
 		elif time_left == 0 and _sfx_clock.stream != SFX_TIMEOUT:
 			_sfx_clock.stream = SFX_TIMEOUT
 			_sfx_clock.play()
-		_clock_label.text = "%d" % time_left
+			clock_timeout.emit()
+			clock_donzo = true
+		
+		if !clock_donzo:
+			_clock_label.text = "%d" % time_left
+		
 	
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
 	_grab_hitbox.monitoring = _movestate == Movestate.DIVE
