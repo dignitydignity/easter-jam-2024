@@ -133,7 +133,6 @@ texture_hover = ExtResource("11_rc3cs")
 [node name="OptionsMenu" type="Control" parent="Menus"]
 unique_name_in_owner = true
 process_mode = 3
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -175,6 +174,8 @@ offset_top = 188.5
 offset_right = 130.76
 offset_bottom = 222.5
 theme_override_icons/grabber = ExtResource("13_j2guc")
+theme_override_icons/grabber_highlight = ExtResource("13_j2guc")
+theme_override_icons/grabber_disabled = ExtResource("13_j2guc")
 max_value = 2.0
 step = 0.01
 value = 1.0
@@ -187,6 +188,8 @@ offset_top = 269.4
 offset_right = 130.76
 offset_bottom = 303.4
 theme_override_icons/grabber = ExtResource("13_j2guc")
+theme_override_icons/grabber_highlight = ExtResource("13_j2guc")
+theme_override_icons/grabber_disabled = ExtResource("13_j2guc")
 max_value = 2.0
 step = 0.01
 value = 1.0
@@ -199,9 +202,36 @@ offset_top = 129.5
 offset_right = 427.0
 offset_bottom = 269.765
 theme_override_icons/grabber = ExtResource("14_nmcjb")
+theme_override_icons/grabber_highlight = ExtResource("14_nmcjb")
+theme_override_icons/grabber_disabled = ExtResource("14_nmcjb")
 max_value = 5.0
 step = 0.01
 value = 1.0
+
+[node name="OptionsBack" type="Button" parent="Menus/OptionsMenu/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 55.0
+offset_bottom = 41.0
+text = "back"
+
+[node name="WipLabel" type="Label" parent="Menus/OptionsMenu"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -61.5
+offset_top = -11.5
+offset_right = 61.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "WORK IN PROGRESS"
 
 [node name="MenuAnimPlayer" type="AnimationPlayer" parent="Menus"]
 unique_name_in_owner = true
@@ -223,6 +253,7 @@ color = Color(0, 0, 0, 0)
 [node name="Scorecard" type="Control" parent="Menus"]
 unique_name_in_owner = true
 process_mode = 3
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

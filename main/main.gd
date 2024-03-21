@@ -14,6 +14,7 @@ const ERR_TOL = 0.0001
 @onready var _scorecard : Control = %Scorecard
 @onready var _scorecard_resume : TextureButton = %ScorecardResume
 @onready var _scorecard_label : Label = %ScorecardLabel
+@onready var _options_back : Button = %OptionsBack
 
 @onready var _music_slider : HSlider = %MusicSlider
 @onready var _volume_slider : HSlider = %VolumeSlider
@@ -149,6 +150,10 @@ func _ready() -> void:
 			get_tree().create_timer(1.0).timeout.connect(
 				func() -> void: _gamestate = Gamestate.DEFAULT
 			)
+	)
+	
+	_options_back.pressed.connect(
+		func() -> void: _gamestate = Gamestate.DEFAULT
 	)
 	
 	Player.instance.clock_timeout.connect(
