@@ -1,9 +1,9 @@
 extends Control
 class_name PauseMenu
 
-@onready var _resume : Button = %Resume
-@onready var _options : Button = %Options
-@onready var _exit : Button = %Exit
+@onready var _resume : TextureButton = %Resume
+@onready var _options : TextureButton = %Options
+@onready var _exit : TextureButton = %Exit
 
 signal resume_pressed
 signal options_pressed

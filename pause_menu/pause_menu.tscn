@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2lijmalpvaff"]
+[gd_scene load_steps=12 format=3 uid="uid://c2lijmalpvaff"]
 
 [ext_resource type="Script" path="res://pause_menu/pause_menu.gd" id="1_3frd1"]
+[ext_resource type="Texture2D" uid="uid://vfich6cgdqgg" path="res://new_menus/Textures/Pause_Menu_Shaded.png" id="2_bs7kk"]
+[ext_resource type="Texture2D" uid="uid://ctbw3iha6qg83" path="res://new_menus/Textures/RESUME.png" id="3_2ndgd"]
+[ext_resource type="Texture2D" uid="uid://c51pdwmnjd14h" path="res://new_menus/Textures/RESUME_Clicked.png" id="4_ivpmp"]
+[ext_resource type="Texture2D" uid="uid://c3wsdlkdymfss" path="res://new_menus/Textures/RESUME_Hovered.png" id="5_tbg8m"]
+[ext_resource type="Texture2D" uid="uid://copwflo14a3r6" path="res://new_menus/Textures/OPTIONS.png" id="6_pmpdc"]
+[ext_resource type="Texture2D" uid="uid://5xj6b58vfl6x" path="res://new_menus/Textures/OPTIONS_Clicked.png" id="7_ip8jb"]
+[ext_resource type="Texture2D" uid="uid://bvjyb8qhhsi7m" path="res://new_menus/Textures/OPTIONS_Hovered.png" id="8_afcbt"]
+[ext_resource type="Texture2D" uid="uid://bd07c1lrch6vn" path="res://new_menus/Textures/EXIT.png" id="9_b7qck"]
+[ext_resource type="Texture2D" uid="uid://cqksla1jy4mud" path="res://new_menus/Textures/EXIT_Clicked.png" id="10_2vora"]
+[ext_resource type="Texture2D" uid="uid://bdu6vkwv758ss" path="res://new_menus/Textures/EXIT_Hovered.png" id="11_wd6kx"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 2
@@ -10,64 +20,55 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
 mouse_filter = 2
 script = ExtResource("1_3frd1")
-metadata/_edit_use_anchors_ = true
 
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-color = Color(0, 0, 0, 0.207843)
-
-[node name="Resume" type="Button" parent="."]
-unique_name_in_owner = true
+[node name="ButtonHolder" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -70.0
-offset_top = -124.0
-offset_right = 70.0
-offset_bottom = -62.0
+offset_left = -84.5
+offset_top = -109.5
+offset_right = 84.5
+offset_bottom = 109.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "Resume"
+mouse_filter = 2
+texture = ExtResource("2_bs7kk")
 
-[node name="Options" type="Button" parent="."]
+[node name="Resume" type="TextureButton" parent="ButtonHolder"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -70.0
-offset_top = -34.0
-offset_right = 70.0
-offset_bottom = 28.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Options"
+layout_mode = 0
+offset_left = 9.0
+offset_top = 9.0
+offset_right = 162.0
+offset_bottom = 58.0
+texture_normal = ExtResource("3_2ndgd")
+texture_pressed = ExtResource("4_ivpmp")
+texture_hover = ExtResource("5_tbg8m")
 
-[node name="Exit" type="Button" parent="."]
+[node name="Options" type="TextureButton" parent="ButtonHolder"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -70.0
-offset_top = 56.0
-offset_right = 70.0
-offset_bottom = 118.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Exit"
+layout_mode = 0
+offset_left = 9.0
+offset_top = 67.0
+offset_right = 162.0
+offset_bottom = 116.0
+texture_normal = ExtResource("6_pmpdc")
+texture_pressed = ExtResource("7_ip8jb")
+texture_hover = ExtResource("8_afcbt")
+
+[node name="Exit" type="TextureButton" parent="ButtonHolder"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 37.0
+offset_top = 125.0
+offset_right = 134.0
+offset_bottom = 200.0
+texture_normal = ExtResource("9_b7qck")
+texture_pressed = ExtResource("10_2vora")
+texture_hover = ExtResource("11_wd6kx")

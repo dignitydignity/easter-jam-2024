@@ -13,8 +13,6 @@
 process_mode = 3
 script = ExtResource("1_ft7y6")
 
-[node name="StartMenu" parent="." instance=ExtResource("2_7hl0l")]
-
 [node name="Player" parent="." instance=ExtResource("3_n6th7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.5747, 2.80788, 14.9922)
 
@@ -45,6 +43,9 @@ sky_mode = 1
 environment = ExtResource("4_ui4we")
 
 [node name="Menus" type="Node" parent="."]
+
+[node name="StartMenu" parent="Menus" instance=ExtResource("2_7hl0l")]
+unique_name_in_owner = true
 
 [node name="PauseMenu" parent="Menus" instance=ExtResource("2_3ruti")]
 unique_name_in_owner = true

@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://b2a47dtv564ib"]
+[gd_scene load_steps=14 format=3 uid="uid://b2a47dtv564ib"]
 
+[ext_resource type="Script" path="res://new_menus/start_menu.gd" id="1_a67tu"]
 [ext_resource type="Texture2D" uid="uid://daf1ft3dov1ma" path="res://new_menus/Textures/title.png" id="1_wgxvk"]
 [ext_resource type="Texture2D" uid="uid://pu8l5w4u1fvn" path="res://new_menus/Textures/Title_Image.png" id="2_p81g8"]
 [ext_resource type="Texture2D" uid="uid://vfich6cgdqgg" path="res://new_menus/Textures/Pause_Menu_Shaded.png" id="3_bejp0"]
@@ -14,20 +15,25 @@
 [ext_resource type="Texture2D" uid="uid://bdu6vkwv758ss" path="res://new_menus/Textures/EXIT_Hovered.png" id="12_kcafq"]
 
 [node name="StartMenu" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_a67tu")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
+mouse_filter = 2
 
 [node name="Background" type="TextureRect" parent="MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("1_wgxvk")
 stretch_mode = 4
 
@@ -37,6 +43,7 @@ offset_left = 341.0
 offset_top = 34.0
 offset_right = 841.001
 offset_bottom = 249.0
+mouse_filter = 2
 texture = ExtResource("2_p81g8")
 
 [node name="ButtonHolder" type="TextureRect" parent="."]
@@ -45,9 +52,11 @@ offset_left = 505.0
 offset_top = 283.0
 offset_right = 674.0
 offset_bottom = 502.0
+mouse_filter = 2
 texture = ExtResource("3_bejp0")
 
-[node name="Resume" type="TextureButton" parent="ButtonHolder"]
+[node name="Play" type="TextureButton" parent="ButtonHolder"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 9.0
 offset_top = 9.0
@@ -58,6 +67,7 @@ texture_pressed = ExtResource("5_1xsyq")
 texture_hover = ExtResource("6_qdm7t")
 
 [node name="Options" type="TextureButton" parent="ButtonHolder"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 9.0
 offset_top = 67.0
@@ -68,6 +78,7 @@ texture_pressed = ExtResource("8_884b8")
 texture_hover = ExtResource("9_x678b")
 
 [node name="Exit" type="TextureButton" parent="ButtonHolder"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 37.0
 offset_top = 125.0
