@@ -40,15 +40,15 @@ const SFX_VOL = -40.0 # Default val, but not for giggle (0)
 
 var _jump_count : int = 0
 var _catch_time : float
-var _respawn_cooldown := 30
+static var _respawn_cooldown := 30
 
 @onready var _collider : CollisionShape3D = %CollisionShape3D
 
 var _is_caught := false
 func catch() -> void:
-	print("catch called")
+	#print("catch called")
 	if _is_caught: return
-	print("_is_caught is false")
+	#print("_is_caught is false")
 	assert(!_is_caught)
 	_is_caught = true
 	_catch_time = Time.get_ticks_msec() / 1000.0
@@ -62,8 +62,8 @@ func respawn() -> void:
 	visible = true
 	_collider.set_deferred("disabled", false)
 	global_position = start_pos
-	#_respawn_cooldown -= 1.0
-	#_respawn_cooldown = max(_respawn_cooldown, 15.0)
+	_respawn_cooldown -= 0.1
+	_respawn_cooldown = max(_respawn_cooldown, 10.0)
 	_flee_target = null
 	
 # Flee target is the object to flee from. Not the target to flee towards.

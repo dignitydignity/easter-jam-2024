@@ -75,6 +75,7 @@ var _is_dive_land_miss := true
 signal dive_land_missed
 
 signal clock_timeout
+signal caught_tons_of_rabbits
 
 func _ready() -> void:
 	_clock_label.text = "%d" % CLOCK_START_TIME
@@ -88,7 +89,7 @@ func _ready() -> void:
 		assert(box.collision_mask == 2)
 		box.body_entered.connect(
 			func(body : Node3D) -> void:
-				print("body entered")
+				#print("body entered")
 				_is_dive_land_miss = false
 				var rabbit := body as Rabbit
 				assert(!rabbit._is_caught)
@@ -98,7 +99,9 @@ func _ready() -> void:
 				_sfx_catch.play()
 				_num_caught_rabbits += 1
 				_headcount_label.text = "x%d" % _num_caught_rabbits
-				print("dive grab!")
+				if _num_caught_rabbits == 20:
+					caught_tons_of_rabbits.emit()
+				#print("dive grab!")
 		)
 
 func _input(event : InputEvent) -> void:
@@ -193,6 +196,7 @@ func _physics_process(delta : float) -> void:
 		elif time_left == 0 and _sfx_clock.stream != SFX_TIMEOUT:
 			_sfx_clock.stream = SFX_TIMEOUT
 			_sfx_clock.play()
+			_clock_label.text = "%d" % 0
 			clock_timeout.emit()
 			clock_donzo = true
 		

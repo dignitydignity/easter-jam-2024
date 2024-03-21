@@ -636,7 +636,7 @@ mesh = SubResource("ArrayMesh_vi1xx")
 skeleton = NodePath("")
 
 [node name="Seafloor" type="MeshInstance3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.725, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 mesh = SubResource("ArrayMesh_ictli")
 skeleton = NodePath("")
 

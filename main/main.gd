@@ -108,7 +108,14 @@ func _ready() -> void:
 	_gamestate = Gamestate.START_MENU
 	_music.stream = song1
 	_music.play()
-	_music.finished.connect(func(): _music.play())
+	_music.finished.connect(
+		func(): 
+			if _music.stream == song2:
+				_music.stream = song3
+			elif _music.stream == song3:
+				_music.stream = song2
+			_music.play()
+	)
 	
 	assert(process_mode == PROCESS_MODE_ALWAYS)
 	assert(_options_menu.process_mode == PROCESS_MODE_ALWAYS)
@@ -167,6 +174,11 @@ func _ready() -> void:
 			Player.instance._clock_label.text = "∞"
 			Player.instance._clock_label.position.y = -1.21
 	)
+	
+	#Player.instance.caught_tons_of_rabbits.connect(
+		#func() -> void:
+			#
+	#)
 
 func _start_tutorial() -> void:
 	_gamestate = Gamestate.TUTORIAL
