@@ -411,4 +411,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.793, 4.96522, -87.7717)
 [node name="ChillRabbit6" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.13919, 2.87516, 65.6648)
 
+[node name="MEGA" parent="ChillRabbits" instance=ExtResource("17_en8oj")]
+transform = Transform3D(-9.97684, 0, 0.680154, 0, 10, 0, -0.680154, 0, -9.97684, -122.497, 2.2494, -100.753)
+is_mega = true
+
 [editable path="Player"]

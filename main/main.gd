@@ -160,7 +160,7 @@ func _ready() -> void:
 	)
 	
 	_options_back.pressed.connect(
-		func() -> void: _gamestate = Gamestate.DEFAULT
+		func() -> void: _gamestate = _last_gamestate
 	)
 	
 	Player.instance.clock_timeout.connect(

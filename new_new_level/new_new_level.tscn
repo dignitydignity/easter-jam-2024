@@ -635,6 +635,11 @@ data = PackedVector3Array(-67.7961, 3.84735, -55.1628, -76.3572, 4.95072, -50.31
 mesh = SubResource("ArrayMesh_vi1xx")
 skeleton = NodePath("")
 
+[node name="Water2" type="MeshInstance3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -152.735, 0, 0)
+mesh = SubResource("ArrayMesh_vi1xx")
+skeleton = NodePath("")
+
 [node name="Seafloor" type="MeshInstance3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 mesh = SubResource("ArrayMesh_ictli")
@@ -643,6 +648,16 @@ skeleton = NodePath("")
 [node name="StaticBody3D" type="StaticBody3D" parent="Level/Seafloor"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Seafloor/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_vn3ti")
+
+[node name="Seafloor2" type="MeshInstance3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -153.302, -0.3, 0)
+mesh = SubResource("ArrayMesh_ictli")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Level/Seafloor2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Seafloor2/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_vn3ti")
 
 [node name="Bushes" type="MeshInstance3D" parent="Level"]

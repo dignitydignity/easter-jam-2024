@@ -94,10 +94,24 @@ func _ready() -> void:
 				var rabbit := body as Rabbit
 				assert(!rabbit._is_caught)
 				rabbit.catch()
-				assert(rabbit._is_caught)
+				if !rabbit.is_mega:
+					assert(rabbit._is_caught)
 				#rabbit.queue_free()
 				_sfx_catch.play()
-				_num_caught_rabbits += 1
+				if rabbit.is_mega:
+					_num_caught_rabbits += 5
+				else:
+					_num_caught_rabbits += 1
+				
+				_max_walk_speed = 7.0 + _num_caught_rabbits * 0.2
+				_sprint_speed = 12.0/7.0 * _max_walk_speed
+				_dive_dist = _sprint_speed
+				_min_speed_for_dive = _max_walk_speed * 10.0/7.0
+				_jump_height += .1
+				
+				#if _num_caught_rabbits == 100:
+					
+				
 				_headcount_label.text = "x%d" % _num_caught_rabbits
 				if _num_caught_rabbits == 20:
 					caught_tons_of_rabbits.emit()

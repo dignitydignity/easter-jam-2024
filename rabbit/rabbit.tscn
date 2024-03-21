@@ -101,15 +101,15 @@ shape = SubResource("CapsuleShape3D_yfoac")
 transform = Transform3D(-0.315, 0, -4.75637e-08, 0, 0.315, 0, 4.75637e-08, 0, -0.315, 0, 0, 0)
 
 [node name="Skeleton3D" parent="rabbit_1/Armature" index="0"]
-bones/0/position = Vector3(0, 0.273169, 0)
-bones/0/scale = Vector3(1.02902, 1, 1.0079)
-bones/1/position = Vector3(0, 1.3808, 0)
+bones/0/position = Vector3(0, 0.299141, 0)
+bones/0/scale = Vector3(1.00056, 1, 1.00015)
+bones/1/position = Vector3(0, 1.41926, 0)
 bones/1/rotation = Quaternion(-2.98023e-08, 1.19209e-07, 1.21169e-27, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.28583, -0.020297, -0.0691513, 0.955567)
-bones/3/rotation = Quaternion(-0.0817316, -0.00939472, 0.0179578, 0.996448)
-bones/4/rotation = Quaternion(-0.28583, 0.0202968, 0.0691512, 0.955567)
-bones/5/rotation = Quaternion(-0.0817316, 0.00939473, -0.0179578, 0.996448)
+bones/2/rotation = Quaternion(-0.263565, -0.0186858, -0.069604, 0.961946)
+bones/3/rotation = Quaternion(-0.0315892, -0.00303527, 0.0180963, 0.999333)
+bones/4/rotation = Quaternion(-0.263565, 0.0186856, 0.0696039, 0.961946)
+bones/5/rotation = Quaternion(-0.0315892, 0.00303527, -0.0180962, 0.999333)
 bones/6/position = Vector3(0.376932, 0.165171, -0.106271)
 bones/6/rotation = Quaternion(-0.00246617, 0.603339, 0.797454, -0.00660179)
 bones/6/scale = Vector3(1, 1, 1)
@@ -166,6 +166,8 @@ bus = &"Sfx"
 
 [node name="SfxGiggle" type="AudioStreamPlayer3D" parent="."]
 unique_name_in_owner = true
+volume_db = 5.0
+unit_size = 15.0
 max_db = 6.0
 bus = &"Sfx"
 

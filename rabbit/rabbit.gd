@@ -38,6 +38,8 @@ const SFX_JUMP1 = preload("res://audio/sfx/rabbit_jump.wav")
 const SFX_JUMP2	 = preload("res://audio/sfx/rabbit_jump2.wav")
 const SFX_VOL = -40.0 # Default val, but not for giggle (0)
 
+@export var is_mega : bool
+
 var _jump_count : int = 0
 var _catch_time : float
 static var _respawn_cooldown := 30
@@ -46,6 +48,7 @@ static var _respawn_cooldown := 30
 
 var _is_caught := false
 func catch() -> void:
+	if is_mega: return
 	#print("catch called")
 	if _is_caught: return
 	#print("_is_caught is false")
@@ -153,6 +156,7 @@ func _ready() -> void:
 	# TODO: `for` loop over vision cones array.
 	_vision_cone.body_entered.connect(
 		func(body: Node3D):
+			if is_mega: return
 			if _is_caught: return
 			var other_rabbit := body as Rabbit
 			var saw_fleeing_rabbit := (other_rabbit != null 
@@ -176,6 +180,7 @@ func _ready() -> void:
 	
 	_vision_cone.body_exited.connect(
 		func(body : Node3D) -> void:
+			if is_mega: return
 			if _is_caught: return
 			if body is Player:
 				_player_in_cone = null
@@ -201,6 +206,7 @@ func _ready() -> void:
 	)
 
 func _check_player_in_los_and_begin_flee_if_so():
+	if is_mega: return
 	if _is_caught: return
 	if _player_in_cone == null: return
 	_line_of_sight_raycaster.target_position = _line_of_sight_raycaster.to_local(
@@ -216,6 +222,8 @@ var first_one := true # prevent annoying debug messages
 var _time_since_idle_ended : float
 
 func _physics_process(delta : float) -> void:
+
+	
 	if _is_caught:
 		var is_respawn_off_cd := (Time.get_ticks_msec() / 1000.0 
 			> _catch_time + _respawn_cooldown)
@@ -233,6 +241,8 @@ func _physics_process(delta : float) -> void:
 		0.0 if is_on_floor() else 
 		1.0
 	))
+	
+	if is_mega: return
 	
 	#if _ai_state == AiState.WANDER and horz_vel < Main.ERR_TOL and randf() < .0001: # 1% chance of doing
 		#_animtree.set("parameters/oneshot_look/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)

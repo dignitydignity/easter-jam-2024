@@ -31,7 +31,7 @@ font_names = PackedStringArray("Microsoft Himalaya")
 subpixel_positioning = 0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_42s1t"]
-size = Vector3(1, 2, 1)
+size = Vector3(1.25, 2, 1)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_hitbox", "_interact_raycaster")]
 process_mode = 1
@@ -228,6 +228,7 @@ bus = &"Sfx"
 [node name="SfxCatch" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("6_vrn0o")
+volume_db = 1.0
 bus = &"Sfx"
 
 [node name="SfxClock" type="AudioStreamPlayer" parent="."]
