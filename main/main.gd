@@ -12,6 +12,7 @@ const ERR_TOL = 0.0001
 const song1 := preload("res://audio/music/roy_t1.mp3")
 const song2 := preload("res://audio/music/nate_t1.mp3")
 const song3 := preload("res://audio/music/nate_t2.mp3")
+# vol = -25?
 
 # When `_gamestate` mutates, important side effects occur.
 enum Gamestate { DEFAULT, START_MENU, PAUSE, OPTIONS }

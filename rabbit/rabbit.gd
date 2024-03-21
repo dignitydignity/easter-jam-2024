@@ -1,12 +1,6 @@
 extends CharacterBody3D
 class_name Rabbit
 
-# TODO: Better vision cone (multiple area 3Ds).
-# Rabbits only run away when player looks at them? Otherwise, they stop and
-# stare?
-# Game is about chasing rabbits, not stealth. So, make a good
-# initial impression/spectable by watching rabbits bounce around?
-
 @export_group("Wander")
 @export_range(0.1, 10) var _walk_speed : float
 @export_range(1, 20) var _wander_dist_min : float
@@ -14,9 +8,6 @@ class_name Rabbit
 @export_range(0, 20) var _idle_time_min : float
 @export_range(0, 20) var _idle_time_max : float
 @export_group("Flee")
-# TODO: min and max ranges for height & jump dist?
-# TODO: Most important thing for gameplay is consistent rabbit speed? So use:
-#       @export_range(0, 100) var _jump_init_horz_speed : float
 @export_range(0, 10) var _jump_height : float
 @export_range(0, 100) var _grav : float
 @export_range(0, 30) var _flee_dist : float
@@ -38,6 +29,16 @@ var _last_scaled_grav : float
 
 # ANIMATIONS
 @onready var _animtree : AnimationTree = %AnimationTree
+
+# AUDIO
+@onready var _sfx : AudioStreamPlayer3D = %Sfx
+@onready var _sfx_giggle : AudioStreamPlayer3D = %Sfx
+const SFX_GIGGLE = preload("res://audio/sfx/rabbit_giggle.wav")
+const SFX_JUMP1 = preload("res://audio/sfx/rabbit_jump.wav")
+const SFX_JUMP2	 = preload("res://audio/sfx/rabbit_jump2.wav")
+const SFX_VOL = -40.0 # Default val, but not for giggle (0)
+
+var _jump_count : int = 0
 
 # Flee target is the object to flee from. Not the target to flee towards.
 var _player_in_cone : Player # When walks into vision cone.
@@ -96,6 +97,14 @@ func _ready() -> void:
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
 	assert(_wander_dist_max > _wander_dist_min)
 	assert(_idle_time_max > _idle_time_min)
+	
+	# Giggle if player dives and misses.
+	Player.instance.dive_land_missed.connect(
+		func(): 
+			if _ai_state == AiState.FLEE:
+				_sfx_giggle.stream = SFX_GIGGLE
+				_sfx_giggle.play()
+	)
 	
 	# Randomize the rabbit's color.
 	var mat_body := _rabbit_body.get_surface_override_material(0) as ORMMaterial3D
@@ -249,6 +258,8 @@ func _check_player_in_los_and_begin_flee_if_so():
 
 var first_one := true # prevent annoying debug messages
 
+var _time_since_idle_ended : float
+
 func _physics_process(delta : float) -> void:
 	
 	if first_one:
@@ -293,6 +304,13 @@ func _physics_process(delta : float) -> void:
 					look_at(next_path_pos)
 					rotation.x = 0
 					rotation.z = 0
+				_time_since_idle_ended += delta
+				const _rabbit_unstuck_time = 7.0
+				if _time_since_idle_ended > _rabbit_unstuck_time:
+					_set_random_nav_agent_target_pos(
+						randf_range(_wander_dist_min, _wander_dist_max)
+					)
+					_time_since_idle_ended = 0.0
 			else:
 				velocity = Vector3.ZERO
 				var is_done_idling := (Time.get_ticks_msec() / 1000.0 
@@ -300,9 +318,11 @@ func _physics_process(delta : float) -> void:
 				if is_done_idling:
 					#_idling_label.text = "Idling?: False"
 					#_idling_label.modulate = Color.RED
+					_time_since_idle_ended = 0.0
 					_set_random_nav_agent_target_pos(
 						randf_range(_wander_dist_min, _wander_dist_max)
 					)
+				
 				
 			if !is_on_floor():
 				velocity.y -= 40 * _grav * delta
@@ -352,9 +372,15 @@ func _physics_process(delta : float) -> void:
 					add_child(pfx)
 					pfx.emitting = true
 					pfx.finished.connect(func() -> void: pfx.queue_free())
-
 					
+					_jump_count += 1
+					if _jump_count % 2 == 0:
+						_sfx.stream = SFX_JUMP1
+					else:
+						_sfx.stream = SFX_JUMP2
+					_sfx.play()
 				else:
+					
 					velocity.y -= _last_scaled_grav * delta
 
 	move_and_slide()

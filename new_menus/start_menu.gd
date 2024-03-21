@@ -11,7 +11,6 @@ signal options_pressed
 func _ready() -> void:
 	assert(mouse_filter == MOUSE_FILTER_IGNORE)
 	assert(process_mode == PROCESS_MODE_ALWAYS)
-	# Pass through signals are really stupid, but fuck it
 	play.pressed.connect(func(): play_pressed.emit())
 	options.pressed.connect(func(): options_pressed.emit())
 	exit.pressed.connect(func(): get_tree().quit())

@@ -61,6 +61,19 @@ var _last_dive_land_time : float
 @onready var _headcount_label : Label = %HeadcountLabel
 var _num_caught_rabbits := 0
 
+
+@onready var _sfx_grab : AudioStreamPlayer = %SfxGrab
+#const SFX_GRAB = preload("res://audio/sfx/grab_rabbit.wav")
+
+@onready var _sfx_land : AudioStreamPlayer = %SfxLand
+#const SFX_PLAYER_LAND = preload("res://audio/sfx/player_land.wav")
+
+@onready var _sfx_catch : AudioStreamPlayer = %SfxCatch
+#const SFX_CATCH_RABBIT = preload("res://audio/sfx/magic_game_win_success_cc0.wav")
+
+var _is_dive_land_miss := true
+signal dive_land_missed
+
 func _ready() -> void:
 	assert(_hud.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(process_mode == PROCESS_MODE_PAUSABLE)
@@ -72,8 +85,10 @@ func _ready() -> void:
 		assert(box.collision_mask == 2)
 		box.body_entered.connect(
 			func(body : Node3D) -> void:
+				_is_dive_land_miss = false
 				var rabbit := body as Rabbit
 				rabbit.queue_free()
+				_sfx_catch.play()
 				_num_caught_rabbits += 1
 				_headcount_label.text = "x %d" % _num_caught_rabbits
 				print("dive grab!")
@@ -183,6 +198,7 @@ func _physics_process(delta : float) -> void:
 			var _is_grab_off_cooldown := ((Time.get_ticks_msec() / 1000.0) 
 				>= _last_grab_attempt_time + _grab_cooldown)
 			if _is_grab_off_cooldown:
+				_sfx_grab.play()
 				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 				_grab_hitbox.monitoring = true # Turn it on for a frame (gets reset above).
 				#if _grab_raycaster.is_colliding():
@@ -239,6 +255,7 @@ func _physics_process(delta : float) -> void:
 			var _is_dive_just_started := false
 			if is_on_floor() and Input.is_action_just_pressed("action") and is_at_min_speed_for_dive:
 				#assert(is_on_floor())
+				_is_dive_land_miss = true
 				_is_dive_just_started = true
 				_last_dive_start_time = Time.get_ticks_msec() / 1000.0
 				
@@ -326,6 +343,9 @@ func _physics_process(delta : float) -> void:
 			# the player is picking themselves off the ground.
 			if is_on_floor():
 				_last_dive_land_time = Time.get_ticks_msec() / 1000.0
+				_sfx_land.play()
+				if _is_dive_land_miss:
+					dive_land_missed.emit()
 				var dive_hitstun_anim := create_tween().set_parallel()
 				dive_hitstun_anim.tween_property(self, "rotation", rotation,
 					_dive_hitstun)

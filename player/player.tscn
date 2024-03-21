@@ -1,8 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://d1iv44sh4ql74"]
+[gd_scene load_steps=14 format=3 uid="uid://d1iv44sh4ql74"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_fun63"]
 [ext_resource type="Texture2D" uid="uid://8po4wouod3js" path="res://images/shadow.png" id="2_bolwv"]
 [ext_resource type="Texture2D" uid="uid://by6ot25v8v5tw" path="res://images/headcount.png" id="2_nulv3"]
+[ext_resource type="AudioStream" uid="uid://cv6slclu4hj0q" path="res://audio/sfx/grab_rabbit.wav" id="4_el3xy"]
+[ext_resource type="AudioStream" uid="uid://bololk3ofeoeb" path="res://audio/sfx/player_land.wav" id="5_doten"]
+[ext_resource type="AudioStream" uid="uid://cpwcprh1mesmn" path="res://audio/sfx/magic_game_win_success_cc0.wav" id="6_vrn0o"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r833c"]
 
@@ -162,3 +165,15 @@ shape = SubResource("BoxShape3D_42s1t")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.11708, -0.0506592)
 size = Vector3(1.5, 5, 1.5)
 texture_albedo = ExtResource("2_bolwv")
+
+[node name="SfxGrab" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_el3xy")
+
+[node name="SfxLand" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("5_doten")
+
+[node name="SfxCatch" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("6_vrn0o")
