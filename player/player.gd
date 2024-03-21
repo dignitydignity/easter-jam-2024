@@ -86,6 +86,7 @@ func _ready() -> void:
 		assert(box.collision_mask == 2)
 		box.body_entered.connect(
 			func(body : Node3D) -> void:
+				print("body entered")
 				_is_dive_land_miss = false
 				var rabbit := body as Rabbit
 				assert(!rabbit._is_caught)
@@ -173,8 +174,10 @@ func _reset_mouse_rel() -> void:
 
 
 var num_physics_updates := 0
-const CLOCK_START_TIME = 99
+const CLOCK_START_TIME = 15
 @onready var _clock_label : Label = %ClockLabel
+@onready var _sfx_clock : AudioStreamPlayer = %SfxClock
+const SFX_TIMEOUT = preload("res://audio/sfx/timeout.wav")
 
 # delta = 1/60
 func _physics_process(delta : float) -> void:
@@ -182,6 +185,11 @@ func _physics_process(delta : float) -> void:
 	if num_physics_updates % 60 == 0:
 		var time_left := CLOCK_START_TIME - num_physics_updates / 60
 		time_left = max(time_left, 0)
+		if time_left < 11 and time_left != 0:
+			_sfx_clock.play()
+		elif time_left == 0 and _sfx_clock.stream != SFX_TIMEOUT:
+			_sfx_clock.stream = SFX_TIMEOUT
+			_sfx_clock.play()
 		_clock_label.text = "%d" % time_left
 	
 	assert(_time_to_max_walk_speed >= delta) # no division by zero
@@ -218,13 +226,6 @@ func _physics_process(delta : float) -> void:
 				_sfx_grab.play()
 				_last_grab_attempt_time = Time.get_ticks_msec() / 1000.0
 				_grab_hitbox.monitoring = true # Turn it on for a frame (gets reset above).
-				#if _grab_raycaster.is_colliding():
-					#is_grab_successful = true
-					#var rabbit := _grab_raycaster.get_collider() as Rabbit
-					#rabbit.queue_free()
-					#_num_caught_rabbits += 1
-					#_headcount_label.text = "x %d" % _num_caught_rabbits
-					#print("grabbed!")
 			if _interact_raycaster.is_colliding() and !is_grab_successful:
 				print("non-grab action!")
 	

@@ -46,7 +46,9 @@ var _respawn_cooldown := 30
 
 var _is_caught := false
 func catch() -> void:
+	print("catch called")
 	if _is_caught: return
+	print("_is_caught is false")
 	assert(!_is_caught)
 	_is_caught = true
 	_catch_time = Time.get_ticks_msec() / 1000.0
@@ -104,6 +106,7 @@ func _set_random_nav_agent_target_pos_away_fom_flee_target(dist : float) -> void
 
 func _ready() -> void:
 	_is_caught = false
+	
 	start_pos = global_position
 
 	assert(process_mode == PROCESS_MODE_PAUSABLE)

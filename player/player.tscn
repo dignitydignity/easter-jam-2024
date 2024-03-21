@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://d1iv44sh4ql74"]
+[gd_scene load_steps=17 format=3 uid="uid://d1iv44sh4ql74"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_fun63"]
 [ext_resource type="Texture2D" uid="uid://8po4wouod3js" path="res://images/shadow.png" id="2_bolwv"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://cv6slclu4hj0q" path="res://audio/sfx/grab_rabbit.wav" id="4_el3xy"]
 [ext_resource type="AudioStream" uid="uid://bololk3ofeoeb" path="res://audio/sfx/player_land.wav" id="5_doten"]
 [ext_resource type="AudioStream" uid="uid://cpwcprh1mesmn" path="res://audio/sfx/magic_game_win_success_cc0.wav" id="6_vrn0o"]
+[ext_resource type="AudioStream" uid="uid://dq3mipbffdpiy" path="res://audio/sfx/clock_tick.wav" id="8_b18pe"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_r833c"]
 
@@ -27,11 +28,12 @@ size = Vector3(0.5, 0.25, 0.08)
 
 [sub_resource type="SystemFont" id="SystemFont_nnbxp"]
 font_names = PackedStringArray("Microsoft Himalaya")
+subpixel_positioning = 0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_42s1t"]
 size = Vector3(1, 2, 1)
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_hitbox", "_interact_raycaster", "_dive_grab_hitboxes")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_grab_hitbox", "_interact_raycaster")]
 process_mode = 1
 collision_layer = 9
 safe_margin = 0.005
@@ -51,7 +53,6 @@ _sprint_speed = 12.0
 _time_to_sprint = 0.5
 _time_to_stop_sprint = 0.75
 _sprint_fov = 80.0
-_dive_grab_hitboxes = [NodePath("Camera/DiveGrabHitbox1"), NodePath("DiveGrabHitbox2")]
 _min_speed_for_dive = 10.0
 _dive_height = 1.0
 _dive_dist = 12.0
@@ -226,4 +227,10 @@ bus = &"Sfx"
 [node name="SfxCatch" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("6_vrn0o")
+bus = &"Sfx"
+
+[node name="SfxClock" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("8_b18pe")
+max_polyphony = 2
 bus = &"Sfx"
