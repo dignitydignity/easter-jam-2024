@@ -74,7 +74,6 @@ var _last_flee_start_time : float
 #@onready var _idling_label : Label3D = %IdlingLabel
 #@onready var _flee_targ_label : Label3D = %FleeTargLabel
 
-
 const _pfx_factory : PackedScene = preload("res://pfx/pfx_2.tscn")
 
 func _set_random_nav_agent_target_pos(dist : float) -> void:
